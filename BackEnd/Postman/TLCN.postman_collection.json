@@ -1,0 +1,90 @@
+{
+	"info": {
+		"_postman_id": "33e00d5b-b037-441f-a25d-0ad38d8365fb",
+		"name": "TLCN",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sign up",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"khang\",\r\n    \"dateofbirth\":\"06-06-2000\",\r\n    \"email\":\"abc\",\r\n    \"gender\":\"male\",\r\n    \"username\":\"khang\",\r\n    \"password\":\"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"khang\",\r\n    \"password\":\"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pageAuth",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZyIsImV4cCI6MTYzMjU5MTUwOCwiaWF0IjoxNjMyNTU1NTA4fQ.w2pEhFdI3ra1pJ58hjuWDmL1HAKOZs9rBQ14I9-3yZs",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/authen",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authen"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
