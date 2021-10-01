@@ -3,7 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+!**/src/main/resources/googledrive.json
+!**/src/main/resources/evident-wind-327616-32382019eb7e.p12
 ### STS ###
 .apt_generated
 .classpath
