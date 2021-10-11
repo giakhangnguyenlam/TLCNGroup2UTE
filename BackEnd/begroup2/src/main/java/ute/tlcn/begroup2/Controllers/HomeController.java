@@ -4,6 +4,7 @@ package ute.tlcn.begroup2.Controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
-import ute.tlcn.begroup2.Services.UserServices.GoogleService;
+import ute.tlcn.begroup2.Services.GoogleServices.GoogleService;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 
 @RestController
@@ -70,19 +71,20 @@ public class HomeController {
         return new ResponseEntity<>("Page must login to see", HttpStatus.OK);
     }
 
-    @PostMapping("/uploadgoogle")
-    public ResponseEntity<?> uploadGoogle(@RequestParam("file") MultipartFile multifile){
-        File file1 = new File("C:\\Users\\Khang\\Pictures\\Saved Pictures\\"+multifile.getOriginalFilename());
-        try {
-            multifile.transferTo(file1);
-            com.google.api.services.drive.model.File file = googleService.uploadFile(file1.getName(), file1.getAbsolutePath(), "image/jpg");
-            return new ResponseEntity<>(file.getWebContentLink(), HttpStatus.CREATED);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    // @PostMapping("/uploadgoogle")
+    // public ResponseEntity<?> uploadGoogle(@RequestParam("file") MultipartFile multifile){
+    //     File file1 = new File("C:\\Users\\Khang\\Pictures\\Saved Pictures\\"+multifile.getOriginalFilename());
+    //     try {
+    //         multifile.transferTo(file1);
+    //         System.out.println("Mine type:" + URLConnection.guessContentTypeFromName(file1.getName()));
+    //         com.google.api.services.drive.model.File file = googleService.uploadFile(file1.getName(), file1.getAbsolutePath(), URLConnection.guessContentTypeFromName(file1.getName()));
+    //         return new ResponseEntity<>(file.getWebContentLink(), HttpStatus.CREATED);
+    //     }
+    //     catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
         
-        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+    //     return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
 
-    }
+    // }
 }

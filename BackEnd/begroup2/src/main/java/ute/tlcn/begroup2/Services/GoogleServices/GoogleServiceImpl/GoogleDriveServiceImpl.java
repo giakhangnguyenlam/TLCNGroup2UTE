@@ -1,8 +1,11 @@
-package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
+package ute.tlcn.begroup2.Services.GoogleServices.GoogleServiceImpl;
+
+import java.io.IOException;
 
 // This class references from https://github.com/ttlang/DRIVE_REST_API_SPRING_BOOT/tree/master/GDrive
 
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -19,8 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import ute.tlcn.begroup2.Services.UserServices.GoogleService;
+import ute.tlcn.begroup2.Services.GoogleServices.GoogleService;
 
 @Service
 public class GoogleDriveServiceImpl implements GoogleService {
@@ -83,5 +87,20 @@ public class GoogleDriveServiceImpl implements GoogleService {
 		}
 		return file;
     }
+
+
+
+	@Override
+	public String saveImage(MultipartFile multifile) {
+		java.io.File file1 = new java.io.File("C:\\Users\\Khang\\Pictures\\Saved Pictures\\"+multifile.getOriginalFilename());
+        try {
+            multifile.transferTo(file1);
+            File file = uploadFile(file1.getName(), file1.getAbsolutePath(), URLConnection.guessContentTypeFromName(file1.getName()));
+            return file.getWebContentLink();
+        }
+        catch (IOException e) {
+            return "";
+        }
+	}
     
 }

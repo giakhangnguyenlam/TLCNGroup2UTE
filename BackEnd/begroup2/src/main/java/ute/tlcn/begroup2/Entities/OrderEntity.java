@@ -14,21 +14,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Table(name = "order")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+@NoArgsConstructor
+public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String name;
-    private Date dateofbirth;
-    private String email;
-    private String address;
-    private String gender;
-    private String username;
-    private String password;
-    private String grantedAuthority;
+    private int userId;
+    private Date orderDate;
+    private double total;
+    private String orderStatus;
+    private String paymentStatus;
 }

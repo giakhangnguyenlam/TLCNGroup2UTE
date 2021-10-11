@@ -1,7 +1,5 @@
 package ute.tlcn.begroup2.Entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,21 +12,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Table(name = "product")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+@NoArgsConstructor
+public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    private int storeId;
+    /**
+     * 3 types of category:
+     * 1: category clothes
+     * 2: category shoes;
+     * 3: category accessories 
+     */
+    private int category; 
     private String name;
-    private Date dateofbirth;
-    private String email;
-    private String address;
-    private String gender;
-    private String username;
-    private String password;
-    private String grantedAuthority;
+    private int quantity;
+    private double price;
+    private String description;
+    private String image;
 }

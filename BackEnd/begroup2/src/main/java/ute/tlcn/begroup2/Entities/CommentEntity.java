@@ -14,21 +14,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Table(name = "comment")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+@NoArgsConstructor
+public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String name;
-    private Date dateofbirth;
-    private String email;
-    private String address;
-    private String gender;
+    private int productId;
     private String username;
-    private String password;
-    private String grantedAuthority;
+    private String comment;
+    private int start;
+    private Date date;
 }

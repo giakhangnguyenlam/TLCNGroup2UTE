@@ -1,7 +1,5 @@
 package ute.tlcn.begroup2.Entities;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,21 +12,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Table(name = "order_detail")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class OrderDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String name;
-    private Date dateofbirth;
-    private String email;
-    private String address;
-    private String gender;
-    private String username;
-    private String password;
-    private String grantedAuthority;
+    private int orderId;
+    private int productId;
+    private int quantity;
 }

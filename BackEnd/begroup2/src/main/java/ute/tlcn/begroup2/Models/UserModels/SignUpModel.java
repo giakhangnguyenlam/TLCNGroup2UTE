@@ -14,6 +14,7 @@ public class SignUpModel {
     private String name;
     private String dateofbirth;
     private String email;
+    private String address;
     private String gender;
     private String username;
     private String password;

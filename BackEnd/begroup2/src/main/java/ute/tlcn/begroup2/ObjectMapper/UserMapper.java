@@ -21,7 +21,8 @@ public class UserMapper {
         UserModel userModel = new UserModel(userEntity.getId(), 
         userEntity.getName(), 
         dateMapper.convertDateToString(userEntity.getDateofbirth()), 
-        userEntity.getEmail(), 
+        userEntity.getEmail(),
+        userEntity.getAddress(), 
         userEntity.getEmail(),
         "");
         
