@@ -1,34 +1,28 @@
-package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
+package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
 import ute.tlcn.begroup2.Entities.UserEntity;
-import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserDetailsModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
 import ute.tlcn.begroup2.ObjectMapper.DateMapper;
 import ute.tlcn.begroup2.ObjectMapper.UserMapper;
 import ute.tlcn.begroup2.Repositories.UserRepository;
+import ute.tlcn.begroup2.Services.SellerServices.SellerService;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 import ute.tlcn.begroup2.Utils.JWTUtil;
 
 @Service
-@Slf4j
-public class UserServiceImpl implements UserService {
+public class SellerServiceImpl implements SellerService {
 
-    private AuthenticationManager authenticationManager;
-    private UserDetailsService userDetailsService;
+    private UserService userService;
     private JWTUtil jwtUtil;
     private UserRepository userRepository;
     private UserMapper userMapper;
@@ -36,9 +30,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
+    public SellerServiceImpl(UserService userService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -47,33 +40,13 @@ public class UserServiceImpl implements UserService {
     }
     
     
-    
-    // login
-    @Override
-    public UserModel setLogin(LoginModel loginModel) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginModel.getUsername(),
-                loginModel.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect Username or password", e);
-        }
-        
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginModel.getUsername());
-        String jwt = jwtUtil.generationToken(userDetails);
-        UserEntity userEntity = userRepository.getByUsername(loginModel.getUsername());
-        UserModel userModel = userMapper.convertUserEntityToUserModel(userEntity);
-        userModel.setJwt(jwt);
-        return userModel;
-    }
 
-    // sign up
     @Override
     public UserModel signUp(SignUpModel signUpModel) throws Exception {
-        if(isExistedUser(signUpModel.getUsername())){
+        if(userService.isExistedUser(signUpModel.getUsername())){
             throw new Exception("User is already exited");
         }
         else{
-            log.info("Create user" + signUpModel);
             Date dateOfBirth = dateMapper.convertStringToDate(signUpModel.getDateofbirth());
             UserEntity userEntity = new UserEntity(0, 
             signUpModel.getName(), 
@@ -83,7 +56,7 @@ public class UserServiceImpl implements UserService {
             signUpModel.getGender(), 
             signUpModel.getUsername(), 
             passwordEncoder.encode(signUpModel.getPassword()), 
-            "ROLE_USER");
+            "ROLE_SELLER");
 
             userEntity = userRepository.save(userEntity);
             UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
@@ -94,8 +67,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public boolean isExistedUser(String username){
-        return userRepository.existsByUsername(username);
-    }
+
+    
 }
