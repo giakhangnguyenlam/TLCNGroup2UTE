@@ -5,7 +5,7 @@
 
 =======================================================================================
 
-##  ==========================>> User API <<========================================== 
+##  ==========================>> User API <<====================================== 
 
 ### Sign up
 link: http://localhost:8080/signup
@@ -29,13 +29,14 @@ link: http://localhost:8080/signup
 status: 201
 ```
 {
-    "id": 2,
+    "id": 8,
     "name": "khang",
     "dateofbirth": "06-06-2000",
     "email": "abc",
-    "address":"123, dadd",
+    "address": "123, dadd",
     "gender": "abc",
-    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ2FiYyIsImV4cCI6MTYzMjU5MzEyMSwiaWF0IjoxNjMyNTU3MTIxfQ.xn2JRxW7SsPJwglSo_dP_cOgtOAriYS18Gqdk8uJlx0"
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZyIsImV4cCI6MTYzNDE1MTEzNiwiaWF0IjoxNjM0MTE1MTM2fQ.gGX83-8F4shYs5JvPhG0jxLDY3Ol4YvBeK7RCBoCT1M",
+    "role": "ROLE_USER"
 }
 ```
 
@@ -102,7 +103,7 @@ Page must login to see
 
 
 
-##  ==========================>> Seller API <<=========================================
+##  ==========================>> Seller API <<====================================
 
 ### Sign up
 > This API for sign up seller
