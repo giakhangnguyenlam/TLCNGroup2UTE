@@ -1,0 +1,11 @@
+package ute.tlcn.begroup2.Repositories;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import ute.tlcn.begroup2.Entities.ProductEntity;
+
+public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
+    List<ProductEntity> getByStoreId(int storeId);
+}

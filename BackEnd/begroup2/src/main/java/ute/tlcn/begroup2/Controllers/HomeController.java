@@ -14,19 +14,21 @@ import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Services.SellerServices.ProductService;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 
 @RestController
 public class HomeController {
 
     private UserService userService;
-    
-
+    private ProductService productService;
 
     @Autowired
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, ProductService productService) {
         this.userService = userService;
+        this.productService = productService;
     }
+    
     
     
 
@@ -64,5 +66,9 @@ public class HomeController {
         return new ResponseEntity<>("Page must login to see", HttpStatus.OK);
     }
 
+    @GetMapping("/product")
+    public ResponseEntity<?> getAllProducts(){
+        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    }
     
 }

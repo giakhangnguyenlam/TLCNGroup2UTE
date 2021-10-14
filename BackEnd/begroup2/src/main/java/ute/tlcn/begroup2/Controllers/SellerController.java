@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
+import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Services.SellerServices.ProductService;
 import ute.tlcn.begroup2.Services.SellerServices.SellerService;
 import ute.tlcn.begroup2.Services.SellerServices.StoreService;
 
@@ -32,11 +34,16 @@ public class SellerController {
     
     private SellerService sellerService;
     private StoreService storeService;
+    private ProductService productService;
+
+
     @Autowired
-    public SellerController(SellerService sellerService, StoreService storeService) {
+    public SellerController(SellerService sellerService, StoreService storeService, ProductService productService) {
         this.sellerService = sellerService;
         this.storeService = storeService;
+        this.productService = productService;
     }
+    
     
 
 
@@ -112,4 +119,41 @@ public class SellerController {
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping(value="/product")
+    public ResponseEntity<?> createProduct(@RequestParam("storeid") int storeid, 
+    @RequestParam("category") int category, 
+    @RequestParam("name") String name,
+    @RequestParam("quantity") int quantity,
+    @RequestParam("price") double price,
+    @RequestParam("description") String description,
+    @RequestParam("file") MultipartFile multipartFile) {
+        try {
+            ProductModel productModel = new ProductModel(0, storeid, category, name, quantity, price, description, "");
+            productModel = productService.createProduct(productModel, multipartFile);
+            return new ResponseEntity<>(productModel, HttpStatus.CREATED);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Can't create product");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<?> getProductByProductId(@PathVariable("id") int id){
+        try {
+            ProductModel productModel= productService.getProductByProductId(id);
+            return new ResponseEntity<>(productModel, HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Can't find product");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/product/store/{id}")
+    public ResponseEntity<?> getProductsByStoreId(@PathVariable("id") int id){
+        List<ProductModel> productModels = productService.getProductByStoreId(id);
+        return new ResponseEntity<>(productModels, HttpStatus.OK);
+    }
+
+    
 }

@@ -175,6 +175,8 @@ Status: 201
 ### View Store 
 link: http://localhost:8080/seller/store/userid/2
 
+> GET
+
 > Note: 2 is userId (seller id)
 
 > This API use to view all store of seller
@@ -216,6 +218,8 @@ Status: 200
 ### Delete store
 link: http://localhost:8080/seller/store/3
 
+> DELETE
+
 > Note: 3 is store id
 
 > Note: You have to login with seller account to use this
@@ -229,6 +233,8 @@ Status: 200
 
 ### Update Store without image
 link: http://localhost:8080/seller/store/4
+
+> PUT
 
 > Note: 4 this store id
 
@@ -262,6 +268,8 @@ Status: 200
 
 ### Update Store with image
 link: http://localhost:8080/seller/store/image/4
+
+> PUT
 
 > Note: 4 this store id
 
