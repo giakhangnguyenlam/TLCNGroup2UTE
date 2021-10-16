@@ -9,4 +9,7 @@ public interface UserService {
     public UserModel setLogin(LoginModel loginModel) throws Exception;
     public UserModel signUp(SignUpModel signUpModel) throws Exception;
     public boolean isExistedUser(String username);
+    public UserModel updateUser(int id, SignUpModel signUpModel) throws Exception;
+    public UserModel getUserByUserName(String username) throws Exception;
+    public UserModel getUserByUserId(int id) throws Exception;
 }

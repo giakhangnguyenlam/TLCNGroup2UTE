@@ -1,6 +1,7 @@
 package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import ute.tlcn.begroup2.Entities.UserEntity;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
@@ -97,5 +99,52 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isExistedUser(String username){
         return userRepository.existsByUsername(username);
+    }
+
+
+
+    @Override
+    public UserModel updateUser(int id, SignUpModel signUpModel) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
+        if (optionalUserEntity.isPresent()) {
+            UserEntity userEntity = optionalUserEntity.get();
+            userEntity.setName(signUpModel.getName());
+            userEntity.setGender(signUpModel.getGender());
+            userEntity.setDateofbirth(dateMapper.convertStringToDate(signUpModel.getDateofbirth()));
+            userEntity.setEmail(signUpModel.getEmail());
+            userEntity.setAddress(signUpModel.getAddress());
+            userEntity.setPassword(passwordEncoder.encode(signUpModel.getPassword()));
+
+            userEntity = userRepository.save(userEntity);
+            return userMapper.convertUserEntityToUserModel(userEntity);
+        } else {
+            throw new NotFoundException("Can't found user");
+        }
+        
+    }
+
+
+
+    @Override
+    public UserModel getUserByUserName(String username) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);
+        if (optionalUserEntity.isPresent()) {
+            return userMapper.convertUserEntityToUserModel(optionalUserEntity.get());
+        } else {
+            throw new NotFoundException("Can't find user");
+        }
+
+    }
+
+
+
+    @Override
+    public UserModel getUserByUserId(int id) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
+        if (optionalUserEntity.isPresent()) {
+            return userMapper.convertUserEntityToUserModel(optionalUserEntity.get());
+        } else {
+            throw new NotFoundException("Can't find user");
+        }
     }
 }

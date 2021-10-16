@@ -39,5 +39,5 @@ public class CategoryClothesEntity {
     private List<String> color;
     private String material;
     private String gender;
-    private String productId;
+    private int productId;
 }
