@@ -63,6 +63,11 @@ body {
   width: 83.333%;
 }
 
+.grid__colum-12 {
+  padding: 0 5px;
+  width: 100%;
+}
+
 /* Animation */
 @keyframes fadeIn {
   from {
@@ -97,6 +102,7 @@ body {
   left: 0;
   display: flex;
   animation: fadeIn linear 0.1s;
+  z-index: 4;
 }
 .modal__overlay {
   position: absolute;

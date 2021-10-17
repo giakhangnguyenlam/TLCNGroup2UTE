@@ -1,8 +1,12 @@
 import { useState } from "react"
 import axios from "axios"
-import { FaFacebook, FaGoogle } from "react-icons/fa"
+import { useGlobalContext } from "./context"
+import { formAuth } from "./data"
+import ModalFooter from "./ModalFooter"
 
-const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
+const Signup = () => {
+  const { isLogin, setIsLogin, isSignup, setIsSignup } = useGlobalContext()
+  const [errors, setErrors] = useState({})
   const [person, setPerson] = useState({
     name: "",
     dateofbirth: "",
@@ -10,6 +14,7 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
     gender: "",
     username: "",
     password: "",
+    rePassword: "",
   })
   const handlechange = (e) => {
     const name = e.target.name
@@ -20,13 +25,56 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
     setIsSignup(!isSignup)
     setIsLogin(!isLogin)
   }
+  const checkError = (person) => {
+    let errs = {}
+    if (!person.name) {
+      errs.name = "Không được bỏ trống trường này!"
+    }
+    if (!person.dateofbirth) {
+      errs.dateofbirth = "Không được bỏ trống trường này!"
+    } else {
+      const persBirth = new Date(person.dateofbirth)
+      const currDay = new Date()
+      if (currDay < persBirth) {
+        errs.dateofbirth = "Lỗi! Ngày tháng năm sinh không hợp lệ"
+      }
+    }
+
+    if (!person.email) {
+      errs.email = "Không được bỏ trống trường này!"
+    } else if (
+      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(person.email)
+    ) {
+      errs.email = "Sai định dạng email"
+    }
+    if (!person.gender) {
+      errs.gender = "Không được bỏ trống trường này!"
+    }
+    if (!person.username) {
+      errs.username = "Không được bỏ trống trường này!"
+    }
+    if (!person.password) {
+      errs.password = "Không được bỏ trống trường này!"
+    } else if (!/^[a-zA-Z][a-zA-Z0-9!@#$%^&*]{7,16}$/.test(person.password)) {
+      errs.password =
+        "Mật khẩu chứa chữ cái và số, bắt đầu bằng chữ, dài từ 7-16 ký tự"
+    }
+    if (!person.rePassword) {
+      errs.rePassword = "Không được bỏ trống trường này!"
+    } else if (person.rePassword !== person.password) {
+      errs.rePassword = "Không khớp với mật khẩu ở trên"
+    }
+    setErrors(errs)
+  }
   const fetchData = () => {
-    const dateBirth = person.dateofbirth
+    const { rePassword, ...rest } = person
+    const dateBirth = rest.dateofbirth
     const dd = dateBirth.slice(8)
     const mm = dateBirth.slice(5, 7)
     const yyyy = dateBirth.slice(0, 4)
+
     axios
-      .post("http://localhost:8080/signup", {
+      .post("https://tlcngroup2be.herokuapp.com/signup", {
         ...person,
         dateofbirth: `${dd}-${mm}-${yyyy}`,
       })
@@ -39,12 +87,18 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    fetchData()
+    checkError(person)
+    if (Object.keys(errors).length === 0) {
+      fetchData()
+    }
   }
 
   return (
     <div className='modal'>
-      <div className='modal__overlay'></div>
+      <div
+        className='modal__overlay'
+        onClick={() => setIsSignup(!isSignup)}
+      ></div>
       <div className='modal__body'>
         {/* Register form */}
         <div className='auth-form'>
@@ -57,44 +111,33 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
             </div>
 
             <div className='auth-form__form'>
+              {formAuth.map((ele, index) => {
+                const { name, type, placeholder } = ele
+                return (
+                  <div className='auth-form__group' key={index}>
+                    <input
+                      type={type}
+                      name={name}
+                      placeholder={placeholder}
+                      className={`auth-form__input ${
+                        errors[name] && "auth-form__input--err"
+                      }`}
+                      value={person[name]}
+                      onChange={handlechange}
+                    />
+                    {errors[name] ? (
+                      <p className='auth-form__error'>{errors[name]}</p>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+                )
+              })}
               <div className='auth-form__group'>
-                <input
-                  type='text'
-                  name='name'
-                  className='auth-form__input'
-                  placeholder='Tên bạn'
-                  value={person.name}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='date'
-                  name='dateofbirth'
-                  className='auth-form__input'
-                  placeholder='Sinh nhật'
-                  value={person.dateofbirth}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='text'
-                  name='email'
-                  className='auth-form__input'
-                  placeholder='Email đăng ký'
-                  value={person.email}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                {/* <input
-                  type='text'
-                  className='auth-form__input'
-                  placeholder='Giới tính'
-                /> */}
                 <select
-                  className='auth-form__input'
+                  className={`auth-form__input ${
+                    errors.gender && "auth-form__input--err"
+                  }`}
                   name='gender'
                   onChange={handlechange}
                 >
@@ -102,44 +145,22 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
                   <option value='male'>Nam</option>
                   <option value='female'>Nữ</option>
                 </select>
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='text'
-                  name='username'
-                  className='auth-form__input'
-                  placeholder='Tên đăng nhập'
-                  value={person.username}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='password'
-                  name='password'
-                  className='auth-form__input'
-                  placeholder='Mật khẩu'
-                  value={person.password}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='password'
-                  className='auth-form__input'
-                  placeholder='Nhập lại mật khẩu'
-                />
+                {errors.gender ? (
+                  <p className='auth-form__error'>{errors.gender}</p>
+                ) : (
+                  " "
+                )}
               </div>
             </div>
 
             <div className='auth-form__aside'>
               <p className='autho-form__policy'>
                 Bằng việc đăng ký, bạn đã đồng ý với shop về
-                <a href='' className='auth-form__text-link'>
+                <a href='/dkdv' className='auth-form__text-link'>
                   Điều khoản dịch vụ
                 </a>{" "}
                 &
-                <a href='' className='auth-form__text-link'>
+                <a href='/csbm' className='auth-form__text-link'>
                   Chính sách bảo mật
                 </a>
               </p>
@@ -158,18 +179,7 @@ const Signup = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
             </div>
           </div>
 
-          <div className='auth-form__socials'>
-            <button className='btn btn--with-icon btn--size-s --facebook'>
-              <FaFacebook className='auth-form__socials-icon' />
-              <span className='auth-form__social-text'>
-                Kết nối với Facebook
-              </span>
-            </button>
-            <button className='btn btn--with-icon btn--size-s --google'>
-              <FaGoogle className='auth-form__socials-icon' />
-              <span className='auth-form__social-text'>Kết nối với Google</span>
-            </button>
-          </div>
+          <ModalFooter />
         </div>
       </div>
     </div>

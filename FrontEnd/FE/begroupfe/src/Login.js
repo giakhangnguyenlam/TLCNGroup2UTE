@@ -1,8 +1,12 @@
 import axios from "axios"
 import { useState } from "react"
-import { FaFacebook, FaGoogle } from "react-icons/fa"
+import { useGlobalContext } from "./context"
+import { formAuth } from "./data"
+import ModalFooter from "./ModalFooter"
 
-const Login = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
+const Login = () => {
+  const { isLogin, setIsLogin, isSignup, setIsSignup } = useGlobalContext()
+  const [errors, setErrors] = useState({})
   const [account, setAccount] = useState({
     username: "",
     password: "",
@@ -16,28 +20,44 @@ const Login = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
     setIsLogin(!isLogin)
     setIsSignup(!isSignup)
   }
+  const checkError = ({ username, password }) => {
+    let errs = {}
+    if (!username) {
+      errs.username = "Không được bỏ trống trường này!"
+    }
+    if (!password) {
+      errs.password = "Không được bỏ trống trường này!"
+    }
+    setErrors(errs)
+  }
   const fetchData = () => {
     axios({
       method: "post",
-      url: "http://localhost:8080/login",
+      url: "https://tlcngroup2be.herokuapp.com/login",
       data: { ...account },
       headers: { "Access-Control-Allow-Origin": "*" },
       responseType: "json",
     })
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err.response.data)
       })
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    fetchData()
+    checkError(account)
+    if (Object.keys(errors).length === 0) {
+      fetchData()
+    }
   }
   return (
     <div className='modal'>
-      <div className='modal__overlay'></div>
+      <div
+        className='modal__overlay'
+        onClick={() => setIsLogin(!isLogin)}
+      ></div>
       <div className='modal__body'>
         <div className='auth-form'>
           <div className='auth-form__container'>
@@ -49,34 +69,36 @@ const Login = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
             </div>
 
             <div className='auth-form__form'>
-              <div className='auth-form__group'>
-                <input
-                  type='text'
-                  name='username'
-                  className='auth-form__input'
-                  placeholder='Tên đăng nhập'
-                  value={account.username}
-                  onChange={handlechange}
-                />
-              </div>
-              <div className='auth-form__group'>
-                <input
-                  type='password'
-                  name='password'
-                  className='auth-form__input'
-                  placeholder='Mật khẩu'
-                  value={account.password}
-                  onChange={handlechange}
-                />
-              </div>
+              {formAuth.slice(3, 5).map((ele, index) => {
+                const { name, type, placeholder } = ele
+                return (
+                  <div className='auth-form__group' key={index}>
+                    <input
+                      type={type}
+                      name={name}
+                      placeholder={placeholder}
+                      className={`auth-form__input ${
+                        errors[name] && "auth-form__input--err"
+                      }`}
+                      value={account[name]}
+                      onChange={handlechange}
+                    />
+                    {errors[name] ? (
+                      <p className='auth-form__error'>{errors[name]}</p>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+                )
+              })}
             </div>
 
             <div className='auth-form__aside'>
               <div className='auth-form__help'>
-                <a href='' className='auth-form__help-link'>
+                <a href='/comingsoon' className='auth-form__help-link'>
                   Quên mật khẩu
                 </a>
-                <a href='' className='auth-form__help-link'>
+                <a href='/comingsoon' className='auth-form__help-link'>
                   Đăng nhập với SMS
                 </a>
               </div>
@@ -94,19 +116,7 @@ const Login = ({ isLogin, setIsLogin, isSignup, setIsSignup }) => {
               </button>
             </div>
           </div>
-
-          <div className='auth-form__socials'>
-            <button className='btn btn--with-icon btn--size-s --facebook'>
-              <FaFacebook className='auth-form__socials-icon' />
-              <span className='auth-form__social-text'>
-                Kết nối với Facebook
-              </span>
-            </button>
-            <button className='btn btn--with-icon btn--size-s --google'>
-              <FaGoogle className='auth-form__socials-icon' />
-              <span className='auth-form__social-text'>Kết nối với Google</span>
-            </button>
-          </div>
+          <ModalFooter />
         </div>
       </div>
     </div>
