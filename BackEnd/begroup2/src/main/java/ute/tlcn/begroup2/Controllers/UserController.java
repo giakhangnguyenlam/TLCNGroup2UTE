@@ -27,11 +27,23 @@ public class UserController {
     }
 
 
-    //update user
+    //update user without password
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") int id, @RequestBody SignUpModel signUpModel){
         try {
-            UserModel userModel = userService.updateUser(id, signUpModel);
+            UserModel userModel = userService.updateUserWithoutPassword(id, signUpModel);
+            return new ResponseEntity<>(userModel, HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("User isn't existed");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @PutMapping("/password/{id}")
+    public ResponseEntity<?> updateUserWithPassword(@PathVariable("id") int id, @RequestBody SignUpModel signUpModel){
+        try {
+            UserModel userModel = userService.updateUserWithPassword(id, signUpModel);
             return new ResponseEntity<>(userModel, HttpStatus.OK);
         } catch (Exception e) {
             ErrorModel errorModel = new ErrorModel("User isn't existed");

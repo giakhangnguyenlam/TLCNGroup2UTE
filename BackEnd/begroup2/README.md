@@ -103,7 +103,7 @@ Page must login to see
 
 ##  ===============>> User API <<====================
 
-### Update user
+### Update user without password
 link: https://tlcngroup2be.herokuapp.com/user/1
 
 > Note: 1 is user id
@@ -119,8 +119,7 @@ link: https://tlcngroup2be.herokuapp.com/user/1
     "dateofbirth":"06-06-2000",
     "email":"abc",
     "address":"123, dadd",
-    "gender":"male",
-    "password":"123"
+    "gender":"male"
 }
 ```
 
@@ -138,7 +137,35 @@ link: https://tlcngroup2be.herokuapp.com/user/1
 }
 ```
 
+### Update user with password
+link: https://tlcngroup2be.herokuapp.com/user/password/47
 
+> Note: 47 is user id
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "password":"1234"
+}
+```
+
+#### Response
+```
+{
+    "id": 47,
+    "name": "khang",
+    "dateofbirth": "06-06-2000",
+    "email": "abc",
+    "address": "123, dadd",
+    "gender": "abc",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlcjA0IiwiZXhwIjoxNjM0NjMzMDIzLCJpYXQiOjE2MzQ1NDY2MjN9.9DQ5RtTmpDBPLlPG7JlWUcYzYZAWOIrVmFa7jhQacQU",
+    "role": "ROLE_SELLER"
+}
+```
 
 ##  ===============>> Seller API <<====================
 

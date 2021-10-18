@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserModel updateUser(int id, SignUpModel signUpModel) throws Exception {
+    public UserModel updateUserWithoutPassword(int id, SignUpModel signUpModel) throws Exception {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
         if (optionalUserEntity.isPresent()) {
             UserEntity userEntity = optionalUserEntity.get();
@@ -127,6 +127,24 @@ public class UserServiceImpl implements UserService {
         
     }
 
+    @Override
+    public UserModel updateUserWithPassword(int id, SignUpModel signUpModel) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
+        if(optionalUserEntity.isPresent()){
+            UserEntity userEntity = optionalUserEntity.get();
+            String password = passwordEncoder.encode(signUpModel.getPassword());
+            userEntity.setPassword(password);
+            userEntity = userRepository.save(userEntity);
+            UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
+            String jwt = jwtUtil.generationToken(userDetailsModel);
+            UserModel userModel = userMapper.convertUserEntityToUserModel(userEntity);
+            userModel.setJwt(jwt);
+            return userModel;
+        }
+        else{
+            throw new NotFoundException("Can't found user");
+        }
+    }
 
 
     @Override
