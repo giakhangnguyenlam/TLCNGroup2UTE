@@ -3,7 +3,13 @@ import React, { useState, useRef } from "react"
 import { useGlobalContext } from "./context"
 
 function UpdateStore() {
-  const { isUpdateStore, setIsUpdateStore, idStoreUpdate } = useGlobalContext()
+  const {
+    isUpdateStore,
+    setIsUpdateStore,
+    idStoreUpdate,
+    setReloadSell,
+    reloadSell,
+  } = useGlobalContext()
   const refImg = useRef(null)
   const [storeUpdate, setStoreUpdate] = useState({
     userId: "1",
@@ -14,35 +20,40 @@ function UpdateStore() {
   const handleUpImg = () => {
     refImg.current.click()
   }
-  const handleChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      let i = e.target.files[0]
-      setStoreUpdate({ ...storeUpdate, file: i })
-      const { file } = storeUpdate
-      const formData = new FormData()
-      formData.append("file", file)
-      // console.log(formData.forEach((data) => console.log(data)))
-      // console.log(e.target.value)
-      axios({
+  const handleSubmitImg = async (e) => {
+    e.preventDefault()
+    const data = new FormData()
+    data.append("file", storeUpdate.file)
+    try {
+      let res = await axios({
         method: "put",
         url: `https://tlcngroup2be.herokuapp.com/seller/store/image/${idStoreUpdate}`,
-        formData,
+        data,
         headers: {
           "content-type": "multipart/form-data",
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
         },
-        responseType: "json",
       })
-        .then((res) => {
-          console.log(res.data)
-        })
-        .catch((err) => console.log(err.response.data))
+      if (res.status === 200) {
+        setReloadSell(!reloadSell)
+        setIsUpdateStore(false)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let i = e.target.files[0]
+      console.log(i)
+      setStoreUpdate({ ...storeUpdate, file: i })
     }
   }
   const handleSubmit = (e) => {
     e.preventDefault()
     fetchData()
+    setIsUpdateStore(false)
   }
   const fetchData = () => {
     const { userId, nameStore, storeDescription } = storeUpdate
@@ -132,6 +143,9 @@ function UpdateStore() {
                 className='auth-form__input auth-form__input-btn'
                 onClick={handleUpImg}
               >
+                Chọn ảnh mới
+              </div>
+              <div className='btn btn--primary' onClick={handleSubmitImg}>
                 CẬP NHẬP ẢNH
               </div>
             </div>

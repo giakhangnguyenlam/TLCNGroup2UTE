@@ -8,16 +8,19 @@ const AppProvider = ({ children }) => {
   const [isCreateStore, setIsCreateStore] = useState(false)
   const [isUpdateStore, setIsUpdateStore] = useState(false)
   const [idStoreUpdate, setIdStoreUpdate] = useState(null)
+  const [reloadSell, setReloadSell] = useState(false)
   return (
     <AppContext.Provider
       value={{
         isLogin,
         isSignup,
+        reloadSell,
         isCreateStore,
         isUpdateStore,
         idStoreUpdate,
         setIsLogin,
         setIsSignup,
+        setReloadSell,
         setIsCreateStore,
         setIsUpdateStore,
         setIdStoreUpdate,

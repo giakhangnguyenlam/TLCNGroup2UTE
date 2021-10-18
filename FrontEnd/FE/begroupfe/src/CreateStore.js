@@ -3,7 +3,8 @@ import { React, useRef, useState } from "react"
 import { useGlobalContext } from "./context"
 
 function CreateStore() {
-  const { isCreateStore, setIsCreateStore } = useGlobalContext()
+  const { isCreateStore, setIsCreateStore, reloadSell, setReloadSell } =
+    useGlobalContext()
   const refImg = useRef(null)
   const [newStore, setNewStore] = useState({
     file: "",
@@ -21,29 +22,34 @@ function CreateStore() {
   const handleChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       let i = e.target.files[0]
+      console.log(i)
       setNewStore({ ...newStore, file: i })
     }
   }
-  const uploadData = () => {
-    const formData = new FormData()
-    formData.append("file", newStore.file)
-    formData.append("userId", newStore.userId)
-    formData.append("nameStore", newStore.nameStore)
-    formData.append("storeDescription", newStore.storeDescription)
-    axios({
-      method: "post",
-      url: "https://tlcngroup2be.herokuapp.com/seller/store",
-      formData,
-      headers: {
-        "content-type": "multipart/form-data",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
-      },
-    })
-      .then((res) => console.log(res.data))
-      .catch((err) => {
-        console.log(err.response.data, "a")
+  const uploadData = async () => {
+    const data = new FormData()
+    data.append("file", newStore.file)
+    data.append("userId", newStore.userId)
+    data.append("nameStore", newStore.nameStore)
+    data.append("storeDescription", newStore.storeDescription)
+    try {
+      let res = await axios({
+        method: "post",
+        url: "https://tlcngroup2be.herokuapp.com/seller/store",
+        data,
+        headers: {
+          "content-type": "multipart/form-data",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
+        },
       })
+      if (res.status === 200) {
+        setReloadSell(!reloadSell)
+        setIsCreateStore(false)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   const handleSubmit = (e) => {
     e.preventDefault()
