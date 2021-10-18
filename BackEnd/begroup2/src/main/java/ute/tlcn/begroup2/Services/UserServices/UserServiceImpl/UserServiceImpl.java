@@ -116,7 +116,11 @@ public class UserServiceImpl implements UserService {
             userEntity.setPassword(passwordEncoder.encode(signUpModel.getPassword()));
 
             userEntity = userRepository.save(userEntity);
-            return userMapper.convertUserEntityToUserModel(userEntity);
+            UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
+            String jwt = jwtUtil.generationToken(userDetailsModel);
+            UserModel userModel = userMapper.convertUserEntityToUserModel(userEntity);
+            userModel.setJwt(jwt);
+            return userModel;
         } else {
             throw new NotFoundException("Can't found user");
         }

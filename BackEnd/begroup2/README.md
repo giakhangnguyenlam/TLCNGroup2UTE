@@ -5,7 +5,7 @@
 
 =======================================================================================
 
-##  ==========================>> User API <<====================================== 
+##  ==================>> Guest API <<========================= 
 
 ### Sign up
 link: http://localhost:8080/signup
@@ -101,9 +101,46 @@ status: 200
 Page must login to see
 ```
 
+##  ===============>> User API <<====================
+
+### Update user
+link: https://tlcngroup2be.herokuapp.com/user/1
+
+> Note: 1 is user id
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "name":"khangupdate",
+    "dateofbirth":"06-06-2000",
+    "email":"abc",
+    "address":"123, dadd",
+    "gender":"male",
+    "password":"123"
+}
+```
+
+#### Response
+```
+{
+    "id": 1,
+    "name": "khangupdate",
+    "dateofbirth": "06-06-2000",
+    "email": "abc",
+    "address": "123, dadd",
+    "gender": "abc",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlcjIiLCJleHAiOjE2MzQxNTAwNTQsImlhdCI6MTYzNDExNDA1NH0.LrKc3wzESxtuCSKO40m018LPvIj2LW-oBQHJb3YLHPs",
+    "role": "ROLE_SELLER"
+}
+```
 
 
-##  ==========================>> Seller API <<====================================
+
+##  ===============>> Seller API <<====================
 
 ### Sign up
 > This API for sign up seller
@@ -294,3 +331,194 @@ link: http://localhost:8080/seller/store/image/4
     "image": "https://drive.google.com/uc?id=1r3j1aupVzkhHTvRC4RNp9PBGOvrtbO_N&export=download"
 }
 ```
+
+### Create product 
+link: https://tlcngroup2be.herokuapp.com/seller/product
+
+> POST
+
+> Having a form to do this
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+>Note: Category has 3 type:
+
+> 1: Category clothes
+
+> 2: Category shoes
+
+> 3: Category accessories
+#### Request
+```
+    storeid,
+    category,
+    name,
+    quantity,
+    price,
+    description,
+    file
+```
+#### Response
+```
+{
+    "id": 42,
+    "storeId": 31,
+    "category": 1,
+    "name": "this is a product to test",
+    "quantity": 10,
+    "price": 350000.0,
+    "description": "this is description",
+    "image": "https://drive.google.com/uc?id=1nk8HYop7JIM0gopy_pjwLV2Dee_dKboq&export=download"
+}
+```
+
+### Get product by productId
+link: https://tlcngroup2be.herokuapp.com/seller/product/42
+
+> GET
+
+> Note: 42 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+
+#### Response
+```
+{
+    "id": 42,
+    "storeId": 31,
+    "category": 1,
+    "name": "this is a product to test",
+    "quantity": 10,
+    "price": 350000.0,
+    "description": "this is description",
+    "image": "https://drive.google.com/uc?id=1nk8HYop7JIM0gopy_pjwLV2Dee_dKboq&export=download"
+}
+```
+
+### Get products by store id
+link: https://tlcngroup2be.herokuapp.com/seller/product/store/31
+
+> GET
+
+> Note: 31 is store id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 42,
+        "storeId": 31,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1nk8HYop7JIM0gopy_pjwLV2Dee_dKboq&export=download"
+    },
+    {
+        "id": 43,
+        "storeId": 31,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1CxMtOzXqryuqaJGUhBoNa-qZPR34i4ce&export=download"
+    }
+]
+```
+
+### update product without image
+link: https://tlcngroup2be.herokuapp.com/seller/product/43
+> PUT
+
+> Note: 43 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "name":"this is update test",
+    "quantity":20,
+    "price":350000,
+    "description":"this is update description"
+}
+```
+
+#### Response
+```
+{
+    "id": 43,
+    "storeId": 31,
+    "category": 1,
+    "name": "this is update test",
+    "quantity": 20,
+    "price": 350000.0,
+    "description": "this is update description",
+    "image": "https://drive.google.com/uc?id=1CxMtOzXqryuqaJGUhBoNa-qZPR34i4ce&export=download"
+}
+```
+
+### Update product with image
+link: https://tlcngroup2be.herokuapp.com/seller/product/image/43
+
+> PUT
+
+> Note: 43 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> You have a form to do this
+
+#### Request
+```
+    file
+```
+
+#### Response
+```
+{
+    "id": 43,
+    "storeId": 31,
+    "category": 1,
+    "name": "this is update test",
+    "quantity": 20,
+    "price": 350000.0,
+    "description": "this is update description",
+    "image": "https://drive.google.com/uc?id=1i8YCeDnvzndWdUqjcN5xG6yBymgNZcas&export=download"
+}
+```
+
+### Delete product by product id
+link: https://tlcngroup2be.herokuapp.com/seller/product/43
+
+> DELETE
+
+> Note: 43 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+
+#### Request
+
+#### Reponse
+status: 200
