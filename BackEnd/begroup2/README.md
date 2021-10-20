@@ -82,23 +82,112 @@ status: 200
 }
 ```
 
-### pageAuth
-link: http://localhost:8080/authen
+#### Get category accessories in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryaccessories/59
+
 > GET
 
-> this is test for jwt 
+> 59 is product id
 
-> Note: prerequisite has a jwt token
+> Note: this is API for all users so you **don't need** jwt or this.
+#### Request
 
-> Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZyIsImV4cCI6MTYzMjU5MTUwOCwiaWF0IjoxNjMyNTU1NTA4fQ.w2pEhFdI3ra1pJ58hjuWDmL1HAKOZs9rBQ14I9-3yZs
+#### Response
+```
+{
+    "id": 60,
+    "type": "binh-nuoc",
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "brand": "addidas",
+    "origin": "Việt Nam",
+    "material": "nhựa",
+    "productId": 59
+}
+```
+
+### Get category clothes in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryclothes/55
+
+> GET
+
+> NOTE: 55 is product id
+
+> Note: this is API for all users so you **don't need** jwt or this.
+#### Request
+
+#### Response
+```
+{
+    "id": 56,
+    "type": "ao-clb",
+    "brand": "adidas",
+    "origin": "vietnam",
+    "size": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "2XL"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "material": "cotton",
+    "gender": "nam",
+    "productId": 55
+}
+```
+
+### Get category shoes in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryshoes/57
+
+> GET
+
+> 57 is a product id
+
+> Note: this is API for all users so you **don't need** jwt or this.
 
 #### Request
 
 #### Response
-##### Success
-status: 200
 ```
-Page must login to see
+{
+    "id": 58,
+    "style": "da-bong",
+    "size": [
+        "7",
+        "7.5",
+        "8",
+        "8.5",
+        "9",
+        "9.5"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "height": 15.0,
+    "weight": 6.0,
+    "material": "vải",
+    "sole": "nhựa",
+    "origin": "Việt Nam",
+    "warranty": 12.0,
+    "gender": "female",
+    "productId": 57
+}
 ```
 
 ##  ===============>> User API <<====================
@@ -614,42 +703,6 @@ link: https://tlcngroup2be.herokuapp.com/seller/product/categoryclothes
 }
 ```
 
-### Get category clothes in a product
-link: https://tlcngroup2be.herokuapp.com/product/categoryclothes/55
-
-> GET
-
-> NOTE: 55 is product id
-
-> Note: this is API for all users so you **don't need** jwt or this.
-#### Request
-
-#### Response
-```
-{
-    "id": 56,
-    "type": "ao-clb",
-    "brand": "adidas",
-    "origin": "vietnam",
-    "size": [
-        "S",
-        "M",
-        "L",
-        "XL",
-        "2XL"
-    ],
-    "color": [
-        "đỏ",
-        "cam",
-        "vàng",
-        "lục",
-        "lam"
-    ],
-    "material": "cotton",
-    "gender": "nam",
-    "productId": 55
-}
-```
 
 ### Update detail category clothes in a product
 link: https://tlcngroup2be.herokuapp.com/seller/product/categoryclothes/55
@@ -836,47 +889,6 @@ link: https://tlcngroup2be.herokuapp.com/seller/product/categoryshoes/57
 }
 ```
 
-### Get category shoes in a product
-link: https://tlcngroup2be.herokuapp.com/product/categoryshoes/57
-
-> GET
-
-> 57 is a product id
-
-> Note: this is API for all users so you **don't need** jwt or this.
-
-#### Request
-
-#### Response
-```
-{
-    "id": 58,
-    "style": "da-bong",
-    "size": [
-        "7",
-        "7.5",
-        "8",
-        "8.5",
-        "9",
-        "9.5"
-    ],
-    "color": [
-        "đỏ",
-        "cam",
-        "vàng",
-        "lục",
-        "lam"
-    ],
-    "height": 15.0,
-    "weight": 6.0,
-    "material": "vải",
-    "sole": "nhựa",
-    "origin": "Việt Nam",
-    "warranty": 12.0,
-    "gender": "female",
-    "productId": 57
-}
-```
 
 ### Create category accessories in a product
 link: https://tlcngroup2be.herokuapp.com/seller/product/categoryaccessories
@@ -970,31 +982,3 @@ link: https://tlcngroup2be.herokuapp.com/seller/product/categoryaccessories/59
 }
 ```
 
-#### Get category accessories in a product
-link: https://tlcngroup2be.herokuapp.com/product/categoryaccessories/59
-
-> GET
-
-> 59 is product id
-
-> Note: this is API for all users so you **don't need** jwt or this.
-#### Request
-
-#### Response
-```
-{
-    "id": 60,
-    "type": "binh-nuoc",
-    "color": [
-        "đỏ",
-        "cam",
-        "vàng",
-        "lục",
-        "lam"
-    ],
-    "brand": "addidas",
-    "origin": "Việt Nam",
-    "material": "nhựa",
-    "productId": 59
-}
-```
