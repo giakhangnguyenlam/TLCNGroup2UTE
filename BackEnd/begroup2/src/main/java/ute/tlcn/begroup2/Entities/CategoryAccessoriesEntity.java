@@ -37,8 +37,6 @@ public class CategoryAccessoriesEntity {
     private List<String> color;
     private String brand;
     private String origin;
-    @ElementCollection(targetClass = String.class)
-    private List<String> size;
     private String material;
     private int productId;
 }

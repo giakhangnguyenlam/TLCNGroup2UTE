@@ -15,7 +15,7 @@ public class CategoryShoesModel {
     private int id;
     private String style;
     private List<String> size;
-    private List<String> color;
+    private List<Double> color;
     private double height;
     private double weight;
     private String material;

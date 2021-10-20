@@ -213,17 +213,6 @@ public class SellerController {
         }
     }
 
-    @GetMapping("/product/categoryclothes/{productid}")
-    public ResponseEntity<?> getCategoryClothesByProductId(@PathVariable("productid") int productId){
-        try {
-            CategoryClothesModel categoryClothesModel = categoryClothesService.getCategoryClothesByProductId(productId);
-            return new ResponseEntity<>(categoryClothesModel, HttpStatus.OK);
-        } catch (Exception e) {
-            ErrorModel errorModel = new ErrorModel("Can't find category clothes");
-            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PutMapping("/product/categoryclothes/{productid}")
     public ResponseEntity<?> updateCategoryClothes(@PathVariable("productid") int productId, @RequestBody CategoryClothesModel categoryClothesModel){
         try {
@@ -257,16 +246,6 @@ public class SellerController {
         }
     }
 
-    @GetMapping("/product/categoryshoes/{productid}")
-    public ResponseEntity<?> getCategoryShoesByProductId(@PathVariable("productid") int productId){
-        try {
-            CategoryShoesModel categoryShoesModel = categoryShoesService.getCategoryShoesByProductId(productId);
-            return new ResponseEntity<>(categoryShoesModel, HttpStatus.OK);
-        } catch (Exception e) {
-            ErrorModel errorModel = new ErrorModel("Can't find category shoes");
-            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @PostMapping("/product/categoryaccessories")
     public ResponseEntity<?> createCategoryAccessories(@RequestBody CategoryAccessoriesModel categoryAccessoriesModel){
@@ -290,14 +269,5 @@ public class SellerController {
         }
     }
 
-    @GetMapping("/product/categoryaccessories/{productid}")
-    public ResponseEntity<?> getCategoryAccessoriesByProductId(@PathVariable("productid") int productId){
-        try {
-            CategoryAccessoriesModel categoryAccessoriesModel = categoryAccessoriesService.getCategoryAccessoriesByProductId(productId);
-            return new ResponseEntity<>(categoryAccessoriesModel, HttpStatus.OK);
-        } catch (Exception e) {
-            ErrorModel errorModel = new ErrorModel("Can't get category accessories");
-            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
-        }
-    }
+    
 }

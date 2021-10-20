@@ -34,8 +34,8 @@ public class CategoryShoesEntity {
     private String style;
     @ElementCollection(targetClass = String.class)
     private List<String> size;
-    @ElementCollection(targetClass = String.class)
-    private List<String> color;
+    @ElementCollection(targetClass = Double.class)
+    private List<Double> color;
     private double height;
     private double weight;
     private String material;

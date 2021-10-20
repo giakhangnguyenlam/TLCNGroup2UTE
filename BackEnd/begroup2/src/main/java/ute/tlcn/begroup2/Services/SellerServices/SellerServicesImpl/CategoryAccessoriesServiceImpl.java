@@ -41,7 +41,6 @@ public class CategoryAccessoriesServiceImpl implements CategoryAccessoriesServic
             categoryAccessoriesEntity.setColor(categoryAccessoriesModel.getColor());
             categoryAccessoriesEntity.setBrand(categoryAccessoriesModel.getBrand());
             categoryAccessoriesEntity.setOrigin(categoryAccessoriesModel.getOrigin());
-            categoryAccessoriesEntity.setSize(categoryAccessoriesModel.getSize());
             categoryAccessoriesEntity.setMaterial(categoryAccessoriesModel.getMaterial());
 
             return categoryAccessoriesMapper.convertCategoryAccessoriesEntityToCategoryAccessoriesModel(categoryAccessoriesRepository.save(categoryAccessoriesEntity));

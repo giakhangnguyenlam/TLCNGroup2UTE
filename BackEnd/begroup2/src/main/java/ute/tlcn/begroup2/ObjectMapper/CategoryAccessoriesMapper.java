@@ -13,7 +13,6 @@ public class CategoryAccessoriesMapper {
         categoryAccessoriesEntity.getColor(), 
         categoryAccessoriesEntity.getBrand(), 
         categoryAccessoriesEntity.getOrigin(), 
-        categoryAccessoriesEntity.getSize(), 
         categoryAccessoriesEntity.getMaterial(), 
         categoryAccessoriesEntity.getProductId());
 
@@ -26,7 +25,6 @@ public class CategoryAccessoriesMapper {
         categoryAccessoriesModel.getColor(), 
         categoryAccessoriesModel.getBrand(), 
         categoryAccessoriesModel.getOrigin(), 
-        categoryAccessoriesModel.getSize(), 
         categoryAccessoriesModel.getMaterial(), 
         categoryAccessoriesModel.getProductId());
 

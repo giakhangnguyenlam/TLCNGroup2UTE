@@ -25,6 +25,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+    
+    
 
 
     //update user without password
@@ -72,4 +74,5 @@ public class UserController {
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
     }
+
 }

@@ -549,3 +549,452 @@ link: https://tlcngroup2be.herokuapp.com/seller/product/43
 
 #### Reponse
 status: 200
+
+### Create category clothes in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryclothes
+
+> POST
+
+> type is select with 3 options:
+
+> 1: "ao"
+
+> 2: "quan"
+
+> 3: "ao-clb"
+
+> 4: "khac"
+
+> gender is select with 2 options:
+
+> 1: male
+
+> 2: female
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+#### Request
+```
+{
+    "type":"ao-clb",
+    "brand":"adidas",
+    "origin":"vietnam",
+    "size":["S", "M", "L", "XL", "2XL"],
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "material":"cotton",
+    "gender":"nam",
+    "productId":55
+}
+```
+#### Response
+```
+{
+    "id": 56,
+    "type": "ao-clb",
+    "brand": "adidas",
+    "origin": "vietnam",
+    "size": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "2XL"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "material": "cotton",
+    "gender": "nam",
+    "productId": 55
+}
+```
+
+### Get category clothes in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryclothes/55
+
+> GET
+
+> NOTE: 55 is product id
+
+> Note: this is API for all users so you **don't need** jwt or this.
+#### Request
+
+#### Response
+```
+{
+    "id": 56,
+    "type": "ao-clb",
+    "brand": "adidas",
+    "origin": "vietnam",
+    "size": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "2XL"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "material": "cotton",
+    "gender": "nam",
+    "productId": 55
+}
+```
+
+### Update detail category clothes in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryclothes/55
+
+> PUT
+
+> NOTE: 55 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "type":"ao-clb",
+    "brand":"adidas",
+    "origin":"vietnam",
+    "size":["S", "M", "L", "XL", "2XL"],
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "material":"cotton",
+    "gender":"female"
+}
+```
+
+#### Response
+```
+{
+    "id": 56,
+    "type": "ao-clb",
+    "brand": "adidas",
+    "origin": "vietnam",
+    "size": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "2XL"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "material": "cotton",
+    "gender": "female",
+    "productId": 55
+}
+```
+
+### Create category shoes in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryshoes
+
+> POST
+
+> Note: Stype is a select with 4 options:
+
+> 1: "da-bong"
+
+> 2:  "chay-bo"
+
+> 3: "bong-ro"
+
+> 4: "cau-long"
+
+> 5: "khac"
+
+> Note: gender is a select with 2 options:
+
+> 1: male
+
+> 2: female
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+
+#### Request
+```
+{
+    "style":"da-bong",
+    "size":[7,7.5,8,8.5,9,9.5],
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "height": 15,
+    "weight": 6,
+    "material":"vải",
+    "sole":"nhựa",
+    "origin":"Việt Nam",
+    "warranty": 12,
+    "gender":"male",
+    "productId":57
+}
+```
+
+#### Response
+```
+{
+    "id": 58,
+    "style": "da-bong",
+    "size": [
+        7.0,
+        7.5,
+        8.0,
+        8.5,
+        9.0,
+        9.5
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "height": 15.0,
+    "weight": 6.0,
+    "material": "vải",
+    "sole": "nhựa",
+    "origin": "Việt Nam",
+    "warranty": 12.0,
+    "gender": "male",
+    "productId": 57
+}
+```
+
+### Update category shoes in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryshoes/57
+
+> PUT
+
+> 57 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "style":"da-bong",
+    "size":[7,7.5,8,8.5,9,9.5],
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "height": 15,
+    "weight": 6,
+    "material":"vải",
+    "sole":"nhựa",
+    "origin":"Việt Nam",
+    "warranty": 12,
+    "gender":"female"
+}
+```
+
+#### Response
+```
+{
+    "id": 58,
+    "style": "da-bong",
+    "size": [
+        7.0,
+        7.5,
+        8.0,
+        8.5,
+        9.0,
+        9.5
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "height": 15.0,
+    "weight": 6.0,
+    "material": "vải",
+    "sole": "nhựa",
+    "origin": "Việt Nam",
+    "warranty": 12.0,
+    "gender": "female",
+    "productId": 57
+}
+```
+
+### Get category shoes in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryshoes/57
+
+> GET
+
+> 57 is a product id
+
+> Note: this is API for all users so you **don't need** jwt or this.
+
+#### Request
+
+#### Response
+```
+{
+    "id": 58,
+    "style": "da-bong",
+    "size": [
+        "7",
+        "7.5",
+        "8",
+        "8.5",
+        "9",
+        "9.5"
+    ],
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "height": 15.0,
+    "weight": 6.0,
+    "material": "vải",
+    "sole": "nhựa",
+    "origin": "Việt Nam",
+    "warranty": 12.0,
+    "gender": "female",
+    "productId": 57
+}
+```
+
+### Create category accessories in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryaccessories
+
+> POST
+
+> Type is a select with 5 options:
+
+> 1: "bang-tran"
+
+> 2: "bang-co-tay"
+
+> 3: "non"
+
+> 4: "tui"
+
+> 5: "binh-nuoc"
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "type":"binh-nuoc",
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "brand":"addidas",
+    "origin":"Việt Nam",
+    "material":"nhựa",
+    "productId":59
+}
+```
+
+#### Response
+```
+{
+    "id": 60,
+    "type": "binh-nuoc",
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "brand": "addidas",
+    "origin": "Việt Nam",
+    "material": "nhựa",
+    "productId": 59
+}
+```
+
+### Update category accessories in a product
+link: https://tlcngroup2be.herokuapp.com/seller/product/categoryaccessories/59
+
+> PUT
+
+> 59 is product id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+#### Request
+```
+{
+    "type":"binh-nuoc",
+    "color":["đỏ","cam","vàng", "lục", "lam"],
+    "brand":"addidas",
+    "origin":"Việt Nam",
+    "material":"nhựa"
+}
+```
+
+#### Response
+```
+{
+    "id": 60,
+    "type": "binh-nuoc",
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "brand": "addidas",
+    "origin": "Việt Nam",
+    "material": "nhựa",
+    "productId": 59
+}
+```
+
+#### Get category accessories in a product
+link: https://tlcngroup2be.herokuapp.com/product/categoryaccessories/59
+
+> GET
+
+> 59 is product id
+
+> Note: this is API for all users so you **don't need** jwt or this.
+#### Request
+
+#### Response
+```
+{
+    "id": 60,
+    "type": "binh-nuoc",
+    "color": [
+        "đỏ",
+        "cam",
+        "vàng",
+        "lục",
+        "lam"
+    ],
+    "brand": "addidas",
+    "origin": "Việt Nam",
+    "material": "nhựa",
+    "productId": 59
+}
+```

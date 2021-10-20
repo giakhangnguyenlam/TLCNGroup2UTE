@@ -17,7 +17,6 @@ public class CategoryAccessoriesModel {
     private List<String> color;
     private String brand;
     private String origin;
-    private List<String> size;
     private String material;
     private int productId;
 }
