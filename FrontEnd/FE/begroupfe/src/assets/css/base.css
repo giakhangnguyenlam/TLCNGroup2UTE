@@ -240,3 +240,17 @@ body {
   border-radius: 2px;
   margin: 0 15px 0;
 }
+
+/* Product per store */
+.w60x {
+  width: 60px !important;
+}
+.w300x {
+  width: 300px !important;
+}
+.w250x {
+  width: 250px !important;
+}
+.w10 {
+  width: 10% !important;
+}

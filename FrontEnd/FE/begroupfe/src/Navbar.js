@@ -5,15 +5,35 @@ import HeaderQrLink from "./HeaderQrLink"
 import qrCode from "./assets/img/qr_code.png"
 import HeaderNoti from "./HeaderNoti"
 import { useGlobalContext } from "./context"
+import { useHistory } from "react-router"
 
 function Navbar() {
   const { isLogin, setIsLogin, isSignup, setIsSignup } = useGlobalContext()
+  const userRole = localStorage.getItem("role")
+  const userName = localStorage.getItem("name")
+  const history = useHistory()
+  const redirectUser = () => {
+    history.push("/user/account/profile")
+  }
+  const handleLogout = () => {
+    localStorage.removeItem("id")
+    localStorage.removeItem("name")
+    localStorage.removeItem("dateofbirth")
+    localStorage.removeItem("email")
+    localStorage.removeItem("address")
+    localStorage.removeItem("gender")
+    localStorage.removeItem("jwt")
+    localStorage.removeItem("role")
+    localStorage.removeItem("expire")
+  }
   return (
     <nav className='header__navbar'>
       <ul className='header__navbar-list'>
         <li className='header__navbar-item --divine'>
           <a href='/seller' className='header__navbar-item-link'>
-            Trở thành người bán
+            {userRole === "ROLE_SELLER"
+              ? "Quản lý cửa hàng"
+              : "Trở thành người bán"}
           </a>
         </li>
         <li className='header__navbar-item --divine --qr'>
@@ -55,18 +75,49 @@ function Navbar() {
             Hỗ trợ
           </a>
         </li>
-        <li
-          className='header__navbar-item header__navbar-item--bold --divine'
-          onClick={() => setIsSignup(!isSignup)}
-        >
-          Đăng ký
-        </li>
-        <li
-          className='header__navbar-item header__navbar-item--bold'
-          onClick={() => setIsLogin(!isLogin)}
-        >
-          Đăng nhập
-        </li>
+        {userName ? (
+          <li
+            className='header__navbar-item header__navbar-user'
+            onClick={redirectUser}
+          >
+            <span className='header__navbar-user-name'>
+              Xin chào, {userName}!
+            </span>
+
+            <ul className='header__navbar-user-menu'>
+              <li className='header__navbar-user-item'>
+                <a href='/user/account/profile'>Tài khoản của tôi</a>
+              </li>
+              <li className='header__navbar-user-item'>
+                <a href=''>Đơn hàng</a>
+              </li>
+              <li className='header__navbar-user-item'>
+                <a href=''>Cài đặt</a>
+              </li>
+              <li
+                className='header__navbar-user-item --separate'
+                onClick={handleLogout}
+              >
+                <a href=''>Đăng xuất</a>
+              </li>
+            </ul>
+          </li>
+        ) : (
+          <>
+            <li
+              className='header__navbar-item header__navbar-item--bold --divine'
+              onClick={() => setIsSignup(!isSignup)}
+            >
+              Đăng ký
+            </li>
+            <li
+              className='header__navbar-item header__navbar-item--bold'
+              onClick={() => setIsLogin(!isLogin)}
+            >
+              Đăng nhập
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   )

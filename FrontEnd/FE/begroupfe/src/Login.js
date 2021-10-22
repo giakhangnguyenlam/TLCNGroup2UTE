@@ -30,20 +30,32 @@ const Login = () => {
     }
     setErrors(errs)
   }
-  const fetchData = () => {
-    axios({
-      method: "post",
-      url: "https://tlcngroup2be.herokuapp.com/login",
-      data: { ...account },
-      headers: { "Access-Control-Allow-Origin": "*" },
-      responseType: "json",
-    })
-      .then((res) => {
-        console.log(res.data)
+  const fetchData = async () => {
+    try {
+      let res = await axios({
+        method: "post",
+        url: "https://tlcngroup2be.herokuapp.com/login",
+        data: { ...account },
+        headers: { "Access-Control-Allow-Origin": "*" },
+        responseType: "json",
       })
-      .catch((err) => {
-        console.log(err.response.data)
-      })
+      if (res.status === 200) {
+        setIsLogin(false)
+        const { id, name, dateofbirth, email, address, gender, jwt, role } =
+          res.data
+        localStorage.setItem("id", id)
+        localStorage.setItem("name", name)
+        localStorage.setItem("dateofbirth", dateofbirth)
+        localStorage.setItem("email", email)
+        localStorage.setItem("address", address)
+        localStorage.setItem("gender", gender)
+        localStorage.setItem("jwt", jwt)
+        localStorage.setItem("role", role)
+        localStorage.setItem("expire", new Date().getTime() + 43200000)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   const handleSubmit = (e) => {
     e.preventDefault()

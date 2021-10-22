@@ -1,7 +1,11 @@
-import React from "react"
-import acer from "./assets/img/acer.png"
+import React, { useState } from "react"
+import Product from "./Product"
+import { cateCloList, cateShoList, cateAccList } from "./data"
+import { useGlobalContext } from "./context"
 
 function Body() {
+  const { cate, cateType, setCate, setCateType } = useGlobalContext()
+
   return (
     <div className='container'>
       <div className='grid'>
@@ -13,32 +17,122 @@ function Body() {
                 Danh mục
               </h3>
               <ul className='category-list'>
-                <li className='category-item category-item--active'>
-                  <a href='/' className='category-item__link'>
-                    Máy tính acer
-                  </a>
+                <li
+                  className={`category-item ${
+                    cate === "1" ? "category-item--active" : ""
+                  }`}
+                >
+                  <div
+                    className='category-item__link'
+                    onClick={() => {
+                      setCate("1")
+                      setCateType("")
+                    }}
+                  >
+                    Clothes
+                  </div>
                 </li>
-                <li className='category-item'>
-                  <a href='/' className='category-item__link'>
-                    Máy tính asus
-                  </a>
+                {cateCloList.map((item, index) => {
+                  return (
+                    <div
+                      className={`category-item ${
+                        cateType === item.value && "category-item--active"
+                      }`}
+                      style={{ paddingLeft: "10px" }}
+                      key={index}
+                    >
+                      <div
+                        className='category-item__link'
+                        onClick={() => {
+                          setCate("1")
+                          setCateType(item.value)
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                <li
+                  className={`category-item ${
+                    cate === "2" ? "category-item--active" : ""
+                  }`}
+                >
+                  <div
+                    className='category-item__link'
+                    onClick={() => {
+                      setCate("2")
+                      setCateType("")
+                    }}
+                  >
+                    Shoes
+                  </div>
                 </li>
-                <li className='category-item'>
-                  <a href='/' className='category-item__link'>
-                    Máy tính HP
-                  </a>
+                {cateShoList.map((item, index) => {
+                  return (
+                    <div
+                      className={`category-item ${
+                        cateType === item.value && "category-item--active"
+                      }`}
+                      style={{ paddingLeft: "10px" }}
+                      key={index + 4}
+                    >
+                      <div
+                        className='category-item__link'
+                        onClick={() => {
+                          setCate("2")
+                          setCateType(item.value)
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                <li
+                  className={`category-item ${
+                    cate === "3" ? "category-item--active" : ""
+                  }`}
+                >
+                  <div
+                    className='category-item__link'
+                    onClick={() => {
+                      setCate("3")
+                      setCateType("")
+                    }}
+                  >
+                    Accessories
+                  </div>
                 </li>
-                <li className='category-item'>
-                  <a href='/' className='category-item__link'>
-                    Máy tính Vaio
-                  </a>
-                </li>
+                {cateAccList.map((item, index) => {
+                  return (
+                    <div
+                      className={`category-item ${
+                        cateType === item.value && "category-item--active"
+                      }`}
+                      style={{ paddingLeft: "10px" }}
+                      key={index + 9}
+                    >
+                      <div
+                        className='category-item__link'
+                        onClick={() => {
+                          setCate("3")
+                          setCateType(item.value)
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    </div>
+                  )
+                })}
               </ul>
             </nav>
           </div>
 
           <div className='grid__colum-10'>
-            <div className='home-filter'>
+            {/* <div className='home-filter'>
               <span className='home-filter__label'>Sắp xếp theo</span>
               <button className='home-filter__btn btn'>Phổ biến</button>
               <button className='home-filter__btn btn btn--primary'>
@@ -80,321 +174,13 @@ function Body() {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className='product'>
-              <div className='grid__row'>
-                {/* Product item */}
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn.
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn. {acer}
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn.
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn.
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn.
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-                <div className='grid__colum-2-4'>
-                  <a href='/' className='product-item'>
-                    <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${acer})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>
-                      Máy tính acer nitro 7 thế hệ mới 2021, với tính năng mới
-                      siêu mạnh mẽ hứa hẹn sẽ là người bạn đồng hành số 1 của
-                      bạn.
-                    </h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-old'>
-                        21.050.000đ
-                      </span>
-                      <span className='product-item__price-cur'>
-                        19.950.000đ
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <i className='product-item__action-like-icon far fa-heart'></i>
-                        <i className='product-item__action-liked-icon fas fa-heart'></i>
-                      </span>
-                      <div className='product-item__rating'>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='product-item__star--gold fas fa-star'></i>
-                        <i className='fas fa-star'></i>
-                      </div>
-                      <span className='product-item__sold'>88 đã bán</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Acer</span>
-                      <span className='product-item__origin-name'>
-                        Trung Quốc
-                      </span>
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    <div className='product-item__sale'>
-                      <span className='product-item__sale-percent'>10%</span>
-                      <span className='product-item__sale-label'>GIẢM</span>
-                    </div>
-                  </a>
-                </div>
-              </div>
+              <Product />
             </div>
 
-            <ul className='pagination product__pagination'>
+            {/* <ul className='pagination product__pagination'>
               <li className='pagination-item'>
                 <a href='/' className='pagination-item__link'>
                   <i className='pagination-item__icon fas fa-angle-left'></i>
@@ -440,7 +226,7 @@ function Body() {
                   <i className='pagination-item__icon fas fa-angle-right'></i>
                 </a>
               </li>
-            </ul>
+            </ul> */}
           </div>
         </div>
       </div>

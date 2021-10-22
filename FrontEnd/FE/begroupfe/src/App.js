@@ -8,8 +8,23 @@ import Error from "./Error"
 import Body from "./Body"
 import HeaderSeller from "./HeaderSeller"
 import BodySell from "./BodySell.js"
+import UserProfile from "./UserProfile"
+import UserPass from "./UserPass"
 
 function App() {
+  const expire = localStorage.getItem("expire")
+  const exp = new Date()
+  if (exp.getTime() >= expire) {
+    localStorage.removeItem("id")
+    localStorage.removeItem("name")
+    localStorage.removeItem("dateofbirth")
+    localStorage.removeItem("email")
+    localStorage.removeItem("address")
+    localStorage.removeItem("gender")
+    localStorage.removeItem("jwt")
+    localStorage.removeItem("role")
+    localStorage.removeItem("expire")
+  }
   return (
     <div>
       <Router>
@@ -32,6 +47,16 @@ function App() {
             {/* <Route path='/dkdv'>
             <ServiceRule />
           </Route> */}
+            <Route path='/user/account/profile'>
+              <Header />
+              <UserProfile />
+              <Footer />
+            </Route>
+            <Route path='/user/account/password'>
+              <Header />
+              <UserPass />
+              <Footer />
+            </Route>
             <Route path='/comingsoon'>
               <Header />
               <SoonPage />

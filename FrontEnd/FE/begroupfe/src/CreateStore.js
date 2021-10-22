@@ -43,7 +43,7 @@ function CreateStore() {
             "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
         },
       })
-      if (res.status === 200) {
+      if (res.status === 201) {
         setReloadSell(!reloadSell)
         setIsCreateStore(false)
       }

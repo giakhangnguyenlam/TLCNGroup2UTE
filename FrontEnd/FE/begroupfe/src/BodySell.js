@@ -4,7 +4,8 @@ import { useGlobalContext } from "./context"
 
 function BodySell() {
   const [storeList, setStoreList] = useState([])
-
+  const jwt = localStorage.getItem("jwt")
+  const userid = localStorage.getItem("id")
   const {
     isCreateStore,
     setIsCreateStore,
@@ -13,6 +14,7 @@ function BodySell() {
     setIdStoreUpdate,
     reloadSell,
     setReloadSell,
+    setIsDetailStore,
   } = useGlobalContext()
 
   const handleClick = () => {
@@ -28,8 +30,7 @@ function BodySell() {
         method: "delete",
         url: `https://tlcngroup2be.herokuapp.com/seller/store/${id}`,
         headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
+          Authorization: `Bearer ${jwt}`,
         },
       })
       if (res.status === 200) {
@@ -39,13 +40,16 @@ function BodySell() {
       console.log(error)
     }
   }
+  const handleDetailStore = (id) => {
+    setIsDetailStore(true)
+    setIdStoreUpdate(id)
+  }
   const fetchData = () => {
     axios({
       method: "get",
-      url: "https://tlcngroup2be.herokuapp.com/seller/store/userid/1",
+      url: `https://tlcngroup2be.herokuapp.com/seller/store/userid/${userid}`,
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
+        Authorization: `Bearer ${jwt}`,
       },
       responseType: "json",
     }).then((res) => {
@@ -110,7 +114,10 @@ function BodySell() {
                               >
                                 Delete
                               </button>
-                              <button className='product-item__ctrl-btn btn'>
+                              <button
+                                className='product-item__ctrl-btn btn'
+                                onClick={() => handleDetailStore(id)}
+                              >
                                 Detail
                               </button>
                             </div>
