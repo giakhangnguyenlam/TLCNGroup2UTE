@@ -3,12 +3,14 @@ import { React, useRef, useState } from "react"
 import { useGlobalContext } from "./context"
 
 function CreateStore() {
+  const userId = localStorage.getItem("id")
+  const jwt = localStorage.getItem("jwt")
   const { isCreateStore, setIsCreateStore, reloadSell, setReloadSell } =
     useGlobalContext()
   const refImg = useRef(null)
   const [newStore, setNewStore] = useState({
     file: "",
-    userId: "1",
+    userId,
     nameStore: "",
     storeDescription: "",
   })
@@ -39,8 +41,7 @@ function CreateStore() {
         data,
         headers: {
           "content-type": "multipart/form-data",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraGFuZ3NlbGxlciIsImV4cCI6MTYzNDU0MjM3OSwiaWF0IjoxNjM0NDU1OTc5fQ.drPHZYkE1VFRTV3v9cHRiwyKGLPdUQg39-8O_v-GYEk",
+          Authorization: `Bearer ${jwt}`,
         },
       })
       if (res.status === 201) {
