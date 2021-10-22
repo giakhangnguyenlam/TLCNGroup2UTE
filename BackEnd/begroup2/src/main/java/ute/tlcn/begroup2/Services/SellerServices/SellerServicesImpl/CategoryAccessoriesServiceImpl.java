@@ -1,5 +1,6 @@
 package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,13 @@ public class CategoryAccessoriesServiceImpl implements CategoryAccessoriesServic
         } else {
             throw new NotFoundException("can't find category accessories");
         }
+    }
+
+
+    @Override
+    public List<CategoryAccessoriesModel> getCategoryAccessoriesByType(String type) {
+        List<CategoryAccessoriesEntity> categoryAccessoriesEntities = categoryAccessoriesRepository.getByType(type);
+        return categoryAccessoriesMapper.convertListAccessoriesEntityToListCategoryAccessoriesModel(categoryAccessoriesEntities);
     }
     
 }

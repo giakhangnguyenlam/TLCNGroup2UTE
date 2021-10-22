@@ -1,5 +1,6 @@
 package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,13 @@ public class CategoryClothesServiceImpl implements CategoryClothesService {
         else{
             throw new NotFoundException("Can't find CategoryClothes");
         }
+    }
+
+
+    @Override
+    public List<CategoryClothesModel> getCategoryClothesByType(String type) {
+        List<CategoryClothesEntity> categoryClothesEntities = categoryClothesRepository.getByType(type);
+        return categoryClothesMapper.convertListClothesEntityToListCategoryClothesModel(categoryClothesEntities);
     }
     
 }

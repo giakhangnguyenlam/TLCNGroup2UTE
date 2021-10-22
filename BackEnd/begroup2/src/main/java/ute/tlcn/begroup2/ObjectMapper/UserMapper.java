@@ -23,7 +23,7 @@ public class UserMapper {
         dateMapper.convertDateToString(userEntity.getDateofbirth()), 
         userEntity.getEmail(),
         userEntity.getAddress(), 
-        userEntity.getEmail(),
+        userEntity.getGender(),
         "",
         userEntity.getGrantedAuthority());
         

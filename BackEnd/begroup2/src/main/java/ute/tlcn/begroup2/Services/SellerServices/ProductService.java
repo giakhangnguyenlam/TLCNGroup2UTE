@@ -15,4 +15,5 @@ public interface ProductService {
     public ProductModel updateProductWithImageByProductId(int id, MultipartFile multipartFile) throws Exception;
     public void deleteProductByProductId(int id);
     public List<ProductModel> getAllProducts();
+    public List<ProductModel> getAllProductsByCategory(int categoryId);
 }

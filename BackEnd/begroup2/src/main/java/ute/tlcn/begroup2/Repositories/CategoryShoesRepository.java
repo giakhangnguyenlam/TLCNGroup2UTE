@@ -1,5 +1,6 @@
 package ute.tlcn.begroup2.Repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,5 @@ import ute.tlcn.begroup2.Entities.CategoryShoesEntity;
 @Repository
 public interface CategoryShoesRepository extends JpaRepository<CategoryShoesEntity, Integer> {
     Optional<CategoryShoesEntity> findByProductId(int productId);
+    List<CategoryShoesEntity> getByStyle(String style);
 }

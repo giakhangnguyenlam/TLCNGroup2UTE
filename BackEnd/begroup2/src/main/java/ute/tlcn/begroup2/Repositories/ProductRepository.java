@@ -8,4 +8,5 @@ import ute.tlcn.begroup2.Entities.ProductEntity;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
     List<ProductEntity> getByStoreId(int storeId);
+    List<ProductEntity> getByCategory(int category);
 }

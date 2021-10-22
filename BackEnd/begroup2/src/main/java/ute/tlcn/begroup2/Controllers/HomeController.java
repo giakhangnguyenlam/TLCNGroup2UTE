@@ -2,6 +2,8 @@ package ute.tlcn.begroup2.Controllers;
 
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
+import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
@@ -117,5 +120,29 @@ public class HomeController {
             ErrorModel errorModel = new ErrorModel("Can't find category clothes");
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/product/category/{id}")
+    public ResponseEntity<?> getAllProductsByCategory(@PathVariable("id") int categoryId){
+        List<ProductModel> productModels = productService.getAllProductsByCategory(categoryId);
+        return new ResponseEntity<>(productModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/category/clothes/{type}")
+    public ResponseEntity<?> getCategoryClothesByType(@PathVariable("type") String type){
+        List<CategoryClothesModel> categoryClothesModels = categoryClothesService.getCategoryClothesByType(type);
+        return new ResponseEntity<>(categoryClothesModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/category/shoes/{style}")
+    public ResponseEntity<?> getCategoryShoesByStyle(@PathVariable("style") String style){
+        List<CategoryShoesModel> categoryShoesModels = categoryShoesService.getCategoryShoesByStyle(style);
+        return new ResponseEntity<>(categoryShoesModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/category/accessories/{type}")
+    public ResponseEntity<?> getCategoryAccessoriesByType(@PathVariable("type") String type){
+        List<CategoryAccessoriesModel> categoryAccessoriesModels = categoryAccessoriesService.getCategoryAccessoriesByType(type);
+        return new ResponseEntity<>(categoryAccessoriesModels, HttpStatus.OK);
     }
 }

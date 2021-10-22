@@ -190,6 +190,257 @@ link: https://tlcngroup2be.herokuapp.com/product/categoryshoes/57
 }
 ```
 
+### Get products by category
+> link: https://tlcngroup2be.herokuapp.com/product/category/1
+
+> 1 is category
+
+> You have 3 category:
+
+> 1: category clothes
+
+> 2: category shoes
+
+> 3: category accessories
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 50,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=11BP5Id17EwYgDbKSV_J1GGmRQv8wYjGp&export=download"
+    },
+    {
+        "id": 51,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1fNDhrpJMjT2EuexO7hXUJPRkCRTu4tg5&export=download"
+    },
+    {
+        "id": 53,
+        "storeId": 48,
+        "category": 1,
+        "name": "congtestupdate",
+        "quantity": 1000,
+        "price": 50000.0,
+        "description": "congtest update 1",
+        "image": "https://drive.google.com/uc?id=17_UgATKxyEyqylx8Qs8l6V9QI7Gvph75&export=download"
+    },
+    {
+        "id": 55,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1K6I259dYXOJv3ay8gIfmhxfCZ6Ed-C17&export=download"
+    },
+    {
+        "id": 57,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1157pUkRa_tPvZvBmM-_XPWJeBTVl1LYB&export=download"
+    },
+    {
+        "id": 59,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=12XdB5zIcjd5jCobmQx1MpEQDK1kDoOMm&export=download"
+    },
+    {
+        "id": 61,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1at3PYQKHG6RJq7n-3KpBIG--BCEECXTo&export=download"
+    },
+    {
+        "id": 63,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1Cs1aTPHSYHTs6JVfHu78kK3nChm-nUlz&export=download"
+    },
+    {
+        "id": 65,
+        "storeId": 48,
+        "category": 1,
+        "name": "this is a product to test",
+        "quantity": 10,
+        "price": 350000.0,
+        "description": "this is description",
+        "image": "https://drive.google.com/uc?id=1H05kGmusFT0EY45b3ZQGcg2bSPt65GLz&export=download"
+    }
+]
+```
+
+### Get category clothes by type
+link: https://tlcngroup2be.herokuapp.com/product/category/clothes/ao
+
+> GET
+
+> ao is type of clothes
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 77,
+        "type": "ao",
+        "brand": "adidas",
+        "origin": "uk",
+        "size": [
+            "S",
+            "M",
+            "L"
+        ],
+        "color": [
+            "Đỏ",
+            "Vàng",
+            "Lục"
+        ],
+        "material": "cotton",
+        "gender": "male",
+        "productId": 0
+    },
+    {
+        "id": 79,
+        "type": "ao",
+        "brand": "adidas",
+        "origin": "usuk",
+        "size": [
+            "S",
+            "M",
+            "L",
+            "XL"
+        ],
+        "color": [
+            "Đỏ",
+            "Vàng",
+            "Cam"
+        ],
+        "material": "cotton",
+        "gender": "male",
+        "productId": 76
+    }
+]
+```
+
+### Get style of shoes 
+link: https://tlcngroup2be.herokuapp.com/product/category/shoes/da-bong
+
+> GET
+
+> da-bong is a style of shoes
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 72,
+        "style": "da-bong",
+        "size": [
+            7.0,
+            7.5,
+            8.0,
+            8.5,
+            9.0,
+            9.5
+        ],
+        "color": [
+            "đỏ",
+            "cam",
+            "vàng",
+            "lục",
+            "lam"
+        ],
+        "height": 15.0,
+        "weight": 6.0,
+        "material": "vải",
+        "sole": "nhựa",
+        "origin": "Việt Nam",
+        "warranty": 12.0,
+        "gender": "female",
+        "productId": 70
+    }
+]
+```
+
+### Get type of accessories
+link: https://tlcngroup2be.herokuapp.com/product/category/accessories/binh-nuoc
+
+> GET
+
+> binh-nuoc is one of accessories type
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 60,
+        "type": "binh-nuoc",
+        "color": [
+            "đỏ",
+            "cam",
+            "vàng",
+            "lục",
+            "lam"
+        ],
+        "brand": "addidas",
+        "origin": "Việt Nam",
+        "material": "nhựa",
+        "productId": 59
+    },
+    {
+        "id": 69,
+        "type": "binh-nuoc",
+        "color": [
+            "đỏ",
+            "cam",
+            "vàng",
+            "lục",
+            "lam"
+        ],
+        "brand": "addidas",
+        "origin": "Việt Nam",
+        "material": "nhựa",
+        "productId": 65
+    }
+]
+```
 ##  ===============>> User API <<====================
 
 ### Update user without password

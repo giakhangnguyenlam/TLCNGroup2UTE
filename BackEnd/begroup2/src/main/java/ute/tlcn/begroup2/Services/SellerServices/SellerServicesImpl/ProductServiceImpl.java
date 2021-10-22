@@ -110,5 +110,15 @@ public class ProductServiceImpl implements ProductService {
         .collect(Collectors.toList());
         return productModels;  
     }
+
+
+    @Override
+    public List<ProductModel> getAllProductsByCategory(int categoryId) {
+        List<ProductEntity> productEntities = productRepository.getByCategory(categoryId);
+        return productMapper.convertListProductEntityToListProductModel(productEntities);
+    }
+
+
+
     
 }

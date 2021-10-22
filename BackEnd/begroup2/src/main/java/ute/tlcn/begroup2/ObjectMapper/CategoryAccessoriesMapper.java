@@ -1,5 +1,8 @@
 package ute.tlcn.begroup2.ObjectMapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 
 import ute.tlcn.begroup2.Entities.CategoryAccessoriesEntity;
@@ -29,5 +32,15 @@ public class CategoryAccessoriesMapper {
         categoryAccessoriesModel.getProductId());
 
         return categoryAccessoriesEntity;
+    }
+
+    public List<CategoryAccessoriesModel> convertListAccessoriesEntityToListCategoryAccessoriesModel(List<CategoryAccessoriesEntity> categoryAccessoriesEntities){
+        List<CategoryAccessoriesModel> categoryAccessoriesModels = categoryAccessoriesEntities.stream()
+        .map((categoryAccessoriesEntity) -> {
+            return convertCategoryAccessoriesEntityToCategoryAccessoriesModel(categoryAccessoriesEntity);
+        })
+        .collect(Collectors.toList());
+
+        return categoryAccessoriesModels;
     }
 }
