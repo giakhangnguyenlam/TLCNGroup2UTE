@@ -145,8 +145,13 @@ function UpdateStore() {
               >
                 Chọn ảnh mới
               </div>
-              <div className='btn btn--primary' onClick={handleSubmitImg}>
-                CẬP NHẬP ẢNH
+              <div
+                className='auth-form__controls'
+                style={{ justifyContent: "center", margin: "10px 0 20px" }}
+              >
+                <button className='btn btn--primary' onClick={handleSubmitImg}>
+                  CẬP NHẬP ẢNH
+                </button>
               </div>
             </div>
           </div>

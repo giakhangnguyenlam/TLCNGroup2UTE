@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useGlobalContext } from "./context"
 import ModalDetail from "./ModalDetail"
 import axios from "axios"
@@ -10,6 +10,17 @@ import {
 
 function DetailStore() {
   const jwt = localStorage.getItem("jwt")
+  const ref = useRef(null)
+  const wFit = window.screen.availWidth * 0.8
+  const hFit = window.screen.availHeight * 0.835
+  const end = (hFit - 158) * 0.008 > 10 ? "10px" : (hFit - 158) * 0.008
+  console.log(
+    hFit,
+    hFit - 158,
+    (hFit - 158) * 0.92,
+    (hFit - 158) * 0.08,
+    (hFit - 158) * 0.008 > 10 ? "10px" : (hFit - 158) * 0.008
+  )
   const {
     setIsDetailStore,
     idStoreUpdate,
@@ -168,14 +179,12 @@ function DetailStore() {
           onClick={() => setIsDetailStore(false)}
         ></div>
         <div className='modal__body'>
-          <div
-            className='auth-form'
-            style={{ width: "1536px", height: "864px" }}
-          >
+          <div className='auth-form' style={{ width: wFit, height: hFit }}>
             <div className='auth-form__container'>
               <div
                 className='auth-form__header'
                 style={{ flexDirection: "column" }}
+                ref={ref}
               >
                 <h3 className='store-product__heading'>Sản phẩm của tôi</h3>
                 <div
@@ -212,7 +221,10 @@ function DetailStore() {
                 </div>
               </div>
 
-              <div className='store-product__body'>
+              <div
+                className='store-product__body'
+                style={{ height: (hFit - 158) * 0.92 }}
+              >
                 {productList.map((product, index) => {
                   const {
                     id,
@@ -266,17 +278,23 @@ function DetailStore() {
 
               <div
                 className='auth-form__controls'
-                style={{ justifyContent: "center", marginTop: "0" }}
+                style={{
+                  justifyContent: "center",
+                  marginTop: "0",
+                  height: (hFit - 158) * 0.08,
+                }}
               >
                 <button
                   className='btn btn--normal auth-form__controls-back'
-                  style={{ width: "100%", margin: "10px 0 0" }}
+                  style={{
+                    width: "100%",
+                    height: (hFit - 158) * 0.07,
+                    marginTop:
+                      (hFit - 158) * 0.01 > 10 ? "10px" : (hFit - 158) * 0.01,
+                  }}
                   onClick={() => setIsDetailStore(false)}
                 >
-                  <i
-                    className='fas fa-undo'
-                    style={{ fontSize: "1.6rem", marginRight: "4px" }}
-                  ></i>
+                  <i className='fas fa-undo' style={{ fontSize: "1.6rem" }}></i>
                   TRỞ LẠI
                 </button>
               </div>
