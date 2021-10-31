@@ -5,8 +5,10 @@ const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false)
   const [isSignup, setIsSignup] = useState(false)
+  const [isSellerSignup, setIsSellerSignup] = useState(false)
   const [cate, setCate] = useState("")
   const [cateType, setCateType] = useState("")
+  const [cateName, setCateName] = useState("")
 
   const [isCreateStore, setIsCreateStore] = useState(false)
   const [isUpdateStore, setIsUpdateStore] = useState(false)
@@ -20,6 +22,8 @@ const AppProvider = ({ children }) => {
   const [cateStoreProd, setCateStoreProd] = useState(null)
   const [reloadSell, setReloadSell] = useState(false)
   const [reloadDetailStore, setReloadDetailStore] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [raise, setRaise] = useState(false)
 
   const [cateClo, setCateClo] = useState({
     type: "",
@@ -93,8 +97,10 @@ const AppProvider = ({ children }) => {
       value={{
         isLogin,
         isSignup,
+        isSellerSignup,
         cate,
         cateType,
+        cateName,
         reloadSell,
         reloadDetailStore,
         isCreateStore,
@@ -109,10 +115,14 @@ const AppProvider = ({ children }) => {
         cateClo,
         cateSho,
         cateAcc,
+        loading,
+        raise,
         setIsLogin,
         setIsSignup,
+        setIsSellerSignup,
         setCate,
         setCateType,
+        setCateName,
         setReloadSell,
         setReloadDetailStore,
         setIsCreateStore,
@@ -130,6 +140,8 @@ const AppProvider = ({ children }) => {
         clearCateClo,
         clearCateSho,
         clearCateAcc,
+        setLoading,
+        setRaise,
       }}
     >
       {children}

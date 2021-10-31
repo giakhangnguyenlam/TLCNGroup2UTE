@@ -1,11 +1,13 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { AiFillStar, AiFillHeart } from "react-icons/ai"
+import { useHistory } from "react-router"
 import { useGlobalContext } from "./context"
 
 function Product() {
   const { cate, cateType } = useGlobalContext()
   const [body, setBody] = useState([])
+  const history = useHistory()
   let url = "https://tlcngroup2be.herokuapp.com/product"
   let category =
     (cate === "1" && "clothes") ||
@@ -57,17 +59,21 @@ function Product() {
             image,
           } = item
           if (category === 1) {
-            category = "Clothes"
+            category = "Quần áo"
           }
           if (category === 2) {
-            category = "Shoes"
+            category = "Giày"
           }
           if (category === 3) {
-            category = "Accessories"
+            category = "Phụ kiện"
           }
           return (
             <div className='grid__colum-2-4' key={id}>
-              <a href='/' className='product-item' key={id}>
+              <div
+                className='product-item'
+                key={id}
+                onClick={() => history.push(`/product/${id}`)}
+              >
                 <div
                   className='product-item__img'
                   style={{
@@ -99,17 +105,13 @@ function Product() {
                 </div>
                 <div className='product-item__origin'>
                   <span className='product-item__brand'>{category}</span>
-                  <span className='product-item__origin-name'>Trung Quốc</span>
+                  {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
                 </div>
                 <div className='product-item__favorite'>
                   <i className='fas fa-check'></i>
                   <span>Yêu thích</span>
                 </div>
-                <div className='product-item__sale'>
-                  <span className='product-item__sale-percent'>10%</span>
-                  <span className='product-item__sale-label'>GIẢM</span>
-                </div>
-              </a>
+              </div>
             </div>
           )
         }

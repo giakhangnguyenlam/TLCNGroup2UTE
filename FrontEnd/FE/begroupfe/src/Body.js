@@ -4,7 +4,8 @@ import { cateCloList, cateShoList, cateAccList } from "./data"
 import { useGlobalContext } from "./context"
 
 function Body() {
-  const { cate, cateType, setCate, setCateType } = useGlobalContext()
+  const { cate, cateType, setCate, setCateType, setCateName } =
+    useGlobalContext()
 
   return (
     <div className='container'>
@@ -27,6 +28,7 @@ function Body() {
                     onClick={() => {
                       setCate("1")
                       setCateType("")
+                      setCateName("")
                     }}
                   >
                     Clothes
@@ -46,6 +48,7 @@ function Body() {
                         onClick={() => {
                           setCate("1")
                           setCateType(item.value)
+                          setCateName(item.name)
                         }}
                       >
                         {item.name}
@@ -64,6 +67,7 @@ function Body() {
                     onClick={() => {
                       setCate("2")
                       setCateType("")
+                      setCateName("")
                     }}
                   >
                     Shoes
@@ -83,6 +87,7 @@ function Body() {
                         onClick={() => {
                           setCate("2")
                           setCateType(item.value)
+                          setCateName(item.name)
                         }}
                       >
                         {item.name}
@@ -101,6 +106,7 @@ function Body() {
                     onClick={() => {
                       setCate("3")
                       setCateType("")
+                      setCateName("")
                     }}
                   >
                     Accessories
@@ -120,6 +126,7 @@ function Body() {
                         onClick={() => {
                           setCate("3")
                           setCateType(item.value)
+                          setCateName(item.name)
                         }}
                       >
                         {item.name}
@@ -132,50 +139,6 @@ function Body() {
           </div>
 
           <div className='grid__colum-10'>
-            {/* <div className='home-filter'>
-              <span className='home-filter__label'>Sắp xếp theo</span>
-              <button className='home-filter__btn btn'>Phổ biến</button>
-              <button className='home-filter__btn btn btn--primary'>
-                Mới nhất
-              </button>
-              <button className='home-filter__btn btn'>Bán chạy</button>
-
-              <div className='select-input'>
-                <span className='select-input__label'>Giá</span>
-                <i className='fas fa-angle-down'></i>
-                <ul className='select-input__list'>
-                  <li className='select-input__item'>
-                    <a href='/' className='select-input__link'>
-                      Giá: Thấp đến cao
-                    </a>
-                  </li>
-                  <li className='select-input__item'>
-                    <a href='/' className='select-input__link'>
-                      Giá: Cao đến thấp
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <div className='home-filter__paging'>
-                <span className='home-filter__paging-num'>
-                  <span className='home-filter__paging-curr'>1</span>/14
-                </span>
-
-                <div className='home-filter__paging-ctrl'>
-                  <a
-                    href='/'
-                    className='home-filter__paging-btn   home-filter__paging-btn--disable'
-                  >
-                    <i className='fas fa-angle-left'></i>
-                  </a>
-                  <a href='/' className='home-filter__paging-btn'>
-                    <i className='fas fa-angle-right'></i>
-                  </a>
-                </div>
-              </div>
-            </div> */}
-
             <div className='product'>
               <Product />
             </div>

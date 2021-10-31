@@ -1,15 +1,16 @@
 import React from "react"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import Footer from "./Footer"
-import Header from "./Header"
-import Modal from "./Modal"
-import SoonPage from "./SoonPage"
-import Error from "./Error"
+import Header from "./header/Header"
 import Body from "./Body"
-import HeaderSeller from "./HeaderSeller"
-import BodySell from "./BodySell.js"
-import UserProfile from "./UserProfile"
-import UserPass from "./UserPass"
+import Footer from "./footer/Footer"
+import UserProfile from "./user/UserProfile"
+import UserPass from "./user/UserPass"
+import SoonPage from "./rest/SoonPage"
+import Error from "./rest/Error"
+import HeaderSeller from "./seller/HeaderSeller"
+import BodySell from "./seller/BodySell"
+import Modal from "./Modal"
+import SingleProduct from "./SingleProduct"
 
 function App() {
   const expire = localStorage.getItem("expire")
@@ -38,9 +39,11 @@ function App() {
             {/* <Route path='/about'>
             <About />
           </Route> */}
-            {/* <Route path='/cocktail/:id'>
-            <SingleCocktail />
-          </Route> */}
+            <Route path='/product/:id'>
+              <Header />
+              <SingleProduct />
+              <Footer />
+            </Route>
             {/* <Route path='/csbm'>
             <SecurityRule />
           </Route> */}

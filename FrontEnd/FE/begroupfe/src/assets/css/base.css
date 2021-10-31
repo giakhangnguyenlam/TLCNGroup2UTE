@@ -243,14 +243,23 @@ body {
 
 /* Product per store */
 .w60x {
-  width: 60px !important;
+  width: 4% !important;
 }
 .w300x {
-  width: 300px !important;
+  width: 22% !important;
 }
 .w250x {
-  width: 250px !important;
+  width: 18% !important;
 }
 .w10 {
   width: 10% !important;
+}
+
+/* Responsive modal */
+.responsive {
+  height: 32px !important;
+}
+
+.responsive__margin {
+  margin-top: 30px !important;
 }
