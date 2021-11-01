@@ -1,22 +1,31 @@
 package ute.tlcn.begroup2.Controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
     
     private UserService userService;
@@ -75,4 +84,39 @@ public class UserController {
         }
     }
 
+    @PostMapping("/order")
+    public ResponseEntity<?> createOrder(@RequestBody UserOrderModel userOrderModel){
+        try {
+            log.info("Go to create order");
+            userService.order(userOrderModel);
+            return new ResponseEntity<>(new String("Order is created"), HttpStatus.CREATED);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Order fail");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    } 
+
+    @GetMapping("/orderhistory/{id}")
+    public ResponseEntity<?> getHistoryByUserId(@PathVariable("id") int id){
+        List<OrderModel> orderModels = userService.orderHistory(id);
+        return new ResponseEntity<>(orderModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/orderdetailhistory/{id}")
+    public ResponseEntity<?> getOrderDetailHistoryByOrderId(@PathVariable("id") int id){
+        List<OrderDetailModel> orderDetailModels = userService.orderDetailsHistory(id);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<?> createComment(@RequestBody CommentModel commentModel){
+        try {
+            userService.createComment(commentModel);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Create comment successfully");
+            return new ResponseEntity<>(errorModel, HttpStatus.CREATED);
+        }
+        
+    }
 }

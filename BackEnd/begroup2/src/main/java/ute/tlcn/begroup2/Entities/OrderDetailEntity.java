@@ -24,4 +24,6 @@ public class OrderDetailEntity {
     private int orderId;
     private int productId;
     private int quantity;
+    private String description;
+    private String date;
 }

@@ -1,7 +1,9 @@
 package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,13 +16,26 @@ import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import ute.tlcn.begroup2.Entities.CommentEntity;
+import ute.tlcn.begroup2.Entities.OrderDetailEntity;
+import ute.tlcn.begroup2.Entities.OrderEntity;
 import ute.tlcn.begroup2.Entities.UserEntity;
+import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserDetailsModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
+import ute.tlcn.begroup2.ObjectMapper.CommentMapper;
 import ute.tlcn.begroup2.ObjectMapper.DateMapper;
+import ute.tlcn.begroup2.ObjectMapper.OrderDetailMapper;
+import ute.tlcn.begroup2.ObjectMapper.OrderMapper;
 import ute.tlcn.begroup2.ObjectMapper.UserMapper;
+import ute.tlcn.begroup2.Repositories.CommentRepository;
+import ute.tlcn.begroup2.Repositories.OrderDetailsRepository;
+import ute.tlcn.begroup2.Repositories.OrderRepository;
 import ute.tlcn.begroup2.Repositories.UserRepository;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 import ute.tlcn.begroup2.Utils.JWTUtil;
@@ -36,9 +51,15 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     private DateMapper dateMapper;
     private PasswordEncoder passwordEncoder;
+    private OrderMapper orderMapper;
+    private OrderDetailMapper orderDetailMapper;
+    private OrderRepository orderRepository;
+    private OrderDetailsRepository orderDetailsRepository;
+    private CommentMapper commentMapper;
+    private CommentRepository commentRepository;
 
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder, OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, CommentMapper commentMapper, CommentRepository commentRepository) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -46,8 +67,13 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.dateMapper = dateMapper;
         this.passwordEncoder = passwordEncoder;
+        this.orderMapper = orderMapper;
+        this.orderDetailMapper = orderDetailMapper;
+        this.orderRepository = orderRepository;
+        this.orderDetailsRepository = orderDetailsRepository;
+        this.commentMapper = commentMapper;
+        this.commentRepository = commentRepository;
     }
-    
     
     
     // login
@@ -168,5 +194,52 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new NotFoundException("Can't find user");
         }
+    }
+
+
+
+    @Override
+    public void order(UserOrderModel userOrderModel) {
+        userOrderModel = new UserOrderModel(userOrderModel.getUserId(), userOrderModel.getTotal(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription());
+        OrderEntity orderEntity = orderMapper.convertUserOrderModelToOrderEntity(userOrderModel);
+        orderEntity = orderRepository.save(orderEntity);
+        List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate());
+        orderDetailsRepository.saveAll(orderDetailEntities);
+    }
+
+
+
+    @Override
+    public List<OrderModel> orderHistory(int userId) {
+        List<OrderEntity> orderEntities = orderRepository.getByUserId(userId);
+        return orderMapper.convertListOrderEntityToListOrderModel(orderEntities);
+    }
+
+
+
+    @Override
+    public List<OrderDetailModel> orderDetailsHistory(int orderId) {
+        List<OrderDetailEntity> orderDetailEntities = orderDetailsRepository.getByOrderId(orderId);
+        return orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+    }
+
+    @Override
+    public void createComment(CommentModel commentModel) {
+        log.info("go to service create comment");
+        CommentEntity commentEntity = commentMapper.convertCommentModelToCommentEntity(commentModel);
+        commentRepository.save(commentEntity);
+    }
+
+
+    @Override
+    public List<CommentModel> getCommentByProductId(int productId) {
+        List<CommentModel> commentModels = commentRepository.getByProductId(productId)
+        .stream()
+        .map((commentEntity) -> {
+            return commentMapper.convertCommentEntityToCommentModel(commentEntity);
+        })
+        .collect(Collectors.toList());
+
+        return commentModels;
     }
 }

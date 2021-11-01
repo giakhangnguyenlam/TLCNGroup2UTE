@@ -1,16 +1,22 @@
 package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import ute.tlcn.begroup2.Entities.CategoryAccessoriesEntity;
+import ute.tlcn.begroup2.Entities.ProductEntity;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
+import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.ObjectMapper.CategoryAccessoriesMapper;
+import ute.tlcn.begroup2.ObjectMapper.ProductMapper;
 import ute.tlcn.begroup2.Repositories.CategoryAccessoriesRepository;
+import ute.tlcn.begroup2.Repositories.ProductRepository;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryAccessoriesService;
 
 @Service
@@ -18,12 +24,17 @@ public class CategoryAccessoriesServiceImpl implements CategoryAccessoriesServic
 
     private CategoryAccessoriesRepository categoryAccessoriesRepository;
     private CategoryAccessoriesMapper categoryAccessoriesMapper;
+    private ProductRepository productRepository;
+    private ProductMapper productMapper;
 
     @Autowired
-    public CategoryAccessoriesServiceImpl(CategoryAccessoriesRepository categoryAccessoriesRepository, CategoryAccessoriesMapper categoryAccessoriesMapper) {
+    public CategoryAccessoriesServiceImpl(CategoryAccessoriesRepository categoryAccessoriesRepository, CategoryAccessoriesMapper categoryAccessoriesMapper, ProductRepository productRepository, ProductMapper productMapper) {
         this.categoryAccessoriesRepository = categoryAccessoriesRepository;
         this.categoryAccessoriesMapper = categoryAccessoriesMapper;
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
+    
 
 
     @Override
@@ -64,9 +75,16 @@ public class CategoryAccessoriesServiceImpl implements CategoryAccessoriesServic
 
 
     @Override
-    public List<CategoryAccessoriesModel> getCategoryAccessoriesByType(String type) {
+    public List<ProductModel> getCategoryAccessoriesByType(String type) {
         List<CategoryAccessoriesEntity> categoryAccessoriesEntities = categoryAccessoriesRepository.getByType(type);
-        return categoryAccessoriesMapper.convertListAccessoriesEntityToListCategoryAccessoriesModel(categoryAccessoriesEntities);
+        List<ProductModel> productModels = categoryAccessoriesEntities.stream()
+        .map((categoryAccessoriesEntity) -> {
+            ProductEntity productEntity = productRepository.getById(categoryAccessoriesEntity.getProductId());
+            return productMapper.convertProductEntityToProductModel(productEntity);
+        })
+        .collect(Collectors.toList());
+
+        return productModels;
     }
     
 }

@@ -24,6 +24,7 @@ import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryAccessoriesService;
@@ -191,10 +192,10 @@ public class SellerController {
         }
     } 
     
-    @DeleteMapping("/product/{id}")
-    public ResponseEntity<?> deleteProductByProductId(@PathVariable("id") int id){
+    @DeleteMapping("/product/{id}/category/{category}")
+    public ResponseEntity<?> deleteProductByProductId(@PathVariable("id") int id, @PathVariable("category") int category){
         try {
-            productService.deleteProductByProductId(id);
+            productService.deleteProductByProductId(id, category);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             ErrorModel errorModel = new ErrorModel("Can't delete product");
@@ -269,5 +270,28 @@ public class SellerController {
         }
     }
 
-    
+    @GetMapping("/order/{id}")
+    public ResponseEntity<?> getOrderByStoreId(@PathVariable("id") int id){
+        log.info("Go to get order by store id controller");
+        List<OrderDetailModel> orderDetailModels= storeService.getOrderProductByStoreId(id);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/date/{date}")
+    public ResponseEntity<?> getOrderProductByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
+        List<OrderDetailModel> orderDetailModels= storeService.getOrderProductByStoreIdAndDate(id, date);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/store/{id}")
+    public ResponseEntity<?> getStoreByStoreId(@PathVariable("id") int id){
+        try {
+            StoreModel storeModel = storeService.getStoreByStoreId(id);
+            return new ResponseEntity<>(storeModel, HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorModel errorModel= new ErrorModel("Can't find store");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

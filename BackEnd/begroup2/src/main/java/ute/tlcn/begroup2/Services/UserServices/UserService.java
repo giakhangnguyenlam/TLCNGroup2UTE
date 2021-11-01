@@ -1,8 +1,14 @@
 package ute.tlcn.begroup2.Services.UserServices;
 
+import java.util.List;
+
+import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
 
 public interface UserService {
     
@@ -13,4 +19,9 @@ public interface UserService {
     public UserModel updateUserWithPassword(int id, SignUpModel signUpModel) throws Exception;
     public UserModel getUserByUserName(String username) throws Exception;
     public UserModel getUserByUserId(int id) throws Exception;
+    public void order(UserOrderModel userOrderModel);
+    public List<OrderModel> orderHistory(int userId);
+    public List<OrderDetailModel> orderDetailsHistory(int orderId);
+    public void createComment(CommentModel commentModel);
+    public List<CommentModel> getCommentByProductId(int productId);
 }

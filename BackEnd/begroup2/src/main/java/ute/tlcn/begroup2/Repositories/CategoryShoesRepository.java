@@ -12,4 +12,5 @@ import ute.tlcn.begroup2.Entities.CategoryShoesEntity;
 public interface CategoryShoesRepository extends JpaRepository<CategoryShoesEntity, Integer> {
     Optional<CategoryShoesEntity> findByProductId(int productId);
     List<CategoryShoesEntity> getByStyle(String style);
+    void deleteByProductId(int productId);
 }

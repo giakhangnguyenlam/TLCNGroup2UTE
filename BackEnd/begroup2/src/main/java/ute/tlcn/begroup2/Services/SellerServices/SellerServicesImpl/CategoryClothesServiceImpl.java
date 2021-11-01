@@ -2,15 +2,20 @@ package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import ute.tlcn.begroup2.Entities.CategoryClothesEntity;
+import ute.tlcn.begroup2.Entities.ProductEntity;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
+import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.ObjectMapper.CategoryClothesMapper;
+import ute.tlcn.begroup2.ObjectMapper.ProductMapper;
 import ute.tlcn.begroup2.Repositories.CategoryClothesRepository;
+import ute.tlcn.begroup2.Repositories.ProductRepository;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryClothesService;
 
 @Service
@@ -18,12 +23,17 @@ public class CategoryClothesServiceImpl implements CategoryClothesService {
 
     private CategoryClothesRepository categoryClothesRepository;
     private CategoryClothesMapper categoryClothesMapper;
+    private ProductRepository productRepository;
+    private ProductMapper productMapper;
 
     @Autowired
-    public CategoryClothesServiceImpl(CategoryClothesRepository categoryClothesRepository, CategoryClothesMapper categoryClothesMapper) {
+    public CategoryClothesServiceImpl(CategoryClothesRepository categoryClothesRepository, CategoryClothesMapper categoryClothesMapper, ProductRepository productRepository, ProductMapper productMapper) {
         this.categoryClothesRepository = categoryClothesRepository;
         this.categoryClothesMapper = categoryClothesMapper;
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
+    
 
 
     @Override
@@ -65,9 +75,15 @@ public class CategoryClothesServiceImpl implements CategoryClothesService {
 
 
     @Override
-    public List<CategoryClothesModel> getCategoryClothesByType(String type) {
+    public List<ProductModel> getCategoryClothesByType(String type) {
         List<CategoryClothesEntity> categoryClothesEntities = categoryClothesRepository.getByType(type);
-        return categoryClothesMapper.convertListClothesEntityToListCategoryClothesModel(categoryClothesEntities);
+        List<ProductModel> productModels = categoryClothesEntities.stream()
+        .map((categoryClothesEntity) -> {
+            ProductEntity productEntity = productRepository.getById(categoryClothesEntity.getProductId());
+            return productMapper.convertProductEntityToProductModel(productEntity);
+        }).collect(Collectors.toList());
+
+        return productModels;
     }
     
 }

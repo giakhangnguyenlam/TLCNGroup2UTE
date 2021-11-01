@@ -26,6 +26,6 @@ public class CommentEntity {
     private int productId;
     private String username;
     private String comment;
-    private int start;
+    private int star;
     private Date date;
 }

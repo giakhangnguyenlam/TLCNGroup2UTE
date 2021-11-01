@@ -17,6 +17,7 @@ import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
+import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
@@ -130,19 +131,25 @@ public class HomeController {
 
     @GetMapping("/product/category/clothes/{type}")
     public ResponseEntity<?> getCategoryClothesByType(@PathVariable("type") String type){
-        List<CategoryClothesModel> categoryClothesModels = categoryClothesService.getCategoryClothesByType(type);
+        List<ProductModel> categoryClothesModels = categoryClothesService.getCategoryClothesByType(type);
         return new ResponseEntity<>(categoryClothesModels, HttpStatus.OK);
     }
 
     @GetMapping("/product/category/shoes/{style}")
     public ResponseEntity<?> getCategoryShoesByStyle(@PathVariable("style") String style){
-        List<CategoryShoesModel> categoryShoesModels = categoryShoesService.getCategoryShoesByStyle(style);
+        List<ProductModel> categoryShoesModels = categoryShoesService.getCategoryShoesByStyle(style);
         return new ResponseEntity<>(categoryShoesModels, HttpStatus.OK);
     }
 
     @GetMapping("/product/category/accessories/{type}")
     public ResponseEntity<?> getCategoryAccessoriesByType(@PathVariable("type") String type){
-        List<CategoryAccessoriesModel> categoryAccessoriesModels = categoryAccessoriesService.getCategoryAccessoriesByType(type);
+        List<ProductModel> categoryAccessoriesModels = categoryAccessoriesService.getCategoryAccessoriesByType(type);
         return new ResponseEntity<>(categoryAccessoriesModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/comment/{id}")
+    public ResponseEntity<?> getCommentByProductId(@PathVariable("id") int productId){
+        List<CommentModel> commentModels = userService.getCommentByProductId(productId);
+        return new ResponseEntity<>(commentModels, HttpStatus.OK);
     }
 }

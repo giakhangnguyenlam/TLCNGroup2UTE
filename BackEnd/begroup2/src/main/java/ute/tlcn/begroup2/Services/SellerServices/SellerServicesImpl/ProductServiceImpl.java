@@ -12,6 +12,9 @@ import javassist.NotFoundException;
 import ute.tlcn.begroup2.Entities.ProductEntity;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.ObjectMapper.ProductMapper;
+import ute.tlcn.begroup2.Repositories.CategoryAccessoriesRepository;
+import ute.tlcn.begroup2.Repositories.CategoryClothesRepository;
+import ute.tlcn.begroup2.Repositories.CategoryShoesRepository;
 import ute.tlcn.begroup2.Repositories.ProductRepository;
 import ute.tlcn.begroup2.Services.GoogleServices.GoogleService;
 import ute.tlcn.begroup2.Services.SellerServices.ProductService;
@@ -22,13 +25,21 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
     private ProductRepository productRepository;
     private GoogleService googleService;
+    private CategoryClothesRepository categoryClothesRepository;
+    private CategoryShoesRepository categoryShoesRepository;
+    private CategoryAccessoriesRepository categoryAccessoriesRepository;
+
 
     @Autowired
-    public ProductServiceImpl(ProductMapper productMapper, ProductRepository productRepository, GoogleService googleService) {
+    public ProductServiceImpl(ProductMapper productMapper, ProductRepository productRepository, GoogleService googleService, CategoryClothesRepository categoryClothesRepository, CategoryShoesRepository categoryShoesRepository, CategoryAccessoriesRepository categoryAccessoriesRepository) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;
         this.googleService = googleService;
+        this.categoryClothesRepository = categoryClothesRepository;
+        this.categoryShoesRepository = categoryShoesRepository;
+        this.categoryAccessoriesRepository = categoryAccessoriesRepository;
     }
+    
 
 
     @Override
@@ -63,8 +74,17 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public void deleteProductByProductId(int id) {
+    public void deleteProductByProductId(int id, int category) {
         productRepository.deleteById(id);
+        if(category == 1){
+            categoryClothesRepository.deleteByProductId(id);
+        }
+        else if(category ==2){
+            categoryShoesRepository.deleteByProductId(id);
+        }
+        else{
+            categoryAccessoriesRepository.deleteByProductId(id);
+        }
     }
 
 

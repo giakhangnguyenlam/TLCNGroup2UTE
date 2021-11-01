@@ -2,15 +2,20 @@ package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import ute.tlcn.begroup2.Entities.CategoryShoesEntity;
+import ute.tlcn.begroup2.Entities.ProductEntity;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
+import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.ObjectMapper.CategoryShoesMapper;
+import ute.tlcn.begroup2.ObjectMapper.ProductMapper;
 import ute.tlcn.begroup2.Repositories.CategoryShoesRepository;
+import ute.tlcn.begroup2.Repositories.ProductRepository;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryShoesService;
 
 @Service
@@ -18,12 +23,17 @@ public class CategoryShoesServiceImpl implements CategoryShoesService {
 
     private CategoryShoesMapper categoryShoesMapper;
     private CategoryShoesRepository categoryShoesRepository;
+    private ProductRepository productRepository;
+    private ProductMapper productMapper;
 
     @Autowired
-    public CategoryShoesServiceImpl(CategoryShoesMapper categoryShoesMapper, CategoryShoesRepository categoryShoesRepository) {
+    public CategoryShoesServiceImpl(CategoryShoesMapper categoryShoesMapper, CategoryShoesRepository categoryShoesRepository, ProductRepository productRepository, ProductMapper productMapper) {
         this.categoryShoesMapper = categoryShoesMapper;
         this.categoryShoesRepository = categoryShoesRepository;
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
+    
 
     @Override
     public CategoryShoesModel createCategoryShoes(CategoryShoesModel categoryShoesModel) {
@@ -65,9 +75,16 @@ public class CategoryShoesServiceImpl implements CategoryShoesService {
     }
 
     @Override
-    public List<CategoryShoesModel> getCategoryShoesByStyle(String style) {
+    public List<ProductModel> getCategoryShoesByStyle(String style) {
         List<CategoryShoesEntity> categoryShoesEntities = categoryShoesRepository.getByStyle(style);
-        return categoryShoesMapper.convertListCategoryShoesEntitesToListCategoryShoesModels(categoryShoesEntities);
+        List<ProductModel> productModels = categoryShoesEntities.stream()
+        .map((categoryShoesEntity) -> {
+            ProductEntity productEntity = productRepository.getById(categoryShoesEntity.getProductId());
+            return productMapper.convertProductEntityToProductModel(productEntity);
+        })
+        .collect(Collectors.toList());
+
+        return productModels;
     }
     
 }

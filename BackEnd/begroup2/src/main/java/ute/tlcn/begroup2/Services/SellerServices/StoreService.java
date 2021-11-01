@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
 
 public interface StoreService {
     public StoreModel createStore(StoreModel storeModel, MultipartFile multipartFile) throws Exception;
@@ -13,4 +14,7 @@ public interface StoreService {
     public void deleteStore(int id);
     public StoreModel updateStoreWithoutImage(int id, StoreModel storeModel)  throws Exception;
     public StoreModel updateStoreWithImage(int id, MultipartFile multipartFile) throws Exception;
+    public List<OrderDetailModel> getOrderProductByStoreId(int storeId);
+    public List<OrderDetailModel> getOrderProductByStoreIdAndDate(int storeId, String date);
+    public StoreModel getStoreByStoreId(int storeId) throws Exception;
 }

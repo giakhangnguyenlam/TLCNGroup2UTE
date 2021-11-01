@@ -441,6 +441,28 @@ link: https://tlcngroup2be.herokuapp.com/product/category/accessories/binh-nuoc
     }
 ]
 ```
+
+### Get comment by product id
+link: https://tlcngroup2be.herokuapp.com/product/comment/1
+
+> GET
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 46,
+        "productId": 1,
+        "username": "khang",
+        "comment": "good product",
+        "star": 3,
+        "date": "01-11-2021"
+    }
+]
+```
+
 ##  ===============>> User API <<====================
 
 ### Update user without password
@@ -506,6 +528,262 @@ link: https://tlcngroup2be.herokuapp.com/user/password/47
     "role": "ROLE_SELLER"
 }
 ```
+
+### Order 
+link: https://tlcngroup2be.herokuapp.com/user/order
+
+> POST
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "userId": 14,
+    "total":350000,
+    "listProducts":[1,2,3,4],
+    "listQuantities":[1,1,1,1],
+    "listDescription":["đỏ, cam","xanh, vàng","hồng","tím"]
+}
+```
+
+#### Response
+Status: 201
+
+### Get order history by userId
+link: http://localhost:8080/user/orderhistory/14
+
+> GET
+
+> Note: 14 is user id
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 22,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 23,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 24,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 25,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 26,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 27,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 28,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 29,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 30,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 31,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 32,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 33,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 34,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 35,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 36,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 37,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    },
+    {
+        "id": 38,
+        "userId": 14,
+        "orderDate": "31-10-2021",
+        "total": 350000.0,
+        "orderStatus": "Ð?t hàng thành công",
+        "paymentStatus": "chua thanh toán"
+    }
+]
+```
+
+### Get order detail history by orderId
+link: https://tlcngroup2be.herokuapp.com/user/orderdetailhistory/38
+
+> GET
+
+> 38 is order id
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> One order have many product
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 39,
+        "orderId": 38,
+        "productId": 1,
+        "quantity": 1,
+        "description": "d?, cam",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 40,
+        "orderId": 38,
+        "productId": 2,
+        "quantity": 1,
+        "description": "xanh, vàng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 41,
+        "orderId": 38,
+        "productId": 3,
+        "quantity": 1,
+        "description": "h?ng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 42,
+        "orderId": 38,
+        "productId": 4,
+        "quantity": 1,
+        "description": "tím",
+        "date": "31-10-2021"
+    }
+]
+```
+
+### Comment 
+link: https://tlcngroup2be.herokuapp.com/user/comment
+
+> POST
+
+> Note: You have to login with user account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "productId": 1,
+    "username": "khang",
+    "comment": "good product",
+    "star":3
+}
+```
+
+#### Response
+Status: 201
+
+
+
 
 ##  ===============>> Seller API <<====================
 
@@ -1233,3 +1511,108 @@ link: https://tlcngroup2be.herokuapp.com/seller/product/categoryaccessories/59
 }
 ```
 
+### Get order by store id
+link: https://tlcngroup2be.herokuapp.com/seller/order/4
+
+> GET
+
+> 4 is store id
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Default: get order in current day
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 39,
+        "orderId": 38,
+        "productId": 1,
+        "quantity": 1,
+        "description": "d?, cam",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 40,
+        "orderId": 38,
+        "productId": 2,
+        "quantity": 1,
+        "description": "xanh, vàng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 41,
+        "orderId": 38,
+        "productId": 3,
+        "quantity": 1,
+        "description": "h?ng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 42,
+        "orderId": 38,
+        "productId": 4,
+        "quantity": 1,
+        "description": "tím",
+        "date": "31-10-2021"
+    }
+]
+```
+
+### Get order by order id and day
+link: https://tlcngroup2be.herokuapp.com/seller/order/4/date/31-10-2021
+
+> GET
+
+> 4 is store id
+
+> 31-10-2021 is day which you want to choose
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "id": 39,
+        "orderId": 38,
+        "productId": 1,
+        "quantity": 1,
+        "description": "d?, cam",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 40,
+        "orderId": 38,
+        "productId": 2,
+        "quantity": 1,
+        "description": "xanh, vàng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 41,
+        "orderId": 38,
+        "productId": 3,
+        "quantity": 1,
+        "description": "h?ng",
+        "date": "31-10-2021"
+    },
+    {
+        "id": 42,
+        "orderId": 38,
+        "productId": 4,
+        "quantity": 1,
+        "description": "tím",
+        "date": "31-10-2021"
+    }
+]
+```
