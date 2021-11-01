@@ -442,6 +442,29 @@ link: https://tlcngroup2be.herokuapp.com/product/category/accessories/binh-nuoc
 ]
 ```
 
+### Get product by product id
+link: https://tlcngroup2be.herokuapp.com/product/1
+
+> GET
+
+> 1 is product id
+
+#### Request
+
+#### Response
+```
+{
+    "id": 42,
+    "storeId": 31,
+    "category": 1,
+    "name": "this is a product to test",
+    "quantity": 10,
+    "price": 350000.0,
+    "description": "this is description",
+    "image": "https://drive.google.com/uc?id=1nk8HYop7JIM0gopy_pjwLV2Dee_dKboq&export=download"
+}
+```
+
 ### Get comment by product id
 link: https://tlcngroup2be.herokuapp.com/product/comment/1
 

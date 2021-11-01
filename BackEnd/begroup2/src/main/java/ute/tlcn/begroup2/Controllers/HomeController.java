@@ -147,6 +147,17 @@ public class HomeController {
         return new ResponseEntity<>(categoryAccessoriesModels, HttpStatus.OK);
     }
 
+    @GetMapping("/product/{id}")
+    public ResponseEntity<?> getProductByProductId(@PathVariable("id") int id){
+        try {
+            ProductModel productModel= productService.getProductByProductId(id);
+            return new ResponseEntity<>(productModel, HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Can't find product");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/product/comment/{id}")
     public ResponseEntity<?> getCommentByProductId(@PathVariable("id") int productId){
         List<CommentModel> commentModels = userService.getCommentByProductId(productId);
