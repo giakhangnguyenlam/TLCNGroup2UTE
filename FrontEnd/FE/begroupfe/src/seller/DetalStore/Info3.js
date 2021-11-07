@@ -57,6 +57,7 @@ function Info3() {
         setRaise({
           header: "Update information",
           content: "Update category infomation success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {
@@ -93,7 +94,7 @@ function Info3() {
                   disabled={isEdit ? "" : "disabled"}
                 >
                   <option value='null'>Chọn loại</option>
-                  <option value='bang-trang'>Băng trắng</option>
+                  <option value='bang-tran'>Băng trán</option>
                   <option value='bang-co-tay'>Băng cổ tay</option>
                   <option value='non'>Nón</option>
                   <option value='tui'>Túi</option>

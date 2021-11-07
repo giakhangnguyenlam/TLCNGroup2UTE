@@ -86,6 +86,7 @@ function ModalDetailCreate() {
         setRaise({
           header: "Create product",
           content: "Create store product success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {

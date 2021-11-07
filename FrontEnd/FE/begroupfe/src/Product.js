@@ -24,22 +24,21 @@ function Product() {
     }
   }
 
-  const fetchData = async () => {
-    try {
-      let res = await axios({
-        method: "GET",
-        url,
-      })
-      if (res.status === 200) {
-        let arr = res.data.filter((item) => item !== null)
-        setBody(arr)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let res = await axios({
+          method: "GET",
+          url,
+        })
+        if (res.status === 200) {
+          let arr = await res.data.filter((item) => item !== null)
+          setBody(arr)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
     fetchData()
   }, [cate, cateType])
 

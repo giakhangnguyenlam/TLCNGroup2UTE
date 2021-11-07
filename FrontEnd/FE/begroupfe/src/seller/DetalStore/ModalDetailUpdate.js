@@ -43,6 +43,7 @@ function ModalDetailUpdate() {
         setRaise({
           header: "Update product",
           content: "Update product image success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {
@@ -79,6 +80,7 @@ function ModalDetailUpdate() {
         setRaise({
           header: "Update product",
           content: "Update product information success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {

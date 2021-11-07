@@ -49,13 +49,13 @@ function DetailStore() {
     setIsDetailUpdate(true)
     setIdStoreProd(prod)
   }
-  const handleDeleteProd = async (id) => {
+  const handleDeleteProd = async (id, category) => {
     let del = window.confirm("Delete?")
     if (del) {
       try {
         let res = await axios({
           method: "delete",
-          url: `https://tlcngroup2be.herokuapp.com/seller/product/${id}`,
+          url: `https://tlcngroup2be.herokuapp.com/seller/product/${id}/category/${category}`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -270,7 +270,7 @@ function DetailStore() {
                         />
                         <AiOutlineDelete
                           className='store-item__icon'
-                          onClick={() => handleDeleteProd(id)}
+                          onClick={() => handleDeleteProd(id, category)}
                         />
                         <AiOutlineInfoCircle
                           className='store-item__icon'

@@ -16,6 +16,7 @@ function BodySell() {
     reloadSell,
     setReloadSell,
     setIsDetailStore,
+    setIsOrderDetail,
     raise,
     setRaise,
   } = useGlobalContext()
@@ -43,6 +44,7 @@ function BodySell() {
           setRaise({
             header: "Delete store",
             content: "Delete store success!",
+            color: "#4bb534",
           })
         }
       } catch (error) {
@@ -54,6 +56,11 @@ function BodySell() {
     setIsDetailStore(true)
     setIdStoreUpdate(store)
   }
+  const handleOrderDetail = (store) => {
+    setIsOrderDetail(true)
+    setIdStoreUpdate(store)
+  }
+
   const fetchData = () => {
     axios({
       method: "get",
@@ -100,7 +107,7 @@ function BodySell() {
                         const { id, image, nameStore } = store
                         return (
                           <div className='grid__colum-2-4' key={id}>
-                            <a href='' className='product-item'>
+                            <div className='product-item'>
                               <div
                                 className='product-item__img'
                                 style={{
@@ -110,7 +117,7 @@ function BodySell() {
                               <h4 className='product-item__name'>
                                 {nameStore}
                               </h4>
-                            </a>
+                            </div>
                             <div className='product-item__ctrl'>
                               <button
                                 className='product-item__ctrl-btn btn'
@@ -131,6 +138,18 @@ function BodySell() {
                                 Detail
                               </button>
                             </div>
+                            <div
+                              className='product-item__ctrl'
+                              style={{ justifyContent: "center" }}
+                            >
+                              <button
+                                className='product-item__ctrl-btn btn'
+                                style={{ width: "80%" }}
+                                onClick={() => handleOrderDetail(store)}
+                              >
+                                Order
+                              </button>
+                            </div>
                           </div>
                         )
                       })}
@@ -143,7 +162,13 @@ function BodySell() {
         </div>
       </div>
 
-      {raise && <Popup header={raise.header} content={raise.content} />}
+      {raise && (
+        <Popup
+          header={raise.header}
+          content={raise.content}
+          color={raise.color}
+        />
+      )}
     </div>
   )
 }

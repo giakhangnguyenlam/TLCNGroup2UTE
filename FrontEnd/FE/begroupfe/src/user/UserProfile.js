@@ -1,11 +1,13 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
+import { useHistory } from "react-router"
 
 function UserProfile() {
   const dob = localStorage.getItem("dateofbirth")
   const jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
 
+  const history = useHistory()
   const [user, setUser] = useState({
     name: localStorage.getItem("name"),
     dateofbirth: `${dob.slice(6, 10)}-${dob.slice(3, 5)}-${dob.slice(0, 2)}`,
@@ -13,6 +15,10 @@ function UserProfile() {
     address: localStorage.getItem("address"),
     gender: localStorage.getItem("gender"),
   })
+
+  const handleRedirect = (page) => {
+    history.push(`/user/${page}`)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -57,23 +63,34 @@ function UserProfile() {
                 Xin chào, {user.name}
               </h3>
               <ul className='category-list'>
-                <h4 className='category-list__heading'>Tài khoản</h4>
+                <h4
+                  className='category-list__heading'
+                  onClick={() => handleRedirect("account/profile")}
+                >
+                  Tài khoản
+                </h4>
                 <li className='category-item category-item--active'>
-                  <a
-                    href='/user/account/profile'
+                  <div
+                    onClick={() => handleRedirect("account/profile")}
                     className='category-item__link'
                   >
                     Hồ sơ người dùng
-                  </a>
+                  </div>
                 </li>
                 <li className='category-item'>
-                  <a
-                    href='/user/account/password'
+                  <div
+                    onClick={() => handleRedirect("account/password")}
                     className='category-item__link'
                   >
                     Quản lý mật khẩu
-                  </a>
+                  </div>
                 </li>
+                <h4
+                  className='category-list__heading'
+                  onClick={() => handleRedirect("order")}
+                >
+                  Đơn mua
+                </h4>
               </ul>
             </nav>
           </div>

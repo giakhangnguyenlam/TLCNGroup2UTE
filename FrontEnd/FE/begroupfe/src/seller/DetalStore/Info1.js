@@ -52,6 +52,7 @@ function Info1() {
         setRaise({
           header: "Update information",
           content: "Update category infomation success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {

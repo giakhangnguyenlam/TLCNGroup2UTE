@@ -160,6 +160,11 @@ body {
   line-height: 1.6rem;
 }
 
+.btn.btn-enhance {
+  min-width: 156px;
+  min-height: 46px;
+}
+
 /* Selection */
 .select-input {
   height: 34px;

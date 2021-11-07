@@ -49,7 +49,7 @@ const Login = () => {
       if (res.status === 200) {
         setIsLogin(false)
         const { id, name, dateofbirth, email, address, gender, jwt, role } =
-          res.data
+          await res.data
         localStorage.setItem("id", id)
         localStorage.setItem("name", name)
         localStorage.setItem("dateofbirth", dateofbirth)

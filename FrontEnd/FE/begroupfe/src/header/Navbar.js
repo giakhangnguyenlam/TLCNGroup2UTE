@@ -9,11 +9,9 @@ function Navbar() {
   const userRole = localStorage.getItem("role")
   const userName = localStorage.getItem("name")
   const history = useHistory()
-  const redirectUser = () => {
-    history.push("/user/account/profile")
-  }
-  const redirectSeller = () => {
-    history.push("/seller")
+
+  const redirect = (page) => {
+    history.push(`${page}`)
   }
   const handleLogout = () => {
     localStorage.removeItem("id")
@@ -34,7 +32,7 @@ function Navbar() {
             className='header__navbar-item-link'
             onClick={
               userRole === "ROLE_SELLER"
-                ? () => redirectSeller()
+                ? () => redirect("/seller")
                 : () => setIsSellerSignup(true)
             }
           >
@@ -74,12 +72,12 @@ function Navbar() {
 
             <ul className='header__navbar-user-menu'>
               <li className='header__navbar-user-item'>
-                <div href='' onClick={redirectUser}>
+                <a onClick={() => redirect("/user/account/profile")}>
                   Tài khoản của tôi
-                </div>
+                </a>
               </li>
               <li className='header__navbar-user-item'>
-                <a href=''>Đơn hàng</a>
+                <a onClick={() => redirect("/user/order")}>Đơn hàng</a>
               </li>
               <li className='header__navbar-user-item'>
                 <a href=''>Cài đặt</a>

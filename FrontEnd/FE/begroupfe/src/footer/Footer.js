@@ -1,30 +1,17 @@
 import React from "react"
-
+import { useGlobalContext } from "../context"
+import { cateShoList, cateCloList, cateAccList } from "../data"
 function Footer() {
+  const { setCate, setCateType, setCateName } = useGlobalContext()
+  const clicked = (cate, type, name) => {
+    setCate(cate)
+    setCateType(type)
+    setCateName(name)
+  }
   return (
     <footer className='footer'>
       <div className='grid'>
         <div className='grid__row'>
-          <div className='grid__colum-2-4'>
-            <h3 className='footer__heading'>Chăm sóc khách hàng</h3>
-            <ul className='footer-list'>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Trung tâm trợ giúp
-                </a>
-              </li>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Shopee Mail
-                </a>
-              </li>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Hướng dẫn mua hàng
-                </a>
-              </li>
-            </ul>
-          </div>
           <div className='grid__colum-2-4'>
             <h3 className='footer__heading'>Giới thiệu</h3>
             <ul className='footer-list'>
@@ -45,50 +32,86 @@ function Footer() {
               </li>
             </ul>
           </div>
-          <div className='grid__colum-2-4'>
+          <div className='grid__colum-2-4' style={{ width: "60%" }}>
             <h3 className='footer__heading'>Danh mục</h3>
             <ul className='footer-list'>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Máy tính Acer
-                </a>
+                <div
+                  className='footer-item__link'
+                  onClick={() => clicked("1", "", "")}
+                >
+                  Quần áo:
+                </div>
+                {cateCloList.map((item, index) => {
+                  return (
+                    <div
+                      className='footer-item__link footer-item__link--enhance'
+                      key={index}
+                      onClick={() => clicked("1", item.value, item.name)}
+                    >
+                      {item.name}
+                    </div>
+                  )
+                })}
               </li>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Máy tính Asus
-                </a>
+                <div
+                  className='footer-item__link'
+                  onClick={() => clicked("2", "", "")}
+                >
+                  Giày dép:
+                </div>
+                {cateShoList.map((item, index) => {
+                  return (
+                    <div
+                      className='footer-item__link footer-item__link--enhance'
+                      key={index}
+                      onClick={() => clicked("2", item.value, item.name)}
+                    >
+                      {item.name}
+                    </div>
+                  )
+                })}
               </li>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Máy tính HP
-                </a>
-              </li>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  Máy tính Vaio
-                </a>
+                <div
+                  className='footer-item__link'
+                  onClick={() => clicked("3", "", "")}
+                >
+                  Phụ kiện:
+                </div>
+                {cateAccList.map((item, index) => {
+                  return (
+                    <div
+                      className='footer-item__link footer-item__link--enhance'
+                      key={index}
+                      onClick={() => clicked("3", item.value, item.name)}
+                    >
+                      {item.name}
+                    </div>
+                  )
+                })}
               </li>
             </ul>
           </div>
           <div className='grid__colum-2-4'>
-            <h3 className='footer__heading'>Theo dõi</h3>
+            <h3 className='footer__heading' style={{ textAlign: "right" }}>
+              Chăm sóc khách hàng
+            </h3>
             <ul className='footer-list'>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  <i className='footer-item__icon fab fa-facebook'></i>
-                  Facebook
+              <li className='footer-item footer-item__link--revert'>
+                <a href='/' className='footer-item__link'>
+                  Trung tâm trợ giúp
                 </a>
               </li>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  <i className='footer-item__icon fab fa-instagram'></i>
-                  Instagram
+              <li className='footer-item footer-item__link--revert'>
+                <a href='/' className='footer-item__link'>
+                  Shopping & Technology
                 </a>
               </li>
-              <li className='footer-item'>
-                <a href='' className='footer-item__link'>
-                  <i className='footer-item__icon fab fa-linkedin'></i>
-                  LinkedIn
+              <li className='footer-item footer-item__link--revert'>
+                <a href='/' className='footer-item__link'>
+                  Hướng dẫn mua hàng
                 </a>
               </li>
             </ul>

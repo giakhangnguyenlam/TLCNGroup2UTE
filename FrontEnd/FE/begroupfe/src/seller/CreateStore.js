@@ -58,7 +58,11 @@ function CreateStore() {
         setLoading(false)
         setReloadSell(!reloadSell)
         setIsCreateStore(false)
-        setRaise({ header: "Create store", content: "Create store success!" })
+        setRaise({
+          header: "Create store",
+          content: "Create store success!",
+          color: "#4bb534",
+        })
       }
     } catch (error) {
       console.log(error)

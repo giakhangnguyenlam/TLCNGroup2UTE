@@ -11,6 +11,9 @@ import HeaderSeller from "./seller/HeaderSeller"
 import BodySell from "./seller/BodySell"
 import Modal from "./Modal"
 import SingleProduct from "./SingleProduct"
+import CartPage from "./CartPage"
+import UserOrder from "./user/UserOrder"
+import OrderItem from "./user/OrderItem"
 
 function App() {
   const expire = localStorage.getItem("expire")
@@ -50,6 +53,11 @@ function App() {
             {/* <Route path='/dkdv'>
             <ServiceRule />
           </Route> */}
+            <Route path='/user/order/:orderId'>
+              <Header />
+              <OrderItem />
+              <Footer />
+            </Route>
             <Route path='/user/account/profile'>
               <Header />
               <UserProfile />
@@ -60,6 +68,11 @@ function App() {
               <UserPass />
               <Footer />
             </Route>
+            <Route path='/user/order'>
+              <Header />
+              <UserOrder />
+              <Footer />
+            </Route>
             <Route path='/comingsoon'>
               <Header />
               <SoonPage />
@@ -68,6 +81,11 @@ function App() {
             <Route path='/seller'>
               <HeaderSeller />
               <BodySell />
+            </Route>
+            <Route path='/cart'>
+              <Header />
+              <CartPage />
+              <Footer />
             </Route>
             <Route path='*'>
               <Header />

@@ -2,37 +2,36 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 
-function UserPass() {
+function UserOrder() {
   const jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
   const name = localStorage.getItem("name")
-  const [password, setPassword] = useState("")
   const history = useHistory()
+
+  const [orderList, setOrderList] = useState()
 
   const handleRedirect = (page) => {
     history.push(`/user/${page}`)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const fetchData = async () => {
     try {
       let res = await axios({
-        method: "PUT",
-        url: `https://tlcngroup2be.herokuapp.com/user/password/${userid}`,
-        data: { password },
+        method: "get",
+        url: `https://tlcngroup2be.herokuapp.com/user/orderhistory/${userid}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       })
       if (res.status === 200) {
-        setPassword("")
-        let { jwtNew } = res.data
-        localStorage.setItem("jwt", jwtNew)
+        setOrderList(res.data)
       }
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <div className='container'>
@@ -61,7 +60,7 @@ function UserPass() {
                     Hồ sơ người dùng
                   </div>
                 </li>
-                <li className='category-item category-item--active'>
+                <li className='category-item'>
                   <div
                     onClick={() => handleRedirect("account/password")}
                     className='category-item__link'
@@ -70,7 +69,7 @@ function UserPass() {
                   </div>
                 </li>
                 <h4
-                  className='category-list__heading'
+                  className='category-list__heading category-list__heading--active'
                   onClick={() => handleRedirect("order")}
                 >
                   Đơn mua
@@ -87,6 +86,8 @@ function UserPass() {
                   style={{
                     width: "100%",
                     backgroundColor: "var(--white-color)",
+                    paddingBottom: "10px",
+                    minHeight: "500px",
                   }}
                 >
                   <div
@@ -105,44 +106,71 @@ function UserPass() {
                         lineHeight: "2.2rem",
                       }}
                     >
-                      {" "}
-                      Quản lý mật khẩu
+                      Lịch sử mua hàng
                     </h4>
                   </div>
 
-                  <div
-                    className='auth-form__form'
-                    style={{ marginTop: "10px" }}
-                  >
-                    <div className='auth-form__group'>
-                      <div className='auth-form__group-item'>
-                        <label
-                          className='auth-form__label'
-                          style={{ width: "25%" }}
-                        >
-                          Mật khẩu mới
-                        </label>
-                        <input
-                          type='password'
-                          className='auth-form__input'
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
+                  <div className='order__nav'>
+                    <div className='order__nav-item' style={{ width: "20%" }}>
+                      Mã đơn hàng
+                    </div>
+                    <div className='order__nav-item'>Ngày mua</div>
+                    <div className='order__nav-item'>Tổng tiền</div>
+                    <div
+                      className='order__nav-item'
+                      style={{ width: "30%", textAlign: "center" }}
+                    >
+                      Trạng thái đơn hàng
                     </div>
                   </div>
-
-                  <div
-                    className='auth-form__controls'
-                    style={{ justifyContent: "center" }}
-                  >
-                    <button
-                      className='btn btn--primary'
-                      onClick={(e) => handleSubmit(e)}
+                  {orderList ? (
+                    orderList.map((item) => {
+                      const {
+                        id,
+                        orderDate,
+                        total,
+                        orderStatus,
+                        paymentStatus,
+                      } = item
+                      return (
+                        <div className='order__body' key={id}>
+                          <div
+                            className='order__nav-item order__id'
+                            style={{ width: "20%" }}
+                            onClick={() => handleRedirect(`order/${id}`)}
+                          >
+                            <span>{id}</span>
+                          </div>
+                          <div className='order__nav-item'>{orderDate}</div>
+                          <div className='order__nav-item'>
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(total)}
+                          </div>
+                          <div
+                            className='order__nav-item'
+                            style={{ width: "30%", textAlign: "right" }}
+                          >
+                            {`${orderStatus}, ${paymentStatus}`}
+                          </div>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div
+                      className='order__body'
+                      style={{
+                        width: "100%",
+                        height: "378px",
+                        fontSize: "24px",
+                        borderBottom: "none",
+                        justifyContent: "center",
+                      }}
                     >
-                      XÁC NHẬN
-                    </button>
-                  </div>
+                      Đang tải ...
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -153,4 +181,4 @@ function UserPass() {
   )
 }
 
-export default UserPass
+export default UserOrder

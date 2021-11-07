@@ -50,6 +50,7 @@ function UpdateStore() {
         setRaise({
           header: "Update store",
           content: "Update store image success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {
@@ -88,6 +89,7 @@ function UpdateStore() {
         setRaise({
           header: "Update store",
           content: "Update store infomation success!",
+          color: "#4bb534",
         })
       }
     } catch (error) {

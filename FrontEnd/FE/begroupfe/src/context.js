@@ -9,6 +9,7 @@ const AppProvider = ({ children }) => {
   const [cate, setCate] = useState("")
   const [cateType, setCateType] = useState("")
   const [cateName, setCateName] = useState("")
+  const [cart, setCart] = useState([])
 
   const [isCreateStore, setIsCreateStore] = useState(false)
   const [isUpdateStore, setIsUpdateStore] = useState(false)
@@ -16,6 +17,8 @@ const AppProvider = ({ children }) => {
   const [isDetailCreate, setIsDetailCreate] = useState(false)
   const [isDetailUpdate, setIsDetailUpdate] = useState(false)
   const [isDetailInfo, setIsDetailInfo] = useState(false)
+  const [isOrderDetail, setIsOrderDetail] = useState(false)
+  const [isComment, setIsComment] = useState(false)
 
   const [idStoreUpdate, setIdStoreUpdate] = useState(null)
   const [idStoreProd, setIdStoreProd] = useState(null)
@@ -101,6 +104,7 @@ const AppProvider = ({ children }) => {
         cate,
         cateType,
         cateName,
+        cart,
         reloadSell,
         reloadDetailStore,
         isCreateStore,
@@ -109,6 +113,8 @@ const AppProvider = ({ children }) => {
         isDetailCreate,
         isDetailUpdate,
         isDetailInfo,
+        isOrderDetail,
+        isComment,
         idStoreUpdate,
         idStoreProd,
         cateStoreProd,
@@ -123,6 +129,7 @@ const AppProvider = ({ children }) => {
         setCate,
         setCateType,
         setCateName,
+        setCart,
         setReloadSell,
         setReloadDetailStore,
         setIsCreateStore,
@@ -131,6 +138,8 @@ const AppProvider = ({ children }) => {
         setIsDetailCreate,
         setIsDetailUpdate,
         setIsDetailInfo,
+        setIsOrderDetail,
+        setIsComment,
         setIdStoreUpdate,
         setIdStoreProd,
         setCateStoreProd,

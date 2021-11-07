@@ -5,6 +5,8 @@ import Login from "./header/Login"
 import CreateStore from "./seller/CreateStore"
 import UpdateStore from "./seller/UpdateStore"
 import DetailStore from "./seller/DetailStore"
+import UserComment from "./user/UserComment"
+import OrderDetail from "./seller/OrderDetail"
 function Modal() {
   const {
     isLogin,
@@ -13,6 +15,8 @@ function Modal() {
     isUpdateStore,
     isDetailStore,
     isSellerSignup,
+    isOrderDetail,
+    isComment,
   } = useGlobalContext()
   if (isSignup || isSellerSignup) {
     return <Signup />
@@ -28,6 +32,12 @@ function Modal() {
   }
   if (isDetailStore) {
     return <DetailStore />
+  }
+  if (isOrderDetail) {
+    return <OrderDetail />
+  }
+  if (isComment) {
+    return <UserComment />
   }
   return <></>
 }
