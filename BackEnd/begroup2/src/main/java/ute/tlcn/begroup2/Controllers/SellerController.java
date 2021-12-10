@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
+import ute.tlcn.begroup2.Models.SellerModels.MessageModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
@@ -56,11 +57,6 @@ public class SellerController {
         this.categoryAccessoriesService = categoryAccessoriesService;
     }
     
-    
-    
-    
-    
-
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpModel signUpModel){
@@ -69,8 +65,8 @@ public class SellerController {
             UserModel userModel = sellerService.signUp(signUpModel);
             return new ResponseEntity<>(userModel, HttpStatus.CREATED);
         } catch (Exception e) {
-            ErrorModel errorModel = new ErrorModel("Username is existed");
-            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+            MessageModel messageModel = new MessageModel("Username is existed");
+            return new ResponseEntity<>(messageModel, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -277,11 +273,11 @@ public class SellerController {
         return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
     }
 
-    @GetMapping("/order/{id}/date/{date}")
-    public ResponseEntity<?> getOrderProductByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
-        List<OrderDetailModel> orderDetailModels= storeService.getOrderProductByStoreIdAndDate(id, date);
-        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
-    }
+    // @GetMapping("/order/{id}/date/{date}")
+    // public ResponseEntity<?> getOrderProductByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
+    //     List<OrderDetailModel> orderDetailModels= storeService.getOrderProductByStoreIdAndDate(id, date);
+    //     return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    // }
 
     @GetMapping("/store/{id}")
     public ResponseEntity<?> getStoreByStoreId(@PathVariable("id") int id){
@@ -292,6 +288,32 @@ public class SellerController {
             ErrorModel errorModel= new ErrorModel("Can't find store");
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("/orderdetail/status/{id}")
+    public ResponseEntity<?> updateOrderStatus(@PathVariable("id") int id){
+        storeService.updateOrderDetailStatus(id);
+        MessageModel mess = new MessageModel("Update order detail status successfully");
+        return new ResponseEntity<>(mess, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/statusfinished")
+    public ResponseEntity<?> staticByStoreId(@PathVariable("id") int id){
+        log.info("Go to static by store id");
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreId(id);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/date/{date}")
+    public ResponseEntity<?> staticByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndDate(id, date);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/month/{month}/year/{year}")
+    public ResponseEntity<?> staticByStoreIdAndMonthAndYear(@PathVariable("id") int id, @PathVariable("month") String month, @PathVariable("year") String year){
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndMonthAndYear(id, month, year);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
     }
 
 }

@@ -24,7 +24,7 @@ public class OrderDetailMapper {
     }
 
 
-    public List<OrderDetailEntity> convertUserOrderModelToListOrderDetailEntity(int orderId, List<Integer> listProductId, List<Integer> listQuantities, List<String> listDescription, Date date){
+    public List<OrderDetailEntity> convertUserOrderModelToListOrderDetailEntity(int orderId, List<Integer> listProductId, List<Integer> listQuantities, List<String> listDescription, Date date, List<String> listProductNames, List<Double> listPrices){
         List<OrderDetailEntity> listOrderDetailEntities = new ArrayList<>();
         
         for (int i = 0; i < listProductId.size(); i++) {
@@ -33,7 +33,10 @@ public class OrderDetailMapper {
             listProductId.get(i), 
             listQuantities.get(i), 
             listDescription.get(i), 
-            dateMapper.convertDateToString(date));
+            date,
+            listProductNames.get(i), 
+            listPrices.get(i),
+            "Chưa chuẩn bị");
 
             listOrderDetailEntities.add(orderDetailEntity);
         }
@@ -48,7 +51,7 @@ public class OrderDetailMapper {
         orderDetailEntity.getProductId(), 
         orderDetailEntity.getQuantity(), 
         orderDetailEntity.getDescription(),
-        orderDetailEntity.getDate());
+        dateMapper.convertDateToString(orderDetailEntity.getDate()));
 
         return orderDetailModel;
     }

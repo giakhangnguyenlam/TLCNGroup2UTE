@@ -10,4 +10,7 @@ import ute.tlcn.begroup2.Entities.OrderEntity;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
     List<OrderEntity> getByUserId(int userId);
+    List<OrderEntity> getByOrderStatus(String status);
+    List<OrderEntity> getByShipperId(int shipperId);
+    List<OrderEntity> getByOrderStatusAndShipperId(String orderStatus, int shipperId);
 }

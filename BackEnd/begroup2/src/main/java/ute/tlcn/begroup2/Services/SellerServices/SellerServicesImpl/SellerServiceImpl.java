@@ -54,7 +54,8 @@ public class SellerServiceImpl implements SellerService {
             signUpModel.getGender(), 
             signUpModel.getUsername(), 
             passwordEncoder.encode(signUpModel.getPassword()), 
-            "ROLE_SELLER");
+            "ROLE_SELLER",
+            signUpModel.getPhone());
 
             userEntity = userRepository.save(userEntity);
             UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);

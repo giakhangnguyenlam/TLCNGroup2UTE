@@ -36,6 +36,7 @@ public class HomeController {
     private CategoryAccessoriesService categoryAccessoriesService;
     private CategoryShoesService categoryShoesService;
     private CategoryClothesService categoryClothesService;
+    
 
     @Autowired
     public HomeController(UserService userService, ProductService productService, CategoryAccessoriesService categoryAccessoriesService, CategoryShoesService categoryShoesService, CategoryClothesService categoryClothesService) {
@@ -48,9 +49,6 @@ public class HomeController {
     
     
     
-    
-
-
     @GetMapping
     public ResponseEntity<?> printHello(){
         return new ResponseEntity<>("Hello this is project of group 2", HttpStatus.OK);
@@ -163,4 +161,5 @@ public class HomeController {
         List<CommentModel> commentModels = userService.getCommentByProductId(productId);
         return new ResponseEntity<>(commentModels, HttpStatus.OK);
     }
+
 }

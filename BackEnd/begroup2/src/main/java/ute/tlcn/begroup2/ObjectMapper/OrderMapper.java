@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ute.tlcn.begroup2.Entities.OrderEntity;
+import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
 import ute.tlcn.begroup2.Models.UserModels.OrderModel;
 import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
 
@@ -27,7 +28,8 @@ public class OrderMapper {
         userOrderModel.getOrderDate(), 
         userOrderModel.getTotal(),
         userOrderModel.getOrderStatus(), 
-        userOrderModel.getPaymentStatus());
+        userOrderModel.getPaymentStatus(),
+        0);
 
         return orderEntity;
     }
@@ -51,6 +53,18 @@ public class OrderMapper {
         .collect(Collectors.toList());
 
        return orderModels;
+    }
+
+    public OrderHistoryModel convertOrderEntityToOrderHistoryModel(OrderEntity orderEntity, String product){
+        OrderHistoryModel orderHistoryModel = new OrderHistoryModel(orderEntity.getId(), 
+        orderEntity.getUserId(), 
+        dateMapper.convertDateToString(orderEntity.getOrderDate()), 
+        orderEntity.getTotal(), 
+        orderEntity.getOrderStatus(), 
+        orderEntity.getPaymentStatus(),
+        product);
+
+       return orderHistoryModel;
     }
     
 }

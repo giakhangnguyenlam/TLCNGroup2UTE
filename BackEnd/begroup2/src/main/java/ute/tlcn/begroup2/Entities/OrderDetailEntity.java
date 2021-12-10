@@ -1,5 +1,7 @@
 package ute.tlcn.begroup2.Entities;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,5 +27,8 @@ public class OrderDetailEntity {
     private int productId;
     private int quantity;
     private String description;
-    private String date;
+    private Date date;
+    private String productName;
+    private double price;
+    private String status;
 }

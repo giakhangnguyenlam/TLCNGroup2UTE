@@ -17,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
 import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
+import ute.tlcn.begroup2.Models.UserModels.PassWordModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
 import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
@@ -52,12 +53,12 @@ public class UserController {
 
 
     @PutMapping("/password/{id}")
-    public ResponseEntity<?> updateUserWithPassword(@PathVariable("id") int id, @RequestBody SignUpModel signUpModel){
+    public ResponseEntity<?> updateUserWithPassword(@PathVariable("id") int id, @RequestBody PassWordModel passWordModel){
         try {
-            UserModel userModel = userService.updateUserWithPassword(id, signUpModel);
+            UserModel userModel = userService.updateUserWithPassword(id, passWordModel);
             return new ResponseEntity<>(userModel, HttpStatus.OK);
         } catch (Exception e) {
-            ErrorModel errorModel = new ErrorModel("User isn't existed");
+            ErrorModel errorModel = new ErrorModel("Old password isn't correct");
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
     }
@@ -96,9 +97,21 @@ public class UserController {
         }
     } 
 
+    @PostMapping("/orderwithpaypal")
+    public ResponseEntity<?> createOrderWithPaypal(@RequestBody UserOrderModel userOrderModel){
+        try {
+            log.info("Go to create order with paypal");
+            userService.orderWithPaypal(userOrderModel);
+            return new ResponseEntity<>(new String("Order is created"), HttpStatus.CREATED);
+        } catch (Exception e) {
+            ErrorModel errorModel = new ErrorModel("Order fail");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    } 
+
     @GetMapping("/orderhistory/{id}")
     public ResponseEntity<?> getHistoryByUserId(@PathVariable("id") int id){
-        List<OrderModel> orderModels = userService.orderHistory(id);
+        List<OrderHistoryModel> orderModels = userService.orderHistory(id);
         return new ResponseEntity<>(orderModels, HttpStatus.OK);
     }
 

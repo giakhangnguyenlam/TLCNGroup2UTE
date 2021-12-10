@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +26,5 @@ public class OrderEntity {
     private double total;
     private String orderStatus;
     private String paymentStatus;
+    private int shipperId;
 }

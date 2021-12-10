@@ -18,4 +18,5 @@ public class UserModel {
     private String gender;
     private String jwt;
     private String role;
+    private String phone;
 }

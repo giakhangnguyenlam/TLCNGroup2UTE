@@ -18,4 +18,5 @@ public class SignUpModel {
     private String gender;
     private String username;
     private String password;
+    private String phone;
 }

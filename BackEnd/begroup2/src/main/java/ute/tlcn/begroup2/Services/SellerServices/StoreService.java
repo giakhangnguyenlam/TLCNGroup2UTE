@@ -17,4 +17,8 @@ public interface StoreService {
     public List<OrderDetailModel> getOrderProductByStoreId(int storeId);
     public List<OrderDetailModel> getOrderProductByStoreIdAndDate(int storeId, String date);
     public StoreModel getStoreByStoreId(int storeId) throws Exception;
+    public void updateOrderDetailStatus(int orderDetailId);
+    public List<OrderDetailModel> staticByStoreId(int storeId);
+    public List<OrderDetailModel> staticByStoreIdAndDate(int storeId, String date);
+    public List<OrderDetailModel> staticByStoreIdAndMonthAndYear(int storeId, String month, String year);
 }

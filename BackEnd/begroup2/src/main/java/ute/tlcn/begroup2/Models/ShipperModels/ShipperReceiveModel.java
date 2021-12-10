@@ -1,4 +1,4 @@
-package ute.tlcn.begroup2.Models.UserModels;
+package ute.tlcn.begroup2.Models.ShipperModels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorModel {
-    private String mess;
+public class ShipperReceiveModel {
+    private int orderId;;
+    private int shipperId;
 }

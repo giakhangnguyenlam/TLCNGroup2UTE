@@ -1,7 +1,6 @@
 package ute.tlcn.begroup2.Services.SellerServices.SellerServicesImpl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javassist.NotFoundException;
 import ute.tlcn.begroup2.Entities.OrderDetailEntity;
+import ute.tlcn.begroup2.Entities.OrderEntity;
 import ute.tlcn.begroup2.Entities.ProductEntity;
 import ute.tlcn.begroup2.Entities.StoreEntity;
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
@@ -20,6 +20,7 @@ import ute.tlcn.begroup2.ObjectMapper.DateMapper;
 import ute.tlcn.begroup2.ObjectMapper.OrderDetailMapper;
 import ute.tlcn.begroup2.ObjectMapper.StoreMapper;
 import ute.tlcn.begroup2.Repositories.OrderDetailsRepository;
+import ute.tlcn.begroup2.Repositories.OrderRepository;
 import ute.tlcn.begroup2.Repositories.ProductRepository;
 import ute.tlcn.begroup2.Repositories.StoreRepository;
 import ute.tlcn.begroup2.Services.GoogleServices.GoogleService;
@@ -36,9 +37,10 @@ public class StoreServiceImpl implements StoreService{
     private ProductRepository productRepository;
     private OrderDetailsRepository orderDetailsRepository;
     private OrderDetailMapper orderDetailMapper;
+    private OrderRepository orderRepository;
 
     @Autowired
-    public StoreServiceImpl(StoreRepository storeRepository, StoreMapper storeMapper, GoogleService googleService, DateMapper dateMapper, ProductRepository productRepository, OrderDetailsRepository orderDetailsRepository, OrderDetailMapper orderDetailMapper) {
+    public StoreServiceImpl(StoreRepository storeRepository, StoreMapper storeMapper, GoogleService googleService, DateMapper dateMapper, ProductRepository productRepository, OrderDetailsRepository orderDetailsRepository, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository) {
         this.storeRepository = storeRepository;
         this.storeMapper = storeMapper;
         this.googleService = googleService;
@@ -46,7 +48,9 @@ public class StoreServiceImpl implements StoreService{
         this.productRepository = productRepository;
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderDetailMapper = orderDetailMapper;
+        this.orderRepository = orderRepository;
     }
+    
     
     
     
@@ -123,11 +127,10 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public List<OrderDetailModel> getOrderProductByStoreId(int storeId) {
-        String date = dateMapper.convertDateToString(new Date());
         List<ProductEntity> productEntities = productRepository.getByStoreId(storeId);
         List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
         for (ProductEntity productEntity : productEntities) {
-            orderDetailEntities.addAll(orderDetailsRepository.getByProductIdAndDate(productEntity.getId(), date));
+            orderDetailEntities.addAll(orderDetailsRepository.getByProductIdAndStatus(productEntity.getId(), "Chưa chuẩn bị"));
         }
         return orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
     }
@@ -138,7 +141,7 @@ public class StoreServiceImpl implements StoreService{
         List<ProductEntity> productEntities = productRepository.getByStoreId(storeId);
         List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
         for (ProductEntity productEntity : productEntities) {
-            orderDetailEntities.addAll(orderDetailsRepository.getByProductIdAndDate(productEntity.getId(), date));
+            orderDetailEntities.addAll(orderDetailsRepository.getByProductIdAndDate(productEntity.getId(),dateMapper.convertStringToDate(date)));
         }
         return orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
     }
@@ -157,6 +160,69 @@ public class StoreServiceImpl implements StoreService{
             throw new NotFoundException("Can't find store");
         }
     }
-    
+
+
+
+    @Override
+    public void updateOrderDetailStatus(int orderDetailId) {
+        OrderDetailEntity orderDetailEntity = orderDetailsRepository.getById(orderDetailId);
+        orderDetailEntity.setStatus("Đang chuẩn bị");
+        orderDetailEntity = orderDetailsRepository.save(orderDetailEntity);
+        List<OrderDetailEntity> orderDetailEntities = orderDetailsRepository.getByOrderId(orderDetailEntity.getOrderId());
+        Optional<OrderDetailEntity> optionalOrderDetailEntity = orderDetailEntities.stream()
+        .filter(orderDetailEntityy -> orderDetailEntityy.getStatus().equals("Chưa chuẩn bị"))
+        .findAny();
+
+        if(!optionalOrderDetailEntity.isPresent()){
+            OrderEntity orderEntity = orderRepository.getById(orderDetailEntity.getOrderId());
+            orderEntity.setOrderStatus("Đơn hàng đã chuẩn bị xong");
+            orderRepository.save(orderEntity);
+        }
+    }
+
+
+    @Override
+    public List<OrderDetailModel> staticByStoreId(int storeId) {
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        productEntities.stream().forEach(productEntity -> {
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatus(productEntity.getId(), "Đang chuẩn bị");
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        });
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
+
+    @Override
+    public List<OrderDetailModel> staticByStoreIdAndDate(int storeId, String date) {
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        productEntities.stream().forEach(productEntity -> {
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatusAndDate(productEntity.getId(), "Đang chuẩn bị", dateMapper.convertStringToDate(date));
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        });
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
+
+    @Override
+    public List<OrderDetailModel> staticByStoreIdAndMonthAndYear(int storeId, String month, String year) {
+        String startDate =  "01-"+ month +"-"+year;
+        String endDate = "31-"+ month +"-"+year;
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        productEntities.stream().forEach(productEntity -> {
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatusAndDateBetween(productEntity.getId(), "Đang chuẩn bị",dateMapper.convertStringToDate(startDate),dateMapper.convertStringToDate(endDate));
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        });
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
     
 }

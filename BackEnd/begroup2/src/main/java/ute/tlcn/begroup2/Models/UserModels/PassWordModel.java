@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorModel {
-    private String mess;
+public class PassWordModel {
+    private String oldPassword;
+    private String password;
 }

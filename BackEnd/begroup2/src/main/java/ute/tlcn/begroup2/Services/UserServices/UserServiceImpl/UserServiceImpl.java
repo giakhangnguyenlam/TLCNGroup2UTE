@@ -23,7 +23,8 @@ import ute.tlcn.begroup2.Entities.UserEntity;
 import ute.tlcn.begroup2.Models.UserModels.CommentModel;
 import ute.tlcn.begroup2.Models.UserModels.LoginModel;
 import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderModel;
+import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
+import ute.tlcn.begroup2.Models.UserModels.PassWordModel;
 import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
 import ute.tlcn.begroup2.Models.UserModels.UserDetailsModel;
 import ute.tlcn.begroup2.Models.UserModels.UserModel;
@@ -111,7 +112,8 @@ public class UserServiceImpl implements UserService {
             signUpModel.getGender(), 
             signUpModel.getUsername(), 
             passwordEncoder.encode(signUpModel.getPassword()), 
-            "ROLE_USER");
+            "ROLE_USER",
+            signUpModel.getPhone());
 
             userEntity = userRepository.save(userEntity);
             UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
@@ -154,11 +156,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel updateUserWithPassword(int id, SignUpModel signUpModel) throws Exception {
+    public UserModel updateUserWithPassword(int id, PassWordModel passWordModel) throws Exception {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
         if(optionalUserEntity.isPresent()){
             UserEntity userEntity = optionalUserEntity.get();
-            String password = passwordEncoder.encode(signUpModel.getPassword());
+            if(passwordEncoder.matches(passWordModel.getOldPassword(), userEntity.getPassword())){
+            String password = passwordEncoder.encode(passWordModel.getPassword());
             userEntity.setPassword(password);
             userEntity = userRepository.save(userEntity);
             UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
@@ -166,6 +169,11 @@ public class UserServiceImpl implements UserService {
             UserModel userModel = userMapper.convertUserEntityToUserModel(userEntity);
             userModel.setJwt(jwt);
             return userModel;
+            }
+            else{
+                throw new NotFoundException("Old password is incorrect");
+            }
+            
         }
         else{
             throw new NotFoundException("Can't found user");
@@ -200,19 +208,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void order(UserOrderModel userOrderModel) {
-        userOrderModel = new UserOrderModel(userOrderModel.getUserId(), userOrderModel.getTotal(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription());
+        userOrderModel = new UserOrderModel(userOrderModel.getUserId(), userOrderModel.getTotal(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
         OrderEntity orderEntity = orderMapper.convertUserOrderModelToOrderEntity(userOrderModel);
         orderEntity = orderRepository.save(orderEntity);
-        List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate());
+        List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
         orderDetailsRepository.saveAll(orderDetailEntities);
     }
 
 
 
     @Override
-    public List<OrderModel> orderHistory(int userId) {
+    public List<OrderHistoryModel> orderHistory(int userId) {
         List<OrderEntity> orderEntities = orderRepository.getByUserId(userId);
-        return orderMapper.convertListOrderEntityToListOrderModel(orderEntities);
+        List<OrderHistoryModel> orderHistoryModels = orderEntities.stream()
+        .map((orderEntity) -> {
+            List<OrderDetailEntity> orderDetailEntity = orderDetailsRepository.getByOrderId(orderEntity.getId());
+            OrderHistoryModel orderHistoryModel = orderMapper.convertOrderEntityToOrderHistoryModel(orderEntity, orderDetailEntity.get(0).getProductName()+",...");
+            return orderHistoryModel;
+        })
+        .collect(Collectors.toList());
+
+        return orderHistoryModels;
     }
 
 
@@ -241,5 +257,17 @@ public class UserServiceImpl implements UserService {
         .collect(Collectors.toList());
 
         return commentModels;
+    }
+
+
+    @Override
+    public void orderWithPaypal(UserOrderModel userOrderModel) {
+        userOrderModel = new UserOrderModel(userOrderModel.getUserId(), userOrderModel.getTotal(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
+        userOrderModel.setPaymentStatus("Đã thanh toán");
+        OrderEntity orderEntity = orderMapper.convertUserOrderModelToOrderEntity(userOrderModel);
+        orderEntity = orderRepository.save(orderEntity);
+        List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
+        orderDetailsRepository.saveAll(orderDetailEntities);
+        
     }
 }

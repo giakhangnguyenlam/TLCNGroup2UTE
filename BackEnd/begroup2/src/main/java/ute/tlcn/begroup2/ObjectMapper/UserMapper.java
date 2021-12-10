@@ -25,7 +25,8 @@ public class UserMapper {
         userEntity.getAddress(), 
         userEntity.getGender(),
         "",
-        userEntity.getGrantedAuthority());
+        userEntity.getGrantedAuthority(),
+        userEntity.getPhone());
         
         return userModel;
     }

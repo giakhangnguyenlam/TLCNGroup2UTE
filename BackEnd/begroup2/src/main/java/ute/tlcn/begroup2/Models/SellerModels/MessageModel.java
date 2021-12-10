@@ -1,4 +1,4 @@
-package ute.tlcn.begroup2.Models.UserModels;
+package ute.tlcn.begroup2.Models.SellerModels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorModel {
+public class MessageModel {
     private String mess;
 }

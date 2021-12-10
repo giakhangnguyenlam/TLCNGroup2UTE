@@ -25,9 +25,11 @@ public class UserOrderModel {
     private List<Integer> listProducts;
     private List<Integer> listQuantities;
     private List<String> listDescription;
+    private List<String> listProductNames;
+    private List<Double> listPrices;
     
-    public UserOrderModel(int userId, double total, List<Integer> listProducts, List<Integer> listQuantities, List<String> listDescription) {
-        this(userId, DEFAULT_ORDER_DATE, total, DEFAULT_ORDER_STATUS, DEFAULT_PAYMENT_STATUS, listProducts, listQuantities, listDescription);
+    public UserOrderModel(int userId, double total, List<Integer> listProducts, List<Integer> listQuantities, List<String> listDescription, List<String> listProductNames, List<Double> listPrices) {
+        this(userId, DEFAULT_ORDER_DATE, total, DEFAULT_ORDER_STATUS, DEFAULT_PAYMENT_STATUS, listProducts, listQuantities, listDescription, listProductNames, listPrices);
     }
 
 }
