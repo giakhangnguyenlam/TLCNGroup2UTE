@@ -1,38 +1,97 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
+import { useGlobalContext } from "../context"
+import Popup from "../ultis/Popup"
 
 function UserPass() {
-  const jwt = localStorage.getItem("jwt")
+  let jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
   const name = localStorage.getItem("name")
-  const [password, setPassword] = useState("")
+  const [height, setHeight] = useState(0)
+  const [password, setPassword] = useState({ old: "", new: "", re: "" })
   const history = useHistory()
+  const { loading, setLoading, raise, setRaise } = useGlobalContext()
 
   const handleRedirect = (page) => {
     history.push(`/user/${page}`)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      let res = await axios({
-        method: "PUT",
-        url: `https://tlcngroup2be.herokuapp.com/user/password/${userid}`,
-        data: { password },
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setPassword("")
-        let { jwtNew } = res.data
-        localStorage.setItem("jwt", jwtNew)
-      }
-    } catch (error) {
-      console.log(error)
+  const handleEnter = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(event)
     }
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    let url = `https://tlcngroup2be.herokuapp.com/user/password/${userid}`
+    if (password.re === "" || password.old === "" || password.new === "") {
+      setRaise({
+        header: "Thông báo",
+        content: "Vui lòng nhập đầy đủ thông tin",
+        color: "#f0541e",
+      })
+    } else if (password.re !== password.new) {
+      setRaise({
+        header: "Thông báo",
+        content: "Mật khẩu nhập lại không trùng khớp",
+        color: "#f0541e",
+      })
+    } else {
+      setLoading(true)
+      try {
+        let res = await axios({
+          method: "PUT",
+          url,
+          data: { password: password.new, oldPassword: password.old },
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200) {
+          setPassword({ old: "", new: "", re: "" })
+          localStorage.setItem("jwt", res.data.jwt)
+          setLoading(false)
+          setRaise({
+            header: "Thay đổi thông tin",
+            content: "Đổi mật khẩu thành công",
+            color: "#4bb534",
+          })
+        }
+      } catch (error) {
+        setLoading(false)
+        setRaise({
+          header: "Thay đổi thông tin",
+          content: "Đổi mật khẩu thất bại, vui lòng xem lại mật khẩu cũ",
+          color: "#dc143c",
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    let role = localStorage.getItem("role")
+    if (
+      role !== "ROLE_USER" &&
+      role !== "ROLE_SELLER" &&
+      role !== "ROLE_SHIPPER"
+    ) {
+      history.push("/")
+    }
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
+  }, [])
 
   return (
     <div className='container'>
@@ -105,7 +164,6 @@ function UserPass() {
                         lineHeight: "2.2rem",
                       }}
                     >
-                      {" "}
                       Quản lý mật khẩu
                     </h4>
                   </div>
@@ -120,13 +178,57 @@ function UserPass() {
                           className='auth-form__label'
                           style={{ width: "25%" }}
                         >
+                          Mật khẩu cũ
+                        </label>
+                        <input
+                          type='password'
+                          className='auth-form__input'
+                          value={password.old}
+                          onKeyDown={handleEnter}
+                          onChange={(e) =>
+                            setPassword({ ...password, old: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className='auth-form__group'>
+                      <div className='auth-form__group-item'>
+                        <label
+                          className='auth-form__label'
+                          style={{ width: "25%" }}
+                        >
                           Mật khẩu mới
                         </label>
                         <input
                           type='password'
                           className='auth-form__input'
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          value={password.new}
+                          onKeyDown={handleEnter}
+                          onChange={(e) =>
+                            setPassword({ ...password, new: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className='auth-form__group'>
+                      <div className='auth-form__group-item'>
+                        <label
+                          className='auth-form__label'
+                          style={{ width: "25%" }}
+                        >
+                          Nhập lại mật khẩu mới
+                        </label>
+                        <input
+                          type='password'
+                          className='auth-form__input'
+                          value={password.re}
+                          onKeyDown={handleEnter}
+                          onChange={(e) =>
+                            setPassword({
+                              ...password,
+                              re: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
@@ -149,6 +251,25 @@ function UserPass() {
           </div>
         </div>
       </div>
+      {loading && (
+        <div
+          className='modal__overlay'
+          style={{ zIndex: "5", top: "0", height }}
+        >
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
+      {raise && (
+        <Popup
+          header={raise.header}
+          content={raise.content}
+          color={raise.color}
+        />
+      )}
     </div>
   )
 }

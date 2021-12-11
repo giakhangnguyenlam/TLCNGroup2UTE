@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useGlobalContext } from "../context"
-import { formAuth } from "../data"
-import ModalFooter from "../ModalFooter"
-import Loading from "../Loading"
+import { formAuth } from "../ultis/data"
+import Loading from "../ultis/Loading"
 
 const Signup = () => {
   const hFit = window.screen.availHeight
@@ -14,6 +13,8 @@ const Signup = () => {
     setIsSignup,
     isSellerSignup,
     setIsSellerSignup,
+    isShipperSignup,
+    setIsShipperSignup,
     reloadSell,
     setReloadSell,
     loading,
@@ -28,6 +29,8 @@ const Signup = () => {
     username: "",
     password: "",
     rePassword: "",
+    address: "",
+    phone: "",
   })
   const handlechange = (e) => {
     const name = e.target.name
@@ -41,9 +44,17 @@ const Signup = () => {
     if (isSellerSignup) {
       setIsSellerSignup(false)
     }
+    if (isShipperSignup) {
+      setIsShipperSignup(false)
+    }
     setIsLogin(true)
   }
-  const checkError = (person) => {
+  const handleModal = () => {
+    setIsSignup(false)
+    setIsSellerSignup(false)
+    setIsShipperSignup(false)
+  }
+  const checkError = async (person) => {
     let errs = {}
     if (!person.name) {
       errs.name = "Không được bỏ trống trường này!"
@@ -83,6 +94,7 @@ const Signup = () => {
       errs.rePassword = "Không khớp với mật khẩu ở trên"
     }
     setErrors(errs)
+    return errs
   }
   const fetchData = async () => {
     setLoading(true)
@@ -98,32 +110,55 @@ const Signup = () => {
     if (isSellerSignup) {
       url = "https://tlcngroup2be.herokuapp.com/seller/signup"
     }
+    if (isShipperSignup) {
+      url = "https://tlcngroup2be.herokuapp.com/shipper/signup"
+    }
 
-    let res = await axios.post(url, {
-      ...person,
-      dateofbirth: `${dd}-${mm}-${yyyy}`,
-    })
-    if (res.status === 201) {
-      setIsSignup(false)
-      const { id, name, dateofbirth, email, address, gender, jwt, role } =
-        res.data
-      localStorage.setItem("id", id)
-      localStorage.setItem("name", name)
-      localStorage.setItem("dateofbirth", dateofbirth)
-      localStorage.setItem("email", email)
-      localStorage.setItem("address", address)
-      localStorage.setItem("gender", gender)
-      localStorage.setItem("jwt", jwt)
-      localStorage.setItem("role", role)
-      localStorage.setItem("expire", new Date().getTime() + 43200000)
-      setLoading(false)
-      setReloadSell(!reloadSell)
+    try {
+      let res = await axios.post(url, {
+        ...person,
+        dateofbirth: `${dd}-${mm}-${yyyy}`,
+      })
+      if (res.status === 201) {
+        const {
+          id,
+          name,
+          dateofbirth,
+          email,
+          address,
+          phone,
+          gender,
+          jwt,
+          role,
+        } = res.data
+        localStorage.setItem("id", id)
+        localStorage.setItem("name", name)
+        localStorage.setItem("dateofbirth", dateofbirth)
+        localStorage.setItem("email", email)
+        localStorage.setItem("address", address)
+        localStorage.setItem("phone", phone)
+        localStorage.setItem("gender", gender)
+        localStorage.setItem("jwt", jwt)
+        localStorage.setItem("role", role)
+        localStorage.setItem("expire", new Date().getTime() + 43200000)
+
+        setLoading(false)
+        setReloadSell(!reloadSell)
+        setIsSignup(false)
+        setIsSellerSignup(false)
+        setIsShipperSignup(false)
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrors({ form: error.response.data.mess })
+        setLoading(false)
+      }
     }
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    checkError(person)
-    if (Object.keys(errors).length === 0) {
+    let res = await checkError(person)
+    if (Object.keys(res).length === 0) {
       fetchData()
     }
   }
@@ -131,68 +166,249 @@ const Signup = () => {
 
   return (
     <div className='modal'>
-      <div
-        className='modal__overlay'
-        onClick={
-          isSignup ? () => setIsSignup(false) : () => setIsSellerSignup(false)
-        }
-      ></div>
+      <div className='modal__overlay' onClick={handleModal}></div>
       <div className='modal__body'>
         {/* Register form */}
         <div className='auth-form'>
           <div className='auth-form__container'>
             <div className='auth-form__header'>
               <h3 className='auth-form__heading'>
-                {" "}
-                {isSignup ? "Đăng ký" : "Trở thành người bán"}
+                {isSignup
+                  ? "Đăng ký"
+                  : isSellerSignup
+                  ? "Trở thành người bán"
+                  : "Trở thành người giao hàng"}
               </h3>
               <span className='auth-form__switch-btn' onClick={changeLogin}>
                 Đăng nhập
               </span>
             </div>
 
-            <div className='auth-form__form'>
-              {formAuth.map((ele, index) => {
-                const { name, type, placeholder } = ele
-                return (
-                  <div className='auth-form__group' key={index}>
+            {resp ? (
+              <div className='auth-form__form'>
+                <div className='auth-form__group' key={1}>
+                  <input
+                    type={formAuth[0].type}
+                    name={formAuth[0].name}
+                    placeholder={formAuth[0].placeholder}
+                    className={`auth-form__input ${
+                      errors[formAuth[0].name] && "auth-form__input--err"
+                    } `}
+                    value={person[formAuth[0].name]}
+                    onChange={handlechange}
+                  />
+                  {errors[formAuth[0].name] ? (
+                    <p className='auth-form__error'>
+                      {errors[formAuth[0].name]}
+                    </p>
+                  ) : (
+                    " "
+                  )}
+                </div>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div className='auth-form__group--resp' key={2}>
                     <input
-                      type={type}
-                      name={name}
-                      placeholder={placeholder}
+                      type={formAuth[1].type}
+                      name={formAuth[1].name}
+                      placeholder={formAuth[1].placeholder}
                       className={`auth-form__input ${
-                        errors[name] && "auth-form__input--err"
-                      } ${resp && "responsive"}`}
-                      value={person[name]}
+                        errors[formAuth[1].name] && "auth-form__input--err"
+                      } `}
+                      value={person[formAuth[1].name]}
                       onChange={handlechange}
                     />
-                    {errors[name] ? (
-                      <p className='auth-form__error'>{errors[name]}</p>
+                    {errors[formAuth[1].name] ? (
+                      <p className='auth-form__error'>
+                        {errors[formAuth[1].name]}
+                      </p>
                     ) : (
                       " "
                     )}
                   </div>
-                )
-              })}
-              <div className='auth-form__group'>
-                <select
-                  className={`auth-form__input ${
-                    errors.gender && "auth-form__input--err"
-                  } ${resp && "responsive"}`}
-                  name='gender'
-                  onChange={handlechange}
+                  <div className='auth-form__group--resp' key={3}>
+                    <input
+                      type={formAuth[2].type}
+                      name={formAuth[2].name}
+                      placeholder={formAuth[2].placeholder}
+                      className={`auth-form__input ${
+                        errors[formAuth[2].name] && "auth-form__input--err"
+                      } `}
+                      value={person[formAuth[2].name]}
+                      onChange={handlechange}
+                    />
+                    {errors[formAuth[2].name] ? (
+                      <p className='auth-form__error'>
+                        {errors[formAuth[2].name]}
+                      </p>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+                </div>
+                <div className='auth-form__group' key={4}>
+                  <input
+                    type={formAuth[3].type}
+                    name={formAuth[3].name}
+                    placeholder={formAuth[3].placeholder}
+                    className={`auth-form__input ${
+                      errors[formAuth[3].name] && "auth-form__input--err"
+                    } `}
+                    value={person[formAuth[3].name]}
+                    onChange={handlechange}
+                  />
+                  {errors[formAuth[3].name] ? (
+                    <p className='auth-form__error'>
+                      {errors[formAuth[3].name]}
+                    </p>
+                  ) : (
+                    " "
+                  )}
+                </div>
+                <div className='auth-form__group' key={5}>
+                  <input
+                    type={formAuth[4].type}
+                    name={formAuth[4].name}
+                    placeholder={formAuth[4].placeholder}
+                    className={`auth-form__input ${
+                      errors[formAuth[4].name] && "auth-form__input--err"
+                    } `}
+                    value={person[formAuth[4].name]}
+                    onChange={handlechange}
+                  />
+                  {errors[formAuth[4].name] ? (
+                    <p className='auth-form__error'>
+                      {errors[formAuth[4].name]}
+                    </p>
+                  ) : (
+                    " "
+                  )}
+                </div>
+                <div className='auth-form__group' key={6}>
+                  <input
+                    type={formAuth[5].type}
+                    name={formAuth[5].name}
+                    placeholder={formAuth[5].placeholder}
+                    className={`auth-form__input ${
+                      errors[formAuth[5].name] && "auth-form__input--err"
+                    } `}
+                    value={person[formAuth[5].name]}
+                    onChange={handlechange}
+                  />
+                  {errors[formAuth[5].name] ? (
+                    <p className='auth-form__error'>
+                      {errors[formAuth[5].name]}
+                    </p>
+                  ) : (
+                    " "
+                  )}
+                </div>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <option value='null'>Chọn giới tính</option>
-                  <option value='male'>Nam</option>
-                  <option value='female'>Nữ</option>
-                </select>
-                {errors.gender ? (
-                  <p className='auth-form__error'>{errors.gender}</p>
-                ) : (
-                  " "
-                )}
+                  <div className='auth-form__group--resp' key={7}>
+                    <input
+                      type={formAuth[6].type}
+                      name={formAuth[6].name}
+                      placeholder={formAuth[6].placeholder}
+                      className={`auth-form__input ${
+                        errors[formAuth[6].name] && "auth-form__input--err"
+                      } `}
+                      value={person[formAuth[6].name]}
+                      onChange={handlechange}
+                    />
+                    {errors[formAuth[6].name] ? (
+                      <p className='auth-form__error'>
+                        {errors[formAuth[6].name]}
+                      </p>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+                  <div className='auth-form__group--resp' key={8}>
+                    <input
+                      type={formAuth[7].type}
+                      name={formAuth[7].name}
+                      placeholder={formAuth[7].placeholder}
+                      className={`auth-form__input ${
+                        errors[formAuth[7].name] && "auth-form__input--err"
+                      } `}
+                      value={person[formAuth[7].name]}
+                      onChange={handlechange}
+                    />
+                    {errors[formAuth[7].name] ? (
+                      <p className='auth-form__error'>
+                        {errors[formAuth[7].name]}
+                      </p>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+                </div>
+                <div className='auth-form__group'>
+                  <select
+                    className={`auth-form__input ${
+                      errors.gender && "auth-form__input--err"
+                    }`}
+                    name='gender'
+                    onChange={handlechange}
+                  >
+                    <option value='null'>Chọn giới tính</option>
+                    <option value='male'>Nam</option>
+                    <option value='female'>Nữ</option>
+                  </select>
+                  {errors.gender ? (
+                    <p className='auth-form__error'>{errors.gender}</p>
+                  ) : (
+                    " "
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className='auth-form__form'>
+                {formAuth.map((ele, index) => {
+                  const { name, type, placeholder } = ele
+                  return (
+                    <div className='auth-form__group' key={index}>
+                      <input
+                        type={type}
+                        name={name}
+                        placeholder={placeholder}
+                        className={`auth-form__input ${
+                          errors[name] && "auth-form__input--err"
+                        } `}
+                        value={person[name]}
+                        onChange={handlechange}
+                      />
+                      {errors[name] ? (
+                        <p className='auth-form__error'>{errors[name]}</p>
+                      ) : (
+                        " "
+                      )}
+                    </div>
+                  )
+                })}
+                <div className='auth-form__group'>
+                  <select
+                    className={`auth-form__input ${
+                      errors.gender && "auth-form__input--err"
+                    }`}
+                    name='gender'
+                    onChange={handlechange}
+                  >
+                    <option value='null'>Chọn giới tính</option>
+                    <option value='male'>Nam</option>
+                    <option value='female'>Nữ</option>
+                  </select>
+                  {errors.gender ? (
+                    <p className='auth-form__error'>{errors.gender}</p>
+                  ) : (
+                    " "
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className='auth-form__aside'>
               <p className='autho-form__policy'>
@@ -207,16 +423,18 @@ const Signup = () => {
               </p>
             </div>
 
+            {errors["form"] ? (
+              <p className='auth-form__error'>{errors["form"]}</p>
+            ) : (
+              " "
+            )}
+
             <div
               className={`auth-form__controls ${resp && "responsive__margin"}`}
             >
               <button
                 className='btn btn--normal auth-form__controls-back'
-                onClick={
-                  isSignup
-                    ? () => setIsSignup(false)
-                    : () => setIsSellerSignup(false)
-                }
+                onClick={handleModal}
               >
                 TRỞ LẠI
               </button>
@@ -225,7 +443,6 @@ const Signup = () => {
               </button>
             </div>
           </div>
-          <ModalFooter />
         </div>
       </div>
       {loading && <Loading />}

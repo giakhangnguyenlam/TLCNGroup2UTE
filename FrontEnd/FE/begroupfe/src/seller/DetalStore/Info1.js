@@ -1,8 +1,8 @@
 import axios from "axios"
 import React, { useState } from "react"
 import { useGlobalContext } from "../../context"
-import { Colors, Sizes } from "../../data"
-import Loading from "../../Loading"
+import { Colors, Sizes } from "../../ultis/data"
+import Loading from "../../ultis/Loading"
 
 function Info1() {
   const jwt = localStorage.getItem("jwt")
@@ -50,8 +50,8 @@ function Info1() {
         clearCateClo()
         setLoading(false)
         setRaise({
-          header: "Update information",
-          content: "Update category infomation success!",
+          header: "Cập nhật thông tin",
+          content: "Cập nhật danh mục sản phẩm thành công!",
           color: "#4bb534",
         })
       }

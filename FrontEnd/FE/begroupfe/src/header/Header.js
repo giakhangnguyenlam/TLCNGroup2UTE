@@ -1,4 +1,4 @@
-import { React, useState } from "react"
+import { React } from "react"
 import HeaderSearch from "./HeaderSearch"
 import Navbar from "./Navbar"
 

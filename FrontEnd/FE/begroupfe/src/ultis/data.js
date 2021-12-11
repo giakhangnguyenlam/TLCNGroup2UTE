@@ -1,50 +1,3 @@
-import appGalery from "./assets/img/appgalery.png"
-import apple from "./assets/img/apple.png"
-import ggPlay from "./assets/img/ggplay.png"
-import acer from "./assets/img/acer.png"
-
-export const qrLinks = [
-  {
-    name: "AppleStore",
-    src: apple,
-    link: "/",
-  },
-  {
-    name: "GGplay",
-    src: ggPlay,
-    link: "/",
-  },
-  {
-    name: "AppGalery",
-    src: appGalery,
-    link: "/",
-  },
-]
-
-export const notis = [
-  {
-    name: "Acer nitro 7",
-    src: acer,
-    link: "/",
-    text: "Công nghệ",
-    desc: "Máy tính acer nitro 7 mới ra mắt",
-  },
-  {
-    name: "Acer nitro 7",
-    src: acer,
-    link: "/",
-    text: "Công nghệ máy tính xách tay thế hệ mới năm 2025",
-    desc: "Máy tính acer nitro 7 mới ra với tính năng ưu việt so với các dòng máy cùng phân khúc",
-  },
-  {
-    name: "Acer nitro 7",
-    src: acer,
-    link: "/",
-    text: "Công nghệ máy tính xách tay thế hệ mới năm 2025",
-    desc: "Máy tính acer nitro 7 mới ra với tính năng ưu việt so với các dòng máy cùng phân khúc",
-  },
-]
-
 export const formAuth = [
   {
     name: "name",
@@ -80,6 +33,11 @@ export const formAuth = [
     name: "address",
     type: "text",
     placeholder: "Nhập địa chỉ của bạn",
+  },
+  {
+    name: "phone",
+    type: "text",
+    placeholder: "Nhập số điện thoại của bạn",
   },
 ]
 

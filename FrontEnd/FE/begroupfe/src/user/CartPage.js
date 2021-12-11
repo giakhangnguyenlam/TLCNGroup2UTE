@@ -1,13 +1,13 @@
 import axios from "axios"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { useHistory } from "react-router"
-import noCart from "./assets/img/blankCart.png"
-import { useGlobalContext } from "./context"
+import noCart from "../assets/img/blankCart.png"
+import { useGlobalContext } from "../context"
 
 function CartPage() {
   const userId = localStorage.getItem("id")
-  const { setCart, reloadSell, setReloadSell } = useGlobalContext()
+  const { reloadSell, setReloadSell, setOrderData } = useGlobalContext()
   const history = useHistory()
   const cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`))
   let sum = 0
@@ -28,50 +28,42 @@ function CartPage() {
   }
 
   const handleDelete = (index) => {
-    let newCart = cartInfo.filter((item, indexI) => {
-      if (index !== indexI) {
-        return item
+    let del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
+    if (del) {
+      let newCart = cartInfo.filter((item, indexI) => {
+        if (index !== indexI) {
+          return item
+        }
+      })
+      if (newCart.length === 0) {
+        localStorage.removeItem(`cart${userId}`)
+        setReloadSell(!reloadSell)
+      } else {
+        localStorage.setItem(`cart${userId}`, JSON.stringify(newCart))
+        setReloadSell(!reloadSell)
       }
-    })
-    if (newCart.length === 0) {
-      localStorage.removeItem(`cart${userId}`)
-      setReloadSell(!reloadSell)
-    } else {
-      localStorage.setItem(`cart${userId}`, JSON.stringify(newCart))
-      setReloadSell(!reloadSell)
     }
   }
 
   const handleCheckout = async () => {
-    const jwt = localStorage.getItem("jwt")
     let data = {
       userId: Number(userId),
       total: sum,
       listProducts: [],
       listQuantities: [],
       listDescription: [],
+      listProductNames: [],
+      listPrices: [],
     }
     cartInfo.map((item) => {
       data.listProducts.push(item.product)
       data.listQuantities.push(item.quantity)
       data.listDescription.push(item.description)
+      data.listProductNames.push(item.name)
+      data.listPrices.push(item.price)
     })
-    try {
-      let res = await axios({
-        method: "post",
-        url: "https://tlcngroup2be.herokuapp.com/user/order",
-        data,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 201) {
-        localStorage.removeItem(`cart${userId}`)
-        setReloadSell(!reloadSell)
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    setOrderData(data)
+    history.push("/checkout")
   }
 
   useEffect(() => {

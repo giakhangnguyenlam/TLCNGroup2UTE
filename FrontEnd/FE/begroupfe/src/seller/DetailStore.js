@@ -7,7 +7,7 @@ import {
   AiOutlineDelete,
   AiOutlineInfoCircle,
 } from "react-icons/ai"
-import Loading from "../Loading"
+import Loading from "../ultis/Loading"
 
 function DetailStore() {
   const jwt = localStorage.getItem("jwt")
@@ -52,6 +52,7 @@ function DetailStore() {
   const handleDeleteProd = async (id, category) => {
     let del = window.confirm("Delete?")
     if (del) {
+      setLoading(true)
       try {
         let res = await axios({
           method: "delete",
@@ -62,6 +63,7 @@ function DetailStore() {
         })
         if (res.status === 200) {
           setReloadDetailStore(!reloadDetailStore)
+          setLoading(false)
         }
       } catch (error) {
         console.log(error)

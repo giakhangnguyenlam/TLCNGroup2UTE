@@ -1,6 +1,6 @@
 import React from "react"
 import { useGlobalContext } from "../context"
-import { cateShoList, cateCloList, cateAccList } from "../data"
+import { cateShoList, cateCloList, cateAccList } from "../ultis/data"
 function Footer() {
   const { setCate, setCateType, setCateName } = useGlobalContext()
   const clicked = (cate, type, name) => {
@@ -16,17 +16,17 @@ function Footer() {
             <h3 className='footer__heading'>Giới thiệu</h3>
             <ul className='footer-list'>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
+                <a href='/' className='footer-item__link'>
                   Thông tin
                 </a>
               </li>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
+                <a href='/' className='footer-item__link'>
                   Tuyển dụng
                 </a>
               </li>
               <li className='footer-item'>
-                <a href='' className='footer-item__link'>
+                <a href='/' className='footer-item__link'>
                   Điều khoản
                 </a>
               </li>

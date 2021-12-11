@@ -1,6 +1,6 @@
 import React from "react"
 import { useGlobalContext } from "../../context"
-import { Colors } from "../../data"
+import { Colors } from "../../ultis/data"
 
 function CategoryAccessories() {
   const { cateAcc, setCateAcc } = useGlobalContext()
@@ -26,7 +26,7 @@ function CategoryAccessories() {
           onChange={(e) => setCateAcc({ ...cateAcc, type: e.target.value })}
         >
           <option value='null'>Chọn loại</option>
-          <option value='bang-trang'>Băng trán</option>
+          <option value='bang-tran'>Băng trán</option>
           <option value='bang-co-tay'>Băng cổ tay</option>
           <option value='non'>Nón</option>
           <option value='tui'>Túi</option>

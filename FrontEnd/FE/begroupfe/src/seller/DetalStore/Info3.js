@@ -1,8 +1,8 @@
 import axios from "axios"
 import React, { useState } from "react"
 import { useGlobalContext } from "../../context"
-import { Colors } from "../../data"
-import Loading from "../../Loading"
+import { Colors } from "../../ultis/data"
+import Loading from "../../ultis/Loading"
 
 function Info3() {
   const jwt = localStorage.getItem("jwt")
@@ -55,8 +55,8 @@ function Info3() {
         clearCateAcc()
         setLoading(false)
         setRaise({
-          header: "Update information",
-          content: "Update category infomation success!",
+          header: "Cập nhật thông tin",
+          content: "Cập nhật danh mục sản phẩm thành công!",
           color: "#4bb534",
         })
       }

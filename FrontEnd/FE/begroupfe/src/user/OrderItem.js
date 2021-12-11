@@ -2,7 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router"
 import { useGlobalContext } from "../context"
-import Popup from "../Popup"
+import Popup from "../ultis/Popup"
 
 function OrderItem() {
   const jwt = localStorage.getItem("jwt")
@@ -160,68 +160,85 @@ function OrderItem() {
                   </div>
                   <div className='cart__body'>
                     {orderInfo ? (
-                      orderInfo.map((item, index) => {
-                        return (
-                          <div className='cart__body-wrap' key={index}>
-                            <div
-                              className='cart__header-item'
-                              style={{ width: "30%" }}
-                            >
-                              <div className='cart__body-item'>
-                                <div
-                                  className='cart__img'
-                                  style={{
-                                    backgroundImage: `url(${item.image})`,
-                                  }}
-                                ></div>
-                                <div className='cart__item-name'>
-                                  <p>{item.name}</p>
+                      orderInfo.length ? (
+                        orderInfo.map((item, index) => {
+                          return (
+                            <div className='cart__body-wrap' key={index}>
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "30%" }}
+                              >
+                                <div className='cart__body-item'>
+                                  <div
+                                    className='cart__img'
+                                    style={{
+                                      backgroundImage: `url(${item.image})`,
+                                    }}
+                                  ></div>
+                                  <div className='cart__item-name'>
+                                    <p>{item.name}</p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div
-                              className='cart__header-item'
-                              style={{ width: "20%" }}
-                            >
-                              {detail.description[index]}
-                            </div>
-                            <div
-                              className='cart__header-item'
-                              style={{ width: "13%" }}
-                            >
-                              {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              }).format(item.price)}
-                            </div>
-                            <div
-                              className='cart__header-item'
-                              style={{ width: "14%" }}
-                            >
-                              {detail.quantities[index]}
-                            </div>
-                            <div
-                              className='cart__header-item cart__total'
-                              style={{ width: "13%" }}
-                            >
-                              {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              }).format(item.price * detail.quantities[index])}
-                            </div>
-                            <div className='cart__header-item'>
-                              <p
-                                className='cart__icon'
-                                style={{ fontSize: "14px" }}
-                                onClick={() => handleCmt(item.productId)}
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "20%" }}
                               >
-                                Nhận xét
-                              </p>
+                                {detail.description[index]}
+                              </div>
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "13%" }}
+                              >
+                                {new Intl.NumberFormat("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                }).format(item.price)}
+                              </div>
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "14%" }}
+                              >
+                                {detail.quantities[index]}
+                              </div>
+                              <div
+                                className='cart__header-item cart__total'
+                                style={{ width: "13%" }}
+                              >
+                                {new Intl.NumberFormat("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                }).format(
+                                  item.price * detail.quantities[index]
+                                )}
+                              </div>
+                              <div className='cart__header-item'>
+                                <p
+                                  className='cart__icon'
+                                  style={{ fontSize: "14px" }}
+                                  onClick={() => handleCmt(item.productId)}
+                                >
+                                  Nhận xét
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        )
-                      })
+                          )
+                        })
+                      ) : (
+                        <div
+                          className='order__body'
+                          style={{
+                            width: "100%",
+                            height: "378px",
+                            fontSize: "24px",
+                            borderBottom: "none",
+                            justifyContent: "center",
+                          }}
+                        >
+                          Không có sản phẩm.
+                        </div>
+                      )
                     ) : (
                       <div
                         className='order__body'

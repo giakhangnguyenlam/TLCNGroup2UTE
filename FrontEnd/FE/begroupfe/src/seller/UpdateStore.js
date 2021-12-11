@@ -1,12 +1,13 @@
 import axios from "axios"
 import React, { useState, useRef } from "react"
 import { useGlobalContext } from "../context"
-import Loading from "../Loading"
-import Popup from "../Popup"
+import Loading from "../ultis/Loading"
 
 function UpdateStore() {
   const jwt = localStorage.getItem("jwt")
   const id = localStorage.getItem("id")
+  const [error, setError] = useState()
+  const [error2, setError2] = useState()
   const {
     isUpdateStore,
     setIsUpdateStore,
@@ -30,31 +31,35 @@ function UpdateStore() {
   }
   const handleSubmitImg = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    const data = new FormData()
-    data.append("file", storeUpdate.file)
-    try {
-      let res = await axios({
-        method: "put",
-        url: `https://tlcngroup2be.herokuapp.com/seller/store/image/${idStoreUpdate.id}`,
-        data,
-        headers: {
-          "content-type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setLoading(false)
-        setReloadSell(!reloadSell)
-        setIsUpdateStore(false)
-        setRaise({
-          header: "Update store",
-          content: "Update store image success!",
-          color: "#4bb534",
+    if (storeUpdate.file) {
+      setLoading(true)
+      const data = new FormData()
+      data.append("file", storeUpdate.file)
+      try {
+        let res = await axios({
+          method: "put",
+          url: `https://tlcngroup2be.herokuapp.com/seller/store/image/${idStoreUpdate.id}`,
+          data,
+          headers: {
+            "content-type": "multipart/form-data",
+            Authorization: `Bearer ${jwt}`,
+          },
         })
+        if (res.status === 200) {
+          setLoading(false)
+          setReloadSell(!reloadSell)
+          setIsUpdateStore(false)
+          setRaise({
+            header: "Cập nhật cửa hàng",
+            content: "Cập nhật ảnh hoàn tất!",
+            color: "#4bb534",
+          })
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
+    } else {
+      setError2("Vui lòng chọn ảnh")
     }
   }
   const handleChange = (e) => {
@@ -66,7 +71,15 @@ function UpdateStore() {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    fetchData()
+    if (
+      storeUpdate.userId &&
+      storeUpdate.nameStore &&
+      storeUpdate.storeDescription
+    ) {
+      fetchData()
+    } else {
+      setError("VUi lòng không để trống thông tin")
+    }
   }
   const fetchData = async () => {
     setLoading(true)
@@ -87,8 +100,8 @@ function UpdateStore() {
         setReloadSell(!reloadSell)
         setIsUpdateStore(false)
         setRaise({
-          header: "Update store",
-          content: "Update store infomation success!",
+          header: "Cập nhật cửa hàng",
+          content: "Cập nhật thông tin thành công!",
           color: "#4bb534",
         })
       }
@@ -140,7 +153,7 @@ function UpdateStore() {
                 />
               </div>
             </div>
-
+            {error ? <p className='auth-form__error'>{error}</p> : " "}
             <div
               className='auth-form__controls'
               style={{ justifyContent: "center", margin: "10px 0 20px" }}
@@ -171,6 +184,7 @@ function UpdateStore() {
               >
                 {fileName ? fileName : "Chọn ảnh mới"}
               </div>
+              {error2 ? <p className='auth-form__error'>{error2}</p> : " "}
               <div
                 className='auth-form__controls'
                 style={{ justifyContent: "center", margin: "10px 0 20px" }}

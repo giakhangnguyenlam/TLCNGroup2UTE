@@ -1,12 +1,14 @@
 import axios from "axios"
 import React, { useState, useEffect } from "react"
+import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
-import Popup from "../Popup"
+import Popup from "../ultis/Popup"
 
 function BodySell() {
-  const [storeList, setStoreList] = useState([])
+  const [storeList, setStoreList] = useState()
   const jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
+  const history = useHistory()
   const {
     isCreateStore,
     setIsCreateStore,
@@ -17,6 +19,9 @@ function BodySell() {
     setReloadSell,
     setIsDetailStore,
     setIsOrderDetail,
+    setIsStatic,
+    loading,
+    setLoading,
     raise,
     setRaise,
   } = useGlobalContext()
@@ -29,8 +34,9 @@ function BodySell() {
     setIdStoreUpdate(store)
   }
   const handleDeleteStore = async (id) => {
-    let del = window.confirm("Delete?")
+    let del = window.confirm("Bạn muốn xóa cửa hàng chứ?")
     if (del) {
+      setLoading(true)
       try {
         let res = await axios({
           method: "delete",
@@ -40,10 +46,11 @@ function BodySell() {
           },
         })
         if (res.status === 200) {
+          setLoading(false)
           setReloadSell(!reloadSell)
           setRaise({
-            header: "Delete store",
-            content: "Delete store success!",
+            header: "Xóa cửa hàng",
+            content: "Xóa thành công!",
             color: "#4bb534",
           })
         }
@@ -58,6 +65,10 @@ function BodySell() {
   }
   const handleOrderDetail = (store) => {
     setIsOrderDetail(true)
+    setIdStoreUpdate(store)
+  }
+  const handleStatic = (store) => {
+    setIsStatic(true)
     setIdStoreUpdate(store)
   }
 
@@ -75,7 +86,11 @@ function BodySell() {
   }
 
   useEffect(() => {
-    fetchData()
+    if (localStorage.getItem("role") === "ROLE_SELLER") {
+      fetchData()
+    } else {
+      history.push("/")
+    }
   }, [reloadSell])
 
   return (
@@ -91,69 +106,80 @@ function BodySell() {
           <div className='grid__colum-12'>
             <div className='store'>
               <div className='store-wrap'>
-                <div className='store__nav-wrap'>
-                  <div className='store__nav-options'>
-                    <div className='store__nav-tab store__nav-tab--active'>
-                      Cửa hàng của tôi
-                    </div>
-                    <div className='store__nav-tab'>Sản phẩm của tôi</div>
-                    <div className='store__nav-tab'>Phản hồi</div>
-                  </div>
-                </div>
                 <div className='store__contain'>
-                  <div className='store__contain-wrap'>
-                    <div className='store__contain-item'>
-                      {storeList.map((store) => {
-                        const { id, image, nameStore } = store
-                        return (
-                          <div className='grid__colum-2-4' key={id}>
-                            <div className='product-item'>
-                              <div
-                                className='product-item__img'
-                                style={{
-                                  backgroundImage: `url(${image})`,
-                                }}
-                              ></div>
-                              <h4 className='product-item__name'>
-                                {nameStore}
-                              </h4>
-                            </div>
-                            <div className='product-item__ctrl'>
-                              <button
-                                className='product-item__ctrl-btn btn'
-                                onClick={() => handleUpdateStore(store)}
-                              >
-                                Update
-                              </button>
-                              <button
-                                className='product-item__ctrl-btn btn'
-                                onClick={() => handleDeleteStore(id)}
-                              >
-                                Delete
-                              </button>
-                              <button
-                                className='product-item__ctrl-btn btn'
-                                onClick={() => handleDetailStore(store)}
-                              >
-                                Detail
-                              </button>
-                            </div>
-                            <div
-                              className='product-item__ctrl'
-                              style={{ justifyContent: "center" }}
-                            >
-                              <button
-                                className='product-item__ctrl-btn btn'
-                                style={{ width: "80%" }}
-                                onClick={() => handleOrderDetail(store)}
-                              >
-                                Order
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
+                  <div
+                    className='store__contain-wrap'
+                    style={{ minHeight: "810px" }}
+                  >
+                    {storeList ? (
+                      storeList.length ? (
+                        <div className='store__contain-item'>
+                          {storeList.map((store) => {
+                            const { id, image, nameStore } = store
+                            return (
+                              <div className='grid__colum-2-4' key={id}>
+                                <div className='product-item'>
+                                  <div
+                                    className='product-item__img'
+                                    style={{
+                                      backgroundImage: `url(${image})`,
+                                    }}
+                                  ></div>
+                                  <h4 className='product-item__name'>
+                                    {nameStore}
+                                  </h4>
+                                </div>
+                                <div className='product-item__ctrl'>
+                                  <button
+                                    className='product-item__ctrl-btn btn'
+                                    onClick={() => handleUpdateStore(store)}
+                                  >
+                                    Update
+                                  </button>
+                                  <button
+                                    className='product-item__ctrl-btn btn'
+                                    onClick={() => handleDeleteStore(id)}
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    className='product-item__ctrl-btn btn'
+                                    onClick={() => handleDetailStore(store)}
+                                  >
+                                    Detail
+                                  </button>
+                                </div>
+                                <div
+                                  className='product-item__ctrl'
+                                  style={{ justifyContent: "space-between" }}
+                                >
+                                  <button
+                                    className='product-item__ctrl-btn btn'
+                                    style={{ width: "48%" }}
+                                    onClick={() => handleOrderDetail(store)}
+                                  >
+                                    Order
+                                  </button>
+                                  <button
+                                    className='product-item__ctrl-btn btn'
+                                    style={{ width: "48%" }}
+                                    onClick={() => handleStatic(store)}
+                                  >
+                                    Static
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <div className='store__contain-loading'>
+                          Chưa có cửa hàng
+                        </div>
+                      )
+                    ) : (
+                      <div className='store__contain-loading'>Loading...</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -161,7 +187,15 @@ function BodySell() {
           </div>
         </div>
       </div>
-
+      {loading && (
+        <div className='modal__overlay' style={{ zIndex: "2", top: "0" }}>
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
       {raise && (
         <Popup
           header={raise.header}

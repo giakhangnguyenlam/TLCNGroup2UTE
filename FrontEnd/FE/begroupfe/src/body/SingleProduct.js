@@ -3,24 +3,21 @@ import React, { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router"
 import {
   AiOutlineRight,
-  AiOutlineDown,
   AiOutlineMinus,
   AiOutlinePlus,
   AiFillStar,
 } from "react-icons/ai"
-import { cateAccList, cateShoList, cateCloList } from "./data"
-import { FiTruck } from "react-icons/fi"
-import { useGlobalContext } from "./context"
-import blank from "./assets/img/blank.png"
-import noCmt from "./assets/img/noCmt.png"
-import Popup from "./Popup"
+import { cateAccList, cateShoList, cateCloList } from "../ultis/data"
+import { useGlobalContext } from "../context"
+import blank from "../assets/img/blank.png"
+import noCmt from "../assets/img/noCmt.png"
+import Popup from "../ultis/Popup"
 
 function SingleProduct() {
   const { id } = useParams()
   const {
     loading,
     setLoading,
-    cart,
     raise,
     setRaise,
     setIsLogin,
@@ -49,50 +46,72 @@ function SingleProduct() {
 
   const handleAddCart = (action) => {
     const userId = localStorage.getItem("id")
+    const role = localStorage.getItem("role")
+    console.log(choose)
     if (userId) {
-      let cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
-      console.log(cartInfo)
-      let totalN = info.quantity * prod.price
-      let product = Number(id)
-      let quantity = info.quantity
-      let description = ""
+      if (
+        role === "ROLE_USER" &&
+        choose.color + 1 &&
+        ((choose.size + 1 && (prod.category === 1 || prod.category === 2)) ||
+          prod.category === 3)
+      ) {
+        let cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
+        let totalN = info.quantity * prod.price
+        let product = Number(id)
+        let quantity = info.quantity
+        let description = ""
 
-      if (prod.category === 1 || prod.category === 2) {
-        description = `màu ${prod.color[choose.color]}, size ${
-          prod.size[choose.size]
-        }`
-      } else if (prod.category === 3) {
-        description = `màu ${prod.color[choose.color]}`
-      }
-      let res = false
-      cartInfo.forEach((item) => {
-        if (item.product === product && item.description === description) {
-          item.quantity += quantity
-          item.total += totalN
-          res = true
+        if (prod.category === 1 || prod.category === 2) {
+          description = `màu ${prod.color[choose.color]}, size ${
+            prod.size[choose.size]
+          }`
+        } else if (prod.category === 3) {
+          description = `màu ${prod.color[choose.color]}`
         }
-      })
-      if (!res) {
-        cartInfo.push({
-          name: prod.name,
-          price: prod.price,
-          image: prod.image,
-          total: totalN,
-          product,
-          quantity,
-          description,
+        let res = false
+        cartInfo.forEach((item) => {
+          if (item.product === product && item.description === description) {
+            item.quantity += quantity
+            item.total += totalN
+            res = true
+          }
         })
-      }
-      localStorage.setItem(`cart${userId}`, JSON.stringify(cartInfo))
-      if (action === "add") {
-        setRaise({
-          header: "Add to cart",
-          content: "Success!",
-          color: "#4bb534",
-        })
-        setReloadSell(!reloadSell)
+        if (!res) {
+          cartInfo.push({
+            name: prod.name,
+            price: prod.price,
+            image: prod.image,
+            total: totalN,
+            product,
+            quantity,
+            description,
+          })
+        }
+        localStorage.setItem(`cart${userId}`, JSON.stringify(cartInfo))
+        if (action === "add") {
+          setRaise({
+            header: "Thêm sản phẩm",
+            content: "Thêm vào giỏ hàng hoàn tất!",
+            color: "#4bb534",
+          })
+          setReloadSell(!reloadSell)
+        } else {
+          history.push("/cart")
+        }
       } else {
-        history.push("/cart")
+        if (role !== "ROLE_USER") {
+          setRaise({
+            header: "Thông báo",
+            content: "Bạn cần phải là người mua hàng để mua sản phẩm!",
+            color: "#f0541e",
+          })
+        } else {
+          setRaise({
+            header: "Thông báo",
+            content: "Bạn cần chọn đủ thông tin để mua sản phẩm!",
+            color: "#f0541e",
+          })
+        }
       }
     } else {
       setIsLogin(true)
@@ -210,14 +229,14 @@ function SingleProduct() {
         url: `https://tlcngroup2be.herokuapp.com/product/comment/${id}`,
       })
       if (res.status === 200) {
-        setCmtList(res.data)
-        return 200
+        return { status: 200, data: res.data }
       }
     } catch (error) {
       console.log(error)
     }
   }
   useEffect(() => {
+    document.documentElement.scrollTop = 0
     const fetch = async () => {
       setLoading(true)
       let res = await fetchData()
@@ -253,7 +272,7 @@ function SingleProduct() {
           })
         }
         let comment = await fetchComment()
-        if (comment === 200) {
+        if (comment.status === 200) {
           setCmtList(comment.data)
         }
         setLoading(false)
@@ -265,11 +284,14 @@ function SingleProduct() {
   const handlInput = (e) => {
     let newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
-      if (newQuan <= info.quantity) {
+      if (newQuan <= prod.quantity) {
         setInfo({ ...info, quantity: newQuan })
       } else {
         setInfo({ ...info, quantity: prod.quantity })
       }
+    }
+    if (newQuan === "") {
+      setInfo({ ...info, quantity: 1 })
     }
   }
 
@@ -321,58 +343,6 @@ function SingleProduct() {
                       style: "currency",
                       currency: "VND",
                     }).format(prod.price)}
-                  </div>
-
-                  <div className='brief__product-shipping'>
-                    <div className='brief__product-shipping-wrap'>
-                      <div className='shipping-wrap'>
-                        <label className='brief__product-label'>
-                          Vận chuyển
-                        </label>
-                        <div className='shipping'>
-                          <FiTruck
-                            className='shipping__icon'
-                            style={{ marginRight: "10px" }}
-                          />
-                          <div className='shipping__ship'>
-                            <div className='shipping__item'>
-                              <label
-                                className='brief__product-label'
-                                style={{ marginRight: "4px" }}
-                              >
-                                Vận chuyển tới
-                              </label>
-                              <div className='shipping__item-choose'>
-                                <label style={{ fontSize: "1.4rem" }}>
-                                  thủ đức
-                                </label>
-                                <AiOutlineDown
-                                  className='shipping__icon'
-                                  style={{ marginLeft: "4px" }}
-                                />
-                              </div>
-                            </div>
-                            <div className='shipping__item'>
-                              <label
-                                className='brief__product-label'
-                                style={{ marginRight: "4px" }}
-                              >
-                                Phí Vận chuyển
-                              </label>
-                              <div className='shipping__item-choose'>
-                                <label style={{ fontSize: "1.4rem" }}>
-                                  0 đ
-                                </label>
-                                <AiOutlineDown
-                                  className='shipping__icon'
-                                  style={{ marginLeft: "4px" }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
                   {prod.color.length ? (
@@ -543,7 +513,7 @@ function SingleProduct() {
                     ĐÁNH GIÁ SẢN PHẨM
                   </div>
                   <div className='content__body'>
-                    {cmtList ? (
+                    {cmtList.length ? (
                       cmtList.map((item, index) => {
                         return (
                           <div className='comment__body-item' key={index}>

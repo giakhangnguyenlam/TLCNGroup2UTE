@@ -1,8 +1,8 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useGlobalContext } from "../context"
-import { formAuth } from "../data"
-import ModalFooter from "../ModalFooter"
+import { formAuth } from "../ultis/data"
+import Loading from "../ultis/Loading"
 
 const Login = () => {
   const {
@@ -12,6 +12,8 @@ const Login = () => {
     setIsSignup,
     reloadSell,
     setReloadSell,
+    loading,
+    setLoading,
   } = useGlobalContext()
   const [errors, setErrors] = useState({})
   const [account, setAccount] = useState({
@@ -27,7 +29,7 @@ const Login = () => {
     setIsLogin(!isLogin)
     setIsSignup(!isSignup)
   }
-  const checkError = ({ username, password }) => {
+  const checkError = async ({ username, password }) => {
     let errs = {}
     if (!username) {
       errs.username = "Không được bỏ trống trường này!"
@@ -36,39 +38,56 @@ const Login = () => {
       errs.password = "Không được bỏ trống trường này!"
     }
     setErrors(errs)
+    return errs
   }
   const fetchData = async () => {
+    setLoading(true)
+    let url = "https://tlcngroup2be.herokuapp.com/login"
     try {
       let res = await axios({
         method: "post",
-        url: "https://tlcngroup2be.herokuapp.com/login",
+        url,
         data: { ...account },
         headers: { "Access-Control-Allow-Origin": "*" },
         responseType: "json",
       })
       if (res.status === 200) {
         setIsLogin(false)
-        const { id, name, dateofbirth, email, address, gender, jwt, role } =
-          await res.data
+        let {
+          id,
+          name,
+          dateofbirth,
+          email,
+          address,
+          gender,
+          jwt,
+          role,
+          phone,
+        } = await res.data
         localStorage.setItem("id", id)
         localStorage.setItem("name", name)
         localStorage.setItem("dateofbirth", dateofbirth)
         localStorage.setItem("email", email)
         localStorage.setItem("address", address)
+        localStorage.setItem("phone", phone)
         localStorage.setItem("gender", gender)
         localStorage.setItem("jwt", jwt)
         localStorage.setItem("role", role)
         localStorage.setItem("expire", new Date().getTime() + 43200000)
         setReloadSell(!reloadSell)
+        setLoading(false)
       }
     } catch (error) {
-      console.log(error)
+      if (error.response) {
+        setErrors({ form: error.response.data.mess })
+        setLoading(false)
+      }
     }
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    checkError(account)
-    if (Object.keys(errors).length === 0) {
+    let result = await checkError(account)
+    if (Object.keys(result).length === 0) {
       fetchData()
     }
   }
@@ -105,6 +124,11 @@ const Login = () => {
                       }`}
                       value={account[name]}
                       onChange={handlechange}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          handleSubmit(event)
+                        }
+                      }}
                     />
                     {errors[name] ? (
                       <p className='auth-form__error'>{errors[name]}</p>
@@ -115,17 +139,11 @@ const Login = () => {
                 )
               })}
             </div>
-
-            <div className='auth-form__aside'>
-              <div className='auth-form__help'>
-                <a href='/comingsoon' className='auth-form__help-link'>
-                  Quên mật khẩu
-                </a>
-                <a href='/comingsoon' className='auth-form__help-link'>
-                  Đăng nhập với SMS
-                </a>
-              </div>
-            </div>
+            {errors["form"] ? (
+              <p className='auth-form__error'>{errors["form"]}</p>
+            ) : (
+              " "
+            )}
 
             <div className='auth-form__controls'>
               <button
@@ -139,9 +157,9 @@ const Login = () => {
               </button>
             </div>
           </div>
-          <ModalFooter />
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   )
 }

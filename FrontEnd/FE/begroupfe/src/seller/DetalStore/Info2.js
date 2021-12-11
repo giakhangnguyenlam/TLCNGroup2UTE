@@ -1,8 +1,8 @@
 import axios from "axios"
 import React, { useState } from "react"
 import { useGlobalContext } from "../../context"
-import { Colors, SizeNumber } from "../../data"
-import Loading from "../../Loading"
+import { Colors, SizeNumber } from "../../ultis/data"
+import Loading from "../../ultis/Loading"
 
 function Info2() {
   const jwt = localStorage.getItem("jwt")
@@ -16,7 +16,6 @@ function Info2() {
     setLoading,
   } = useGlobalContext()
   const [isEdit, setIsEdit] = useState(false)
-
   const addArr = (type, ele) => {
     let newArr = cateSho[type]
     newArr.push(ele)
@@ -71,8 +70,8 @@ function Info2() {
         clearCateSho()
         setLoading(false)
         setRaise({
-          header: "Update information",
-          content: "Update category infomation success!",
+          header: "Cập nhật thông tin",
+          content: "Cập nhật danh mục sản phẩm thành công!",
           color: "#4bb534",
         })
       }

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { React, useRef, useState } from "react"
 import { useGlobalContext } from "../context"
-import Loading from "../Loading"
+import Loading from "../ultis/Loading"
 
 function CreateStore() {
   const userId = localStorage.getItem("id")
@@ -16,6 +16,7 @@ function CreateStore() {
     setRaise,
   } = useGlobalContext()
   const refImg = useRef(null)
+  const [error, setError] = useState()
   const [newStore, setNewStore] = useState({
     file: "",
     userId,
@@ -38,34 +39,43 @@ function CreateStore() {
     }
   }
   const uploadData = async () => {
-    setLoading(true)
-    const data = new FormData()
-    data.append("file", newStore.file)
-    data.append("userId", newStore.userId)
-    data.append("nameStore", newStore.nameStore)
-    data.append("storeDescription", newStore.storeDescription)
-    try {
-      let res = await axios({
-        method: "post",
-        url: "https://tlcngroup2be.herokuapp.com/seller/store",
-        data,
-        headers: {
-          "content-type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 201) {
-        setLoading(false)
-        setReloadSell(!reloadSell)
-        setIsCreateStore(false)
-        setRaise({
-          header: "Create store",
-          content: "Create store success!",
-          color: "#4bb534",
+    if (
+      newStore.file &&
+      newStore.userId + 1 &&
+      newStore.nameStore &&
+      newStore.storeDescription
+    ) {
+      setLoading(true)
+      const data = new FormData()
+      data.append("file", newStore.file)
+      data.append("userId", newStore.userId)
+      data.append("nameStore", newStore.nameStore)
+      data.append("storeDescription", newStore.storeDescription)
+      try {
+        let res = await axios({
+          method: "post",
+          url: "https://tlcngroup2be.herokuapp.com/seller/store",
+          data,
+          headers: {
+            "content-type": "multipart/form-data",
+            Authorization: `Bearer ${jwt}`,
+          },
         })
+        if (res.status === 201) {
+          setLoading(false)
+          setReloadSell(!reloadSell)
+          setIsCreateStore(false)
+          setRaise({
+            header: "Create store",
+            content: "Create store success!",
+            color: "#4bb534",
+          })
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
+    } else {
+      setError("Vui lòng cung cấp đầy đủ thông tin")
     }
   }
   const handleSubmit = (e) => {
@@ -124,6 +134,7 @@ function CreateStore() {
                 </div>
               </div>
             </div>
+            {error ? <p className='auth-form__error'>{error}</p> : " "}
 
             <div
               className='auth-form__controls'

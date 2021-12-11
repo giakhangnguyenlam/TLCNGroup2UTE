@@ -1,6 +1,7 @@
 import axios from "axios"
 import React, { useRef, useState } from "react"
 import { useGlobalContext } from "../../context"
+import Loading from "../../ultis/Loading"
 
 function ModalDetailUpdate() {
   const jwt = localStorage.getItem("jwt")
@@ -10,6 +11,8 @@ function ModalDetailUpdate() {
     setReloadDetailStore,
     reloadDetailStore,
     setRaise,
+    loading,
+    setLoading,
   } = useGlobalContext()
   const refImg = useRef(null)
   const [prodUpdate, setProdUpdate] = useState({
@@ -25,6 +28,7 @@ function ModalDetailUpdate() {
   }
   const handleSubmitImg = async (e) => {
     e.preventDefault()
+    setLoading(true)
     const data = new FormData()
     data.append("file", prodUpdate.file)
     try {
@@ -38,15 +42,17 @@ function ModalDetailUpdate() {
         },
       })
       if (res.status === 200) {
+        setLoading(false)
         setReloadDetailStore(!reloadDetailStore)
         setIsDetailUpdate(false)
         setRaise({
-          header: "Update product",
-          content: "Update product image success!",
+          header: "Cập nhật sản phẩm",
+          content: "Cập nhật ảnh thành công!",
           color: "#4bb534",
         })
       }
     } catch (error) {
+      setLoading(false)
       console.log(error)
     }
   }
@@ -62,6 +68,7 @@ function ModalDetailUpdate() {
     fetchData()
   }
   const fetchData = async () => {
+    setLoading(true)
     const { name, quantity, price, description } = prodUpdate
     const data = { name, quantity, price, description }
     try {
@@ -75,6 +82,7 @@ function ModalDetailUpdate() {
         responseType: "json",
       })
       if (res.status === 200) {
+        setLoading(false)
         setIsDetailUpdate(false)
         setReloadDetailStore(!reloadDetailStore)
         setRaise({
@@ -84,6 +92,7 @@ function ModalDetailUpdate() {
         })
       }
     } catch (error) {
+      setLoading(false)
       console.log(error)
     }
   }
@@ -218,6 +227,7 @@ function ModalDetailUpdate() {
           </div>
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   )
 }

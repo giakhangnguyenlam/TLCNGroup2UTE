@@ -24,13 +24,18 @@ function UserOrder() {
         },
       })
       if (res.status === 200) {
-        setOrderList(res.data)
+        setOrderList(res.data.reverse())
       }
     } catch (error) {}
   }
 
   useEffect(() => {
-    fetchData()
+    let role = localStorage.getItem("role")
+    if (role === "ROLE_USER") {
+      fetchData()
+    } else {
+      history.push("/")
+    }
   }, [])
 
   return (
@@ -111,52 +116,100 @@ function UserOrder() {
                   </div>
 
                   <div className='order__nav'>
-                    <div className='order__nav-item' style={{ width: "20%" }}>
-                      Mã đơn hàng
+                    <div className='order__nav-item' style={{ width: "10%" }}>
+                      Mã đơn
                     </div>
-                    <div className='order__nav-item'>Ngày mua</div>
+                    <div className='order__nav-item' style={{ width: "10%" }}>
+                      Ngày mua
+                    </div>
+                    <div className='order__nav-item' style={{ width: "33%" }}>
+                      Sản phẩm
+                    </div>
                     <div className='order__nav-item'>Tổng tiền</div>
+                    <div className='order__nav-item' style={{ width: "14%" }}>
+                      Thanh toán
+                    </div>
                     <div
                       className='order__nav-item'
-                      style={{ width: "30%", textAlign: "center" }}
+                      style={{ width: "18%", textAlign: "right" }}
                     >
                       Trạng thái đơn hàng
                     </div>
                   </div>
                   {orderList ? (
-                    orderList.map((item) => {
-                      const {
-                        id,
-                        orderDate,
-                        total,
-                        orderStatus,
-                        paymentStatus,
-                      } = item
-                      return (
-                        <div className='order__body' key={id}>
+                    orderList.length ? (
+                      orderList.map((item) => {
+                        const {
+                          id,
+                          orderDate,
+                          total,
+                          product,
+                          paymentStatus,
+                          orderStatus,
+                        } = item
+                        return (
                           <div
-                            className='order__nav-item order__id'
-                            style={{ width: "20%" }}
+                            className='order__body order__body--hover'
+                            key={id}
                             onClick={() => handleRedirect(`order/${id}`)}
                           >
-                            <span>{id}</span>
+                            <div
+                              className='order__nav-item order__id'
+                              style={{ width: "10%" }}
+                            >
+                              <span>{id}</span>
+                            </div>
+                            <div
+                              className='order__nav-item'
+                              style={{ width: "10%" }}
+                            >
+                              {orderDate}
+                            </div>
+                            <div
+                              className='order__nav-item'
+                              style={{ width: "33%" }}
+                            >
+                              {product}
+                            </div>
+                            <div className='order__nav-item'>
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(total)}
+                            </div>
+                            <div
+                              className='order__nav-item'
+                              style={{ width: "14%" }}
+                            >
+                              {paymentStatus}
+                            </div>
+                            <div
+                              className='order__nav-item'
+                              style={{
+                                width: "18%",
+                                textAlign: "right",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {orderStatus}
+                            </div>
                           </div>
-                          <div className='order__nav-item'>{orderDate}</div>
-                          <div className='order__nav-item'>
-                            {new Intl.NumberFormat("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            }).format(total)}
-                          </div>
-                          <div
-                            className='order__nav-item'
-                            style={{ width: "30%", textAlign: "right" }}
-                          >
-                            {`${orderStatus}, ${paymentStatus}`}
-                          </div>
-                        </div>
-                      )
-                    })
+                        )
+                      })
+                    ) : (
+                      <div
+                        className='order__body'
+                        style={{
+                          width: "100%",
+                          height: "378px",
+                          fontSize: "24px",
+                          borderBottom: "none",
+                          justifyContent: "center",
+                        }}
+                      >
+                        Không có đơn hàng
+                      </div>
+                    )
                   ) : (
                     <div
                       className='order__body'

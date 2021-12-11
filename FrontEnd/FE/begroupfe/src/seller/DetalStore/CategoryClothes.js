@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useGlobalContext } from "../../context"
-import { Sizes, Colors } from "../../data"
+import { Sizes, Colors } from "../../ultis/data"
 
 function CategoryClothes() {
   const { cateClo, setCateClo } = useGlobalContext()

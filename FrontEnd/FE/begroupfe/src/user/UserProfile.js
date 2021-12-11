@@ -1,18 +1,25 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
+import Popup from "../ultis/Popup"
+import { useGlobalContext } from "../context"
 
 function UserProfile() {
-  const dob = localStorage.getItem("dateofbirth")
+  const dob = localStorage.getItem("dateofbirth") || ""
   const jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
+  const role = localStorage.getItem("role")
+
+  const { loading, setLoading, raise, setRaise } = useGlobalContext()
 
   const history = useHistory()
+  const [height, setHeight] = useState(0)
   const [user, setUser] = useState({
     name: localStorage.getItem("name"),
     dateofbirth: `${dob.slice(6, 10)}-${dob.slice(3, 5)}-${dob.slice(0, 2)}`,
     email: localStorage.getItem("email"),
     address: localStorage.getItem("address"),
+    phone: localStorage.getItem("phone"),
     gender: localStorage.getItem("gender"),
   })
 
@@ -22,33 +29,68 @@ function UserProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     const dateBirth = user.dateofbirth
     const dd = dateBirth.slice(8)
     const mm = dateBirth.slice(5, 7)
     const yyyy = dateBirth.slice(0, 4)
+    let url = `https://tlcngroup2be.herokuapp.com/user/${userid}`
     try {
       let res = await axios({
         method: "PUT",
-        url: `https://tlcngroup2be.herokuapp.com/user/${userid}`,
+        url,
         data: { ...user, dateofbirth: `${dd}-${mm}-${yyyy}` },
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       })
       if (res.status === 200) {
-        console.log("done", res.data)
-        let { name, dateofbirth, email, address, gender, jwt } = res.data
+        let { name, dateofbirth, email, address, gender, jwt, phone } = res.data
         localStorage.setItem("name", name)
         localStorage.setItem("dateofbirth", dateofbirth)
         localStorage.setItem("email", email)
         localStorage.setItem("address", address)
         localStorage.setItem("gender", gender)
         localStorage.setItem("jwt", jwt)
+        localStorage.setItem("phone", phone)
+        setRaise({
+          header: "Cập nhật thông tin",
+          content: "Cập nhật thành công!",
+          color: "#4bb534",
+        })
+        setLoading(false)
       }
     } catch (error) {
-      console.log(error)
+      setLoading(false)
+      setRaise({
+        header: "Thay đổi thông tin",
+        content: "Có lỗi xảy ra, mời bạn thử lại lần sau.",
+        color: "#dc143c",
+      })
     }
   }
+
+  useEffect(() => {
+    if (
+      role !== "ROLE_USER" &&
+      role !== "ROLE_SELLER" &&
+      role !== "ROLE_SHIPPER"
+    ) {
+      history.push("/")
+    }
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
+  }, [])
 
   return (
     <div className='container'>
@@ -158,6 +200,19 @@ function UserProfile() {
                     </div>
                     <div className='auth-form__group'>
                       <div className='auth-form__group-item'>
+                        <label className='auth-form__label'>Phone</label>
+                        <input
+                          type='text'
+                          className='auth-form__input'
+                          value={user.phone}
+                          onChange={(e) =>
+                            setUser({ ...user, phone: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className='auth-form__group'>
+                      <div className='auth-form__group-item'>
                         <label className='auth-form__label'>Địa chỉ</label>
                         <input
                           type='text'
@@ -217,6 +272,25 @@ function UserProfile() {
           </div>
         </div>
       </div>
+      {loading && (
+        <div
+          className='modal__overlay'
+          style={{ zIndex: "5", top: "0", height }}
+        >
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
+      {raise && (
+        <Popup
+          header={raise.header}
+          content={raise.content}
+          color={raise.color}
+        />
+      )}
     </div>
   )
 }

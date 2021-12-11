@@ -1,5 +1,5 @@
 import React from "react"
-import { notis } from "../data"
+import { notis } from "../ultis/data"
 
 function HeaderNoti() {
   return (
