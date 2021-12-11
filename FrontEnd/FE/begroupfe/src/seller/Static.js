@@ -138,6 +138,7 @@ function Static() {
                     newDate({ ...date, type: e.target.value })
                   }}
                 >
+                  <option value='all'>Tất cả</option>
                   <option value='day'>Ngày</option>
                   <option value='my'>Tháng Năm</option>
                   <option value='quy'>Quý</option>
