@@ -21,7 +21,7 @@ function AdminLogin() {
     try {
       let res = await axios({
         method: "POST",
-        url: "https://tlcngroup2be.herokuapp.com/admin/login",
+        url: "https://tlcngroup2be.herokuapp.com/login",
         data: account,
       })
       if (res.status === 200) {
@@ -37,8 +37,8 @@ function AdminLogin() {
           localStorage.removeItem("role")
           localStorage.removeItem("expire")
         }
-        localStorage.setItem("username", res.data.username)
-        localStorage.setItem("jwtA", res.data.accessToken)
+        localStorage.setItem("username", res.data.name)
+        localStorage.setItem("jwtA", res.data.jwt)
         setIsAdmin(true)
       }
     } catch (error) {

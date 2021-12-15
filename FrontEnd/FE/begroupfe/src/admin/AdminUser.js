@@ -16,9 +16,6 @@ function AdminPage() {
     if (adminPage === "user") {
       url = "https://tlcngroup2be.herokuapp.com/admin/users"
     }
-    if (adminPage === "seller") {
-      url = "https://tlcngroup2be.herokuapp.com/admin/sellers"
-    }
     try {
       let res = await axios({
         method: "get",
@@ -35,22 +32,13 @@ function AdminPage() {
 
   useEffect(() => {
     fetchData()
-  }, [adminPage])
+  }, [])
 
   useEffect(() => {
     if (allUser) {
       setPageCount(Math.ceil(allUser.length / 20))
     }
   }, [allUser])
-
-  const handleSwap = () => {
-    if (adminPage === "user") {
-      setAdminPage("seller")
-    } else {
-      setAdminPage("user")
-    }
-    setAllUser()
-  }
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * 20) % allUser.length
@@ -69,41 +57,25 @@ function AdminPage() {
                 <div className='store__nav-wrap'>
                   <div className='store__nav-options'>
                     <div
-                      className={`w200px store__nav-tab ${
-                        adminPage === "user" ? "store__nav-tab--active" : ""
-                      }`}
-                      onClick={() => handleSwap()}
+                      className='store__nav-tab store__nav-tab--active'
+                      onClick={() => setAdminPage("user")}
                     >
                       Tất cả người dùng
                     </div>
                     <div
-                      className={`w200px store__nav-tab ${
-                        adminPage === "seller" ? "store__nav-tab--active" : ""
-                      }`}
-                      onClick={() => handleSwap()}
-                    >
-                      Tất cả người bán
-                    </div>
-                    <div
-                      className='w200px store__nav-tab'
-                      onClick={() => setAdminPage("unpay")}
-                    >
-                      Duyệt người giao hàng
-                    </div>
-                    <div
-                      className='w200px store__nav-tab'
+                      className='store__nav-tab'
                       onClick={() => setAdminPage("store")}
                     >
                       Tất cả cửa hàng
                     </div>
                     <div
-                      className='w200px store__nav-tab'
+                      className='store__nav-tab'
                       onClick={() => setAdminPage("order")}
                     >
                       Tất cả đơn hàng
                     </div>
                     <div
-                      className='w200px store__nav-tab'
+                      className='store__nav-tab'
                       onClick={() => setAdminPage("product")}
                     >
                       Tất cả sản phẩm
@@ -131,7 +103,7 @@ function AdminPage() {
                           className='store-item w300x'
                           style={{ borderRight: "1px solid #979797" }}
                         >
-                          Username
+                          Tên người dùng
                         </div>
                         <div
                           className='store-item__info-nav'
@@ -149,13 +121,13 @@ function AdminPage() {
                         .slice(itemOffset, itemOffset + 20)
                         .map((product, index) => {
                           let {
-                            username,
                             name,
                             dateofbirth,
                             email,
                             address,
                             phone,
                             gender,
+                            role,
                           } = product
                           if (gender === "male") {
                             gender = "Nam"
@@ -178,7 +150,7 @@ function AdminPage() {
                                   className='store-item w300x'
                                   style={{ borderRight: "1px solid #979797" }}
                                 >
-                                  {username}
+                                  {name}
                                 </div>
                                 <div
                                   className='store-item__info'
@@ -196,9 +168,6 @@ function AdminPage() {
                                 </div>
                                 <div className='store-item__info'>
                                   <div className='store-item__info-item'>
-                                    Tên: {name}
-                                  </div>
-                                  <div className='store-item__info-item'>
                                     Sinh nhật: {dateofbirth}
                                   </div>
                                   <div className='store-item__info-item'>
@@ -206,9 +175,13 @@ function AdminPage() {
                                   </div>
                                   <div className='store-item__info-item'>
                                     Hiện đang là{" "}
-                                    {adminPage === "user"
-                                      ? "người dùng"
-                                      : "người bán hàng"}
+                                    {role === "ROLE_USER"
+                                      ? "người dùng."
+                                      : role === "ROLE_SELLER"
+                                      ? "người bán hàng."
+                                      : role === "ROLE_SHIPPER"
+                                      ? "người giao hàng."
+                                      : "người quản trị."}
                                   </div>
                                 </div>
                               </div>

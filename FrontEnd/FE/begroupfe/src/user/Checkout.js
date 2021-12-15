@@ -54,7 +54,12 @@ function Checkout() {
           history.push("/")
         }
       } catch (error) {
-        console.log(error)
+        setRaise({
+          header: "Đặt hàng",
+          content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+          color: "#dc143c",
+        })
+        setLoading(false)
       }
     }
   }

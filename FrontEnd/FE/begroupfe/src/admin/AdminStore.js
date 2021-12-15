@@ -89,34 +89,25 @@ function AdminStore() {
                   <div className='store__nav-wrap'>
                     <div className='store__nav-options'>
                       <div
-                        className='w200px store__nav-tab'
-                        onClick={() => setAdminPage("store")}
+                        className='store__nav-tab'
+                        onClick={() => setAdminPage("user")}
                       >
                         Tất cả người dùng
                       </div>
                       <div
-                        className='w200px store__nav-tab'
-                        onClick={() => setAdminPage("seller")}
+                        className='store__nav-tab store__nav-tab--active'
+                        onClick={() => setAdminPage("store")}
                       >
-                        Tất cả người bán
-                      </div>
-                      <div
-                        className='w200px store__nav-tab'
-                        onClick={() => setAdminPage("unpay")}
-                      >
-                        Duyệt người giao hàng
-                      </div>
-                      <div className='w200px store__nav-tab store__nav-tab--active'>
                         Tất cả cửa hàng
                       </div>
                       <div
-                        className='w200px store__nav-tab'
+                        className='store__nav-tab'
                         onClick={() => setAdminPage("order")}
                       >
                         Tất cả đơn hàng
                       </div>
                       <div
-                        className='w200px store__nav-tab'
+                        className='store__nav-tab'
                         onClick={() => setAdminPage("product")}
                       >
                         Tất cả sản phẩm

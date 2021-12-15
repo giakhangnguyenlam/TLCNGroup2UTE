@@ -97,18 +97,6 @@ function AdminProduct() {
                       </div>
                       <div
                         className='w200px store__nav-tab'
-                        onClick={() => setAdminPage("seller")}
-                      >
-                        Tất cả người bán
-                      </div>
-                      <div
-                        className='w200px store__nav-tab'
-                        onClick={() => setAdminPage("unpay")}
-                      >
-                        Duyệt người giao hàng
-                      </div>
-                      <div
-                        className='w200px store__nav-tab'
                         onClick={() => setAdminPage("store")}
                       >
                         Tất cả cửa hàng
@@ -119,7 +107,10 @@ function AdminProduct() {
                       >
                         Tất cả đơn hàng
                       </div>
-                      <div className='w200px store__nav-tab store__nav-tab--active'>
+                      <div
+                        className='w200px store__nav-tab store__nav-tab--active'
+                        onClick={() => setAdminPage("product")}
+                      >
                         Tất cả sản phẩm
                       </div>
                     </div>

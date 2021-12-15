@@ -1413,7 +1413,7 @@ i.product-item__action-liked-icon {
 
 .store__nav-tab {
   height: 40px;
-  width: 400px;
+  width: 300px;
   font-size: 1.8rem;
   color: var(--text-color);
   display: flex;

@@ -17,6 +17,7 @@ function Static() {
 
   today = yyyy + "-" + mm + "-" + dd
   const [date, newDate] = useState({ date: today, type: "all" })
+  const [temp, setTemp] = useState({ date1: "2021-01-01", date2: "2021-01-02" })
 
   const exportEx = () => {
     let dateUWant = new Date(`${date.date} `)
@@ -55,7 +56,7 @@ function Static() {
 
   const fetchData = async () => {
     let url = ""
-    let dateUWant = new Date(`${date.date} `)
+    let dateUWant = new Date(date.date)
     let dateUHave = new Date(Date.now())
     if (dateUWant <= dateUHave) {
       if (date.type === "all") {
@@ -64,12 +65,28 @@ function Static() {
         let ndd = String(dateUWant.getDate()).padStart(2, "0")
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
-
         url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/date/${ndd}-${nmm}-${nyyyy}`
-      } else if (date.type === "my") {
+      } else if (date.type === "month") {
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
         url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/month/${nmm}/year/${nyyyy}`
+      } else if (date.type === "year") {
+        let nyyyy = dateUWant.getFullYear()
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/year/${nyyyy}`
+      } else if (date.type === "quarter") {
+        let nq = Math.floor((dateUWant.getMonth() + 3) / 3)
+        let nyyyy = dateUWant.getFullYear()
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/quarter/${nq}/year/${nyyyy}`
+      } else if (date.type === "range") {
+        dateUWant = new Date(`${temp.date1}`)
+        dateUHave = new Date(`${temp.date2}`)
+        let d1 = String(dateUWant.getDate()).padStart(2, "0")
+        let m1 = String(dateUWant.getMonth() + 1).padStart(2, "0")
+        let y1 = dateUWant.getFullYear()
+        let d2 = String(dateUHave.getDate()).padStart(2, "0")
+        let m2 = String(dateUHave.getMonth() + 1).padStart(2, "0")
+        let y2 = dateUHave.getFullYear()
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/datestart/${d1}-${m1}-${y1}/dateend/${d2}-${m2}-${y2}`
       }
       try {
         let res = await axios({
@@ -140,9 +157,10 @@ function Static() {
                 >
                   <option value='all'>Tất cả</option>
                   <option value='day'>Ngày</option>
-                  <option value='my'>Tháng Năm</option>
-                  <option value='quy'>Quý</option>
-                  <option value='quy'>Khoảng tùy ý</option>
+                  <option value='month'>Tháng</option>
+                  <option value='quarter'>Quý</option>
+                  <option value='year'>Năm</option>
+                  <option value='range'>Khoảng tùy ý</option>
                 </select>
                 {date.type === "all" || date.type === "day" ? (
                   <input
@@ -159,7 +177,7 @@ function Static() {
                       }
                     }}
                   />
-                ) : (
+                ) : date.type === "month" ? (
                   <input
                     type='month'
                     className='order__date'
@@ -167,9 +185,66 @@ function Static() {
                     onChange={(e) => {
                       setOrders(undefined)
                       newDate({ ...date, date: `${e.target.value}-01` })
-                      console.log(date)
                     }}
                   />
+                ) : date.type === "year" ? (
+                  <select
+                    className='order__date'
+                    onChange={(e) => {
+                      setOrders(undefined)
+                      newDate({ ...date, date: `${e.target.value}-01-01` })
+                    }}
+                  >
+                    <option value='2021'>Năm 2021</option>
+                  </select>
+                ) : date.type === "quarter" ? (
+                  <select
+                    className='order__date'
+                    value={
+                      Math.floor((Number(date.date.slice(5, 7)) + 2) / 3) === 1
+                        ? "2021-01"
+                        : Math.floor(
+                            (Number(date.date.slice(5, 7)) + 2) / 3
+                          ) === 2
+                        ? "2021-04"
+                        : Math.floor(
+                            (Number(date.date.slice(5, 7)) + 2) / 3
+                          ) === 3
+                        ? "2021-07"
+                        : "2021-10"
+                    }
+                    onChange={(e) => {
+                      setOrders(undefined)
+                      newDate({ ...date, date: `${e.target.value}-01` })
+                    }}
+                  >
+                    <option value='2021-01'>Quý 1 - 2021</option>
+                    <option value='2021-04'>Quý 2 - 2021</option>
+                    <option value='2021-07'>Quý 3 - 2021</option>
+                    <option value='2021-10'>Quý 4 - 2021</option>
+                  </select>
+                ) : (
+                  <>
+                    <input
+                      type='date'
+                      className='order__date'
+                      onChange={(e) => {
+                        setTemp({ ...temp, date1: e.target.value })
+                      }}
+                    />
+                    <input
+                      type='date'
+                      className='order__date'
+                      onChange={(e) => {
+                        setTemp({ ...temp, date2: e.target.value })
+                        if (new Date(temp.date1) < new Date(e.target.value)) {
+                          setTemp({ ...temp, date2: e.target.value })
+                          setOrders(undefined)
+                          newDate({ ...date, date: e.target.value })
+                        }
+                      }}
+                    />
+                  </>
                 )}
               </div>
               <div className='store-product__header-nav'>
@@ -263,10 +338,24 @@ function Static() {
                           5,
                           7
                         )}/${date.date.slice(0, 4)}`) ||
-                      `Vào tháng ${date.date.slice(5, 7)} năm ${date.date.slice(
-                        0,
-                        4
-                      )}`}
+                      (date.type === "month" &&
+                        `Vào tháng ${date.date.slice(
+                          5,
+                          7
+                        )} năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "year" &&
+                        `Vào năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "quarter" &&
+                        `Vào quý ${Math.floor(
+                          (Number(date.date.slice(5, 7)) + 2) / 3
+                        )} năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "range" &&
+                        `Từ ${temp.date1.slice(8)}/${date.date.slice(
+                          5,
+                          7
+                        )}/${date.date.slice(0, 4)} đến ${temp.date2.slice(
+                          8
+                        )}/${date.date.slice(5, 7)}/${date.date.slice(0, 4)}`)}
                     , bạn có {orders.length} đơn hàng và tổng giá trị là{" "}
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",

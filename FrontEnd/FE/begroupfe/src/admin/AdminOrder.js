@@ -60,23 +60,14 @@ function AdminOrder() {
                     </div>
                     <div
                       className='w200px store__nav-tab'
-                      onClick={() => setAdminPage("seller")}
-                    >
-                      Tất cả người bán
-                    </div>
-                    <div
-                      className='w200px store__nav-tab'
-                      onClick={() => setAdminPage("unpay")}
-                    >
-                      Duyệt người giao hàng
-                    </div>
-                    <div
-                      className='w200px store__nav-tab'
                       onClick={() => setAdminPage("store")}
                     >
                       Tất cả cửa hàng
                     </div>
-                    <div className='w200px store__nav-tab  store__nav-tab--active'>
+                    <div
+                      className='w200px store__nav-tab store__nav-tab--active'
+                      onClick={() => setAdminPage("order")}
+                    >
                       Tất cả đơn hàng
                     </div>
                     <div
