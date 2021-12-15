@@ -186,7 +186,11 @@ const Signup = () => {
 
             {resp ? (
               <div className='auth-form__form'>
-                <div className='auth-form__group' key={1}>
+                <div
+                  className='auth-form__group'
+                  key={1}
+                  style={errors[formAuth[0].name] && { marginBottom: "5px" }}
+                >
                   <input
                     type={formAuth[0].type}
                     name={formAuth[0].name}
@@ -208,7 +212,11 @@ const Signup = () => {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <div className='auth-form__group--resp' key={2}>
+                  <div
+                    className='auth-form__group--resp'
+                    style={errors[formAuth[1].name] && { marginBottom: "5px" }}
+                    key={2}
+                  >
                     <input
                       type={formAuth[1].type}
                       name={formAuth[1].name}
@@ -227,7 +235,11 @@ const Signup = () => {
                       " "
                     )}
                   </div>
-                  <div className='auth-form__group--resp' key={3}>
+                  <div
+                    className='auth-form__group--resp'
+                    style={errors[formAuth[2].name] && { marginBottom: "5px" }}
+                    key={3}
+                  >
                     <input
                       type={formAuth[2].type}
                       name={formAuth[2].name}
@@ -247,7 +259,11 @@ const Signup = () => {
                     )}
                   </div>
                 </div>
-                <div className='auth-form__group' key={4}>
+                <div
+                  className='auth-form__group'
+                  style={errors[formAuth[3].name] && { marginBottom: "5px" }}
+                  key={4}
+                >
                   <input
                     type={formAuth[3].type}
                     name={formAuth[3].name}
@@ -266,7 +282,11 @@ const Signup = () => {
                     " "
                   )}
                 </div>
-                <div className='auth-form__group' key={5}>
+                <div
+                  className='auth-form__group'
+                  style={errors[formAuth[4].name] && { marginBottom: "5px" }}
+                  key={5}
+                >
                   <input
                     type={formAuth[4].type}
                     name={formAuth[4].name}
@@ -285,7 +305,11 @@ const Signup = () => {
                     " "
                   )}
                 </div>
-                <div className='auth-form__group' key={6}>
+                <div
+                  className='auth-form__group'
+                  style={errors[formAuth[5].name] && { marginBottom: "5px" }}
+                  key={6}
+                >
                   <input
                     type={formAuth[5].type}
                     name={formAuth[5].name}
@@ -307,7 +331,11 @@ const Signup = () => {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <div className='auth-form__group--resp' key={7}>
+                  <div
+                    className='auth-form__group--resp'
+                    style={errors[formAuth[6].name] && { marginBottom: "5px" }}
+                    key={7}
+                  >
                     <input
                       type={formAuth[6].type}
                       name={formAuth[6].name}
@@ -326,7 +354,11 @@ const Signup = () => {
                       " "
                     )}
                   </div>
-                  <div className='auth-form__group--resp' key={8}>
+                  <div
+                    className='auth-form__group--resp'
+                    style={errors[formAuth[7].name] && { marginBottom: "5px" }}
+                    key={8}
+                  >
                     <input
                       type={formAuth[7].type}
                       name={formAuth[7].name}
@@ -346,7 +378,10 @@ const Signup = () => {
                     )}
                   </div>
                 </div>
-                <div className='auth-form__group'>
+                <div
+                  className='auth-form__group'
+                  style={errors.gender && { marginBottom: "5px" }}
+                >
                   <select
                     className={`auth-form__input ${
                       errors.gender && "auth-form__input--err"
