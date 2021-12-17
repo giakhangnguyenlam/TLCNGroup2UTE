@@ -90,25 +90,25 @@ function AdminProduct() {
                   <div className='store__nav-wrap'>
                     <div className='store__nav-options'>
                       <div
-                        className='w200px store__nav-tab'
+                        className='store__nav-tab'
                         onClick={() => setAdminPage("user")}
                       >
                         Tất cả người dùng
                       </div>
                       <div
-                        className='w200px store__nav-tab'
+                        className='store__nav-tab'
                         onClick={() => setAdminPage("store")}
                       >
                         Tất cả cửa hàng
                       </div>
                       <div
-                        className='w200px store__nav-tab'
+                        className='store__nav-tab'
                         onClick={() => setAdminPage("order")}
                       >
                         Tất cả đơn hàng
                       </div>
                       <div
-                        className='w200px store__nav-tab store__nav-tab--active'
+                        className='store__nav-tab store__nav-tab--active'
                         onClick={() => setAdminPage("product")}
                       >
                         Tất cả sản phẩm
