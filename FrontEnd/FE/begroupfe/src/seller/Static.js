@@ -115,27 +115,32 @@ function Static() {
           let label = [...new Set(temp)]
           let amount = Array([...new Set(temp)].length).fill(0)
           let total = Array([...new Set(temp)].length).fill(0)
-          let data1 = [["Tên sản phẩm", "Số lượng"]]
-          let data2 = [["Tên sản phẩm", "Doanh thu"]]
+          let data1 = []
+          let data2 = []
 
           for (let i = 0; i < label.length; i++) {
             let temp = res.data
               .filter((item) => item.productName === label[i])
               .reduce((prev, curr) => prev + curr.quantity, 0)
             amount[i] = temp
-            data1[i + 1] = [label[i], amount[i]]
+            data1[i] = [label[i], amount[i]]
             temp = res.data
               .filter((item) => item.productName === label[i])
               .reduce((prev, curr) => prev + curr.quantity * curr.price, 0)
             total[i] = temp
-            data2[i + 1] = [label[i], total[i]]
+            data2[i] = [label[i], total[i]]
           }
 
           if (label.length > 4) {
+            amount.sort((a, b) => b - a)
+            total.sort((a, b) => b - a)
+            data1.sort((a, b) => b[1] - a[1])
+            data2.sort((a, b) => b[1] - a[1])
             setChartdata1({
               data: data1,
               threshold: (
                 (amount[3] + amount[4]) /
+                2 /
                 amount.reduce((prev, curr) => prev + curr, 0)
               ).toFixed(2),
             })
@@ -143,6 +148,7 @@ function Static() {
               data: data2,
               threshold: (
                 (total[3] + total[4]) /
+                2 /
                 total.reduce((prev, curr) => prev + curr, 0)
               ).toFixed(2),
             })
@@ -295,44 +301,80 @@ function Static() {
                   </>
                 )}
               </div>
+              <div className='store-product__header-nav'>
+                <div className='w60x store-product__header-nav-item w10'>
+                  ID
+                </div>
+                <div
+                  className='store-product__header-nav-item'
+                  style={{ width: "22%" }}
+                >
+                  Tên
+                </div>
+                <div
+                  className='store-product__header-nav-item'
+                  style={{ width: "14%" }}
+                >
+                  Số lượng
+                </div>
+                <div
+                  className='store-product__header-nav-item'
+                  style={{ width: "18%" }}
+                >
+                  Mô tả
+                </div>
+              </div>
             </div>
 
             <div style={{ display: "flex" }}>
               <div
                 className='store-product__body'
-                style={{
-                  height: (hFit - 158) * 0.92,
-                  width: wFit - 64,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+                style={{ height: (hFit - 158) * 0.92, width: "64%" }}
               >
                 {orders ? (
-                  <>
-                    <Chart
-                      width={`${(wFit - 64) * 0.45}px`}
-                      height={"400px"}
-                      chartType='PieChart'
-                      loader={<div>Loading Chart</div>}
-                      data={chartData1.data}
-                      options={{
-                        title: "Sản phẩm bán chạy",
-                      }}
-                      rootProps={{ "data-testid": "1" }}
-                    ></Chart>
-                    <Chart
-                      width={`${(wFit - 64) * 0.45}px`}
-                      height={"400px"}
-                      chartType='PieChart'
-                      loader={<div>Loading Chart</div>}
-                      data={chartData2.data}
-                      options={{
-                        title: "Doanh thu từ sản phẩm",
-                      }}
-                      rootProps={{ "data-testid": "2" }}
-                    />
-                  </>
+                  orders.map((product, index) => {
+                    const {
+                      price,
+                      productName,
+                      orderId,
+                      quantity,
+                      description,
+                    } = product
+                    return (
+                      <div className='store-product__body-item ' key={index}>
+                        <div
+                          className='store-item store-item__number'
+                          style={{ width: "15.625%" }}
+                        >
+                          {orderId}
+                        </div>
+                        <div
+                          className='store-item store-item__name'
+                          style={{ width: "34.375%" }}
+                        >
+                          {productName}
+                        </div>
+                        <div
+                          className='store-item store-item__amount'
+                          style={{ width: "21.875%" }}
+                        >
+                          {quantity} x
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(price)}
+                        </div>
+                        <div
+                          className='store-item store-item__desc'
+                          style={{ flexGrow: "unset", width: "28.125%" }}
+                        >
+                          <div className='store-item__desc-content'>
+                            {description}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
                 ) : (
                   <div className='order__wait '>
                     <div className='order__wait-content'>
@@ -341,6 +383,74 @@ function Static() {
                   </div>
                 )}
               </div>
+              {orders ? (
+                <div className='store-item store-item__static'>
+                  <span>
+                    {(date.type === "all" && "Từ lúc mở bán") ||
+                      (date.type === "day" &&
+                        `Vào ngày ${date.date.slice(8)}/${date.date.slice(
+                          5,
+                          7
+                        )}/${date.date.slice(0, 4)}`) ||
+                      (date.type === "month" &&
+                        `Vào tháng ${date.date.slice(
+                          5,
+                          7
+                        )} năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "year" &&
+                        `Vào năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "quarter" &&
+                        `Vào quý ${Math.floor(
+                          (Number(date.date.slice(5, 7)) + 2) / 3
+                        )} năm ${date.date.slice(0, 4)}`) ||
+                      (date.type === "range" &&
+                        `Từ ${temp.date1.slice(8)}/${date.date.slice(
+                          5,
+                          7
+                        )}/${date.date.slice(0, 4)} đến ${temp.date2.slice(
+                          8
+                        )}/${date.date.slice(5, 7)}/${date.date.slice(0, 4)}`)}
+                    , bạn có {orders.length} đơn hàng và tổng giá trị là{" "}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(
+                      orders.reduce(
+                        (prev, cur) => prev + cur.price * cur.quantity,
+                        0
+                      )
+                    )}
+                  </span>
+                  <Chart
+                    width={`${(wFit - 64) * 0.3}px`}
+                    height={`${(hFit - 158) * 0.92 * 0.4}px`}
+                    chartType='PieChart'
+                    loader={<div>Loading Chart</div>}
+                    data={[["Product name", "Amount"], ...chartData1.data]}
+                    options={{
+                      title: "Sản phẩm bán chạy",
+                      sliceVisibilityThreshold: chartData1.threshold,
+                    }}
+                    rootProps={{ "data-testid": "1" }}
+                  ></Chart>
+                  <Chart
+                    width={`${(wFit - 64) * 0.3}px`}
+                    height={`${(hFit - 158) * 0.92 * 0.4}px`}
+                    chartType='PieChart'
+                    loader={<div>Loading Chart</div>}
+                    data={[["Product name", "Total"], ...chartData2.data]}
+                    options={{
+                      title: "Doanh thu sản phẩm",
+                      sliceVisibilityThreshold: chartData2.threshold,
+                    }}
+                    rootProps={{ "data-testid": "2" }}
+                  />
+                </div>
+              ) : (
+                <div className='store-item store-item__static'>
+                  {screen ? "Không có sản phẩm" : "Loading..."}
+                </div>
+              )}
             </div>
 
             <div

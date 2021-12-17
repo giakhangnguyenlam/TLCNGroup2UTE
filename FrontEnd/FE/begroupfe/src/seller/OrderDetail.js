@@ -125,7 +125,7 @@ function OrderDetail() {
               </div>
               <div className='store-product__header-nav'>
                 <div className='w60x store-product__header-nav-item w10'>
-                  Mã đơn hàng
+                  ID
                 </div>
                 <div
                   className='store-product__header-nav-item'
@@ -193,7 +193,7 @@ function OrderDetail() {
                           className='store-item__btn'
                           onClick={() => handleCheck(id)}
                         >
-                          Xác nhận
+                          OK
                         </div>
                       </div>
                     </div>

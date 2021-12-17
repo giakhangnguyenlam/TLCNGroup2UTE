@@ -11,6 +11,7 @@ function Product({ item }) {
   const history = useHistory()
 
   useEffect(() => {
+    document.documentElement.scrollTop = 0
     setPageCount(
       Math.ceil(
         body.filter((item) => item.name.includes(searchInfo)).length / item
