@@ -129,7 +129,7 @@ function AdminStore() {
                             className='store-item store-item__number'
                             style={{ borderRight: "1px solid #979797" }}
                           >
-                            Stt
+                            ID
                           </div>
                           <div
                             className='store-item w300x'
@@ -170,7 +170,7 @@ function AdminStore() {
                                     className='store-item store-item__number'
                                     style={{ borderRight: "1px solid #979797" }}
                                   >
-                                    {index + 1}
+                                    {id}
                                   </div>
                                   <div
                                     className='store-item w300x'
