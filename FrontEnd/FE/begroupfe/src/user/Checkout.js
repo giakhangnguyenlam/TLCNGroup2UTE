@@ -68,10 +68,10 @@ function Checkout() {
     if (orderData.length === 0) {
       history.push("/cart")
     }
+    document.documentElement.scrollTop = 0
   }, [])
 
   useEffect(() => {
-    document.documentElement.scrollTop = 0
     let body = document.body,
       html = document.documentElement
 
