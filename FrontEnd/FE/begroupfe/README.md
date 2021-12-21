@@ -1,8 +1,8 @@
-## This is front-end for CNPMM project
+## This is front-end for TLCN project
 
 ### `Front-end group 9`
 
-link: https://group9cnpmm.herokuapp.com/
+link: https://tlcngroup2fe.herokuapp.com/
 
 ### `Thành viên tham gia`
 
