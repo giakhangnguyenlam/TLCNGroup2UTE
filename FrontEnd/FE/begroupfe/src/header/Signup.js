@@ -59,6 +59,9 @@ const Signup = () => {
     if (!person.name) {
       errs.name = "Không được bỏ trống trường này!"
     }
+    if (!person.address) {
+      errs.address = "Không được bỏ trống trường này!"
+    }
     if (!person.dateofbirth) {
       errs.dateofbirth = "Không được bỏ trống trường này!"
     } else {
@@ -68,7 +71,11 @@ const Signup = () => {
         errs.dateofbirth = "Lỗi! Ngày tháng năm sinh không hợp lệ"
       }
     }
-
+    if (!person.phone) {
+      errs.phone = "Không được bỏ trống trường này!"
+    } else if (!/^0\d{9}$/.test(person.phone)) {
+      errs.phone = "Số điện thoại phải có 10 chữ số!"
+    }
     if (!person.email) {
       errs.email = "Không được bỏ trống trường này!"
     } else if (

@@ -5,6 +5,8 @@ import Loading from "../../ultis/Loading"
 
 function ModalDetailUpdate() {
   const jwt = localStorage.getItem("jwt")
+  const [error, setError] = useState()
+  const [error2, setError2] = useState()
   const {
     setIsDetailUpdate,
     idStoreProd,
@@ -28,32 +30,36 @@ function ModalDetailUpdate() {
   }
   const handleSubmitImg = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    const data = new FormData()
-    data.append("file", prodUpdate.file)
-    try {
-      let res = await axios({
-        method: "put",
-        url: `https://tlcngroup2be.herokuapp.com/seller/product/image/${idStoreProd.id}`,
-        data,
-        headers: {
-          "content-type": "multipart/form-data",
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setLoading(false)
-        setReloadDetailStore(!reloadDetailStore)
-        setIsDetailUpdate(false)
-        setRaise({
-          header: "Cập nhật sản phẩm",
-          content: "Cập nhật ảnh thành công!",
-          color: "#4bb534",
+    if (prodUpdate.file) {
+      setLoading(true)
+      const data = new FormData()
+      data.append("file", prodUpdate.file)
+      try {
+        let res = await axios({
+          method: "put",
+          url: `https://tlcngroup2be.herokuapp.com/seller/product/image/${idStoreProd.id}`,
+          data,
+          headers: {
+            "content-type": "multipart/form-data",
+            Authorization: `Bearer ${jwt}`,
+          },
         })
+        if (res.status === 200) {
+          setLoading(false)
+          setReloadDetailStore(!reloadDetailStore)
+          setIsDetailUpdate(false)
+          setRaise({
+            header: "Cập nhật sản phẩm",
+            content: "Cập nhật ảnh thành công!",
+            color: "#4bb534",
+          })
+        }
+      } catch (error) {
+        setLoading(false)
+        console.log(error)
       }
-    } catch (error) {
-      setLoading(false)
-      console.log(error)
+    } else {
+      setError2("Vui lòng chọn ảnh")
     }
   }
   const handleChange = (e) => {
@@ -65,7 +71,16 @@ function ModalDetailUpdate() {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    fetchData()
+    if (
+      prodUpdate.name &&
+      prodUpdate.quantity &&
+      prodUpdate.price &&
+      prodUpdate.description
+    ) {
+      fetchData()
+    } else {
+      setError("Vui lòng không để trống thông tin")
+    }
   }
   const fetchData = async () => {
     setLoading(true)
@@ -184,7 +199,7 @@ function ModalDetailUpdate() {
                 />
               </div>
             </div>
-
+            {error ? <p className='auth-form__error'>{error}</p> : " "}
             <div
               className='auth-form__controls'
               style={{ justifyContent: "center", margin: "10px 0 20px" }}
@@ -215,6 +230,7 @@ function ModalDetailUpdate() {
               >
                 {fileName ? fileName : "Chọn ảnh mới"}
               </div>
+              {error2 ? <p className='auth-form__error'>{error2}</p> : " "}
               <div
                 className='auth-form__controls'
                 style={{ justifyContent: "center", margin: "10px 0 20px" }}

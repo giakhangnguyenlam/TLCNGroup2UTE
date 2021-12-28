@@ -35,38 +35,48 @@ function UserProfile() {
     const mm = dateBirth.slice(5, 7)
     const yyyy = dateBirth.slice(0, 4)
     let url = `https://tlcngroup2be.herokuapp.com/user/${userid}`
-    try {
-      let res = await axios({
-        method: "PUT",
-        url,
-        data: { ...user, dateofbirth: `${dd}-${mm}-${yyyy}` },
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        let { name, dateofbirth, email, address, gender, jwt, phone } = res.data
-        localStorage.setItem("name", name)
-        localStorage.setItem("dateofbirth", dateofbirth)
-        localStorage.setItem("email", email)
-        localStorage.setItem("address", address)
-        localStorage.setItem("gender", gender)
-        localStorage.setItem("jwt", jwt)
-        localStorage.setItem("phone", phone)
-        setRaise({
-          header: "Cập nhật thông tin",
-          content: "Cập nhật thành công!",
-          color: "#4bb534",
-        })
-        setLoading(false)
-      }
-    } catch (error) {
+    if (Object.values(user).includes("")) {
       setLoading(false)
       setRaise({
         header: "Thay đổi thông tin",
-        content: "Có lỗi xảy ra, mời bạn thử lại lần sau.",
+        content: "Không được bỏ trống thông tin!",
         color: "#dc143c",
       })
+    } else {
+      try {
+        let res = await axios({
+          method: "PUT",
+          url,
+          data: { ...user, dateofbirth: `${dd}-${mm}-${yyyy}` },
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200) {
+          let { name, dateofbirth, email, address, gender, jwt, phone } =
+            res.data
+          localStorage.setItem("name", name)
+          localStorage.setItem("dateofbirth", dateofbirth)
+          localStorage.setItem("email", email)
+          localStorage.setItem("address", address)
+          localStorage.setItem("gender", gender)
+          localStorage.setItem("jwt", jwt)
+          localStorage.setItem("phone", phone)
+          setRaise({
+            header: "Cập nhật thông tin",
+            content: "Cập nhật thành công!",
+            color: "#4bb534",
+          })
+          setLoading(false)
+        }
+      } catch (error) {
+        setLoading(false)
+        setRaise({
+          header: "Thay đổi thông tin",
+          content: "Có lỗi xảy ra, mời bạn thử lại lần sau.",
+          color: "#dc143c",
+        })
+      }
     }
   }
 
