@@ -1,6 +1,8 @@
 import React from "react"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import Header from "./header/Header"
+import HeaderAuth from "./header/HeaderAuth"
+import BodyAuth from "./body/BodyAuth"
 import Body from "./body/Body"
 import Footer from "./footer/Footer"
 import UserProfile from "./user/UserProfile"
@@ -63,6 +65,11 @@ function App() {
             <Route path='/user/order/:orderId'>
               <Header />
               <OrderItem />
+              <Footer />
+            </Route>
+            <Route path='/user/auth'>
+              <HeaderAuth />
+              <BodyAuth />
               <Footer />
             </Route>
             <Route path='/user/account/profile'>

@@ -1,18 +1,16 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { useGlobalContext } from "../context"
 import { formAuth } from "../ultis/data"
-import Loading from "../ultis/Loading"
 
 const Login = () => {
+  const history = useHistory()
   const {
-    isLogin,
-    setIsLogin,
-    isSignup,
-    setIsSignup,
-    reloadSell,
-    setReloadSell,
-    loading,
+    auth,
+    setAuth,
+    // reloadSell,
+    // setReloadSell,
     setLoading,
   } = useGlobalContext()
   const [errors, setErrors] = useState({})
@@ -26,8 +24,7 @@ const Login = () => {
     setAccount({ ...account, [name]: value })
   }
   const changeSignup = () => {
-    setIsLogin(!isLogin)
-    setIsSignup(!isSignup)
+    auth === "login" ? setAuth("signup") : setAuth("login")
   }
   const checkError = async ({ username, password }) => {
     let errs = {}
@@ -52,7 +49,6 @@ const Login = () => {
         responseType: "json",
       })
       if (res.status === 200) {
-        setIsLogin(false)
         let {
           id,
           name,
@@ -74,8 +70,9 @@ const Login = () => {
         localStorage.setItem("jwt", jwt)
         localStorage.setItem("role", role)
         localStorage.setItem("expire", new Date().getTime() + 43200000)
-        setReloadSell(!reloadSell)
+        // setReloadSell(!reloadSell)
         setLoading(false)
+        history.push("/")
       }
     } catch (error) {
       if (error.response) {
@@ -92,74 +89,65 @@ const Login = () => {
     }
   }
 
-  useEffect(() => {}, [reloadSell])
+  // useEffect(() => {}, [reloadSell])
 
   return (
-    <div className='modal'>
-      <div
-        className='modal__overlay'
-        onClick={() => setIsLogin(!isLogin)}
-      ></div>
-      <div className='modal__body'>
-        <div className='auth-form'>
-          <div className='auth-form__container'>
-            <div className='auth-form__header'>
-              <h3 className='auth-form__heading'> Đăng nhập</h3>
-              <span className='auth-form__switch-btn' onClick={changeSignup}>
-                Đăng ký
-              </span>
-            </div>
+    <div className='auth-form'>
+      <div className='auth-form__container'>
+        <div className='auth-form__header'>
+          <h3 className='auth-form__heading'> Đăng nhập</h3>
+          <span className='auth-form__switch-btn' onClick={changeSignup}>
+            Đăng ký
+          </span>
+        </div>
 
-            <div className='auth-form__form'>
-              {formAuth.slice(3, 5).map((ele, index) => {
-                const { name, type, placeholder } = ele
-                return (
-                  <div className='auth-form__group' key={index}>
-                    <input
-                      type={type}
-                      name={name}
-                      placeholder={placeholder}
-                      className={`auth-form__input ${
-                        errors[name] && "auth-form__input--err"
-                      }`}
-                      value={account[name]}
-                      onChange={handlechange}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          handleSubmit(event)
-                        }
-                      }}
-                    />
-                    {errors[name] ? (
-                      <p className='auth-form__error'>{errors[name]}</p>
-                    ) : (
-                      " "
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-            {errors["form"] ? (
-              <p className='auth-form__error'>{errors["form"]}</p>
-            ) : (
-              " "
-            )}
+        <div className='auth-form__form'>
+          {formAuth.slice(3, 5).map((ele, index) => {
+            const { name, type, placeholder } = ele
+            return (
+              <div className='auth-form__group' key={index}>
+                <input
+                  type={type}
+                  name={name}
+                  placeholder={placeholder}
+                  className={`auth-form__input ${
+                    errors[name] && "auth-form__input--err"
+                  }`}
+                  value={account[name]}
+                  onChange={handlechange}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handleSubmit(event)
+                    }
+                  }}
+                />
+                {errors[name] ? (
+                  <p className='auth-form__error'>{errors[name]}</p>
+                ) : (
+                  " "
+                )}
+              </div>
+            )
+          })}
+        </div>
+        {errors["form"] ? (
+          <p className='auth-form__error'>{errors["form"]}</p>
+        ) : (
+          " "
+        )}
 
-            <div className='auth-form__controls'>
-              <button
-                className='btn btn--normal auth-form__controls-back'
-                onClick={() => setIsLogin(!isLogin)}
-              >
-                TRỞ LẠI
-              </button>
-              <button className='btn btn--primary' onClick={handleSubmit}>
-                ĐĂNG NHẬP
-              </button>
-            </div>
-          </div>
+        <div className='auth-form__controls'>
+          {/* <button
+            className='btn btn--normal auth-form__controls-back'
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            TRỞ LẠI
+          </button> */}
+          <button className='btn btn--primary' onClick={handleSubmit}>
+            ĐĂNG NHẬP
+          </button>
         </div>
       </div>
-      {loading && <Loading />}
     </div>
   )
 }

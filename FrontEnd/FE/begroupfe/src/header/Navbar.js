@@ -4,8 +4,7 @@ import { useGlobalContext } from "../context"
 import { useHistory } from "react-router"
 
 function Navbar() {
-  const { setIsLogin, setIsSignup, setIsSellerSignup, setIsShipperSignup } =
-    useGlobalContext()
+  const { setAuth } = useGlobalContext()
   const userRole = localStorage.getItem("role")
   const userName = localStorage.getItem("name")
   const history = useHistory()
@@ -26,6 +25,12 @@ function Navbar() {
     localStorage.removeItem("expire")
     redirect("/")
   }
+
+  const authPage = (authType) => {
+    setAuth(authType)
+    redirect("/user/auth")
+  }
+
   return (
     <nav className='header__navbar'>
       <ul className='header__navbar-list'>
@@ -35,7 +40,7 @@ function Navbar() {
             onClick={
               userRole === "ROLE_SELLER"
                 ? () => redirect("/seller")
-                : () => setIsSellerSignup(true)
+                : () => authPage("sellerSignup")
             }
           >
             {userRole === "ROLE_SELLER"
@@ -49,7 +54,7 @@ function Navbar() {
             onClick={
               userRole === "ROLE_SHIPPER"
                 ? () => redirect("/shipper")
-                : () => setIsShipperSignup(true)
+                : () => authPage("shipperSignup")
             }
           >
             {userRole === "ROLE_SHIPPER"
@@ -95,13 +100,13 @@ function Navbar() {
           <>
             <li
               className='header__navbar-item header__navbar-item--bold --divine'
-              onClick={() => setIsSignup(true)}
+              onClick={() => authPage("signup")}
             >
               Đăng ký
             </li>
             <li
               className='header__navbar-item header__navbar-item--bold'
-              onClick={() => setIsLogin(true)}
+              onClick={() => authPage("login")}
             >
               Đăng nhập
             </li>

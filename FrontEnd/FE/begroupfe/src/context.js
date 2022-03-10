@@ -10,10 +10,7 @@ const AppProvider = ({ children }) => {
   const [orderData, setOrderData] = useState([])
 
   const [isAdmin, setIsAdmin] = useState(false)
-  const [isLogin, setIsLogin] = useState(false)
-  const [isSignup, setIsSignup] = useState(false)
-  const [isSellerSignup, setIsSellerSignup] = useState(false)
-  const [isShipperSignup, setIsShipperSignup] = useState(false)
+  const [auth, setAuth] = useState("login")
   const [cate, setCate] = useState("")
   const [cateType, setCateType] = useState("")
   const [cateName, setCateName] = useState("")
@@ -148,10 +145,7 @@ const AppProvider = ({ children }) => {
         isReady,
         orderData,
         isAdmin,
-        isLogin,
-        isSignup,
-        isSellerSignup,
-        isShipperSignup,
+        auth,
         cate,
         cateType,
         cateName,
@@ -179,10 +173,7 @@ const AppProvider = ({ children }) => {
         setBody,
         setOrderData,
         setIsAdmin,
-        setIsLogin,
-        setIsSignup,
-        setIsSellerSignup,
-        setIsShipperSignup,
+        setAuth,
         setCate,
         setCateType,
         setCateName,
