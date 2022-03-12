@@ -1,7 +1,9 @@
 import { React } from "react"
+import { useGlobalContext } from "../context"
 import Logo from "../assets/img/output-onlinepngtools.png"
 
 function HeaderAuth() {
+  const { auth } = useGlobalContext()
   return (
     <header className='header-auth'>
       <div className='grid'>
@@ -12,7 +14,9 @@ function HeaderAuth() {
                 <img src={Logo} alt='' />
               </a>
             </div>
-            <div className='header-auth__title'>Đăng ký</div>
+            <div className='header-auth__title'>
+              {auth === "login" ? "Đăng nhập" : "Đăng ký"}
+            </div>
           </div>
         </nav>
       </div>

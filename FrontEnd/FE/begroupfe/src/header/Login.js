@@ -72,7 +72,7 @@ const Login = () => {
         localStorage.setItem("expire", new Date().getTime() + 43200000)
         // setReloadSell(!reloadSell)
         setLoading(false)
-        history.push("/")
+        history.goBack()
       }
     } catch (error) {
       if (error.response) {

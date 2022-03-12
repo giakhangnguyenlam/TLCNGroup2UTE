@@ -136,7 +136,7 @@ const Signup = () => {
         localStorage.setItem("expire", new Date().getTime() + 43200000)
 
         setLoading(false)
-        history.push("/")
+        history.goBack()
       }
     } catch (error) {
       if (error.response) {

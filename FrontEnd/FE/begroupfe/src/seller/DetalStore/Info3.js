@@ -14,6 +14,7 @@ function Info3() {
     setRaise,
     loading,
     setLoading,
+    setIdStoreProd,
   } = useGlobalContext()
   const [isEdit, setIsEdit] = useState(false)
 
@@ -51,6 +52,7 @@ function Info3() {
         headers: { Authorization: `Bearer ${jwt}` },
       })
       if (res.status === 200) {
+        setIdStoreProd(null)
         setIsDetailInfo(false)
         clearCateAcc()
         setLoading(false)

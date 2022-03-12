@@ -5,7 +5,7 @@ import Login from "../header/Login"
 import Signup from "../header/Signup"
 function BodyAuth() {
   const [height, setHeight] = useState(0)
-  const { loading, auth, setAuth } = useGlobalContext()
+  const { loading, auth } = useGlobalContext()
   useEffect(() => {
     let body = document.body,
       html = document.documentElement
@@ -22,10 +22,10 @@ function BodyAuth() {
   }, [])
   return (
     <div className='container' style={{ backgroundColor: "rgb(238 77 46)" }}>
-      <div class='grid'>
-        <div class='body-auth__wrap'>
+      <div className='grid'>
+        <div className='body-auth__wrap'>
           <div
-            class='body-auth'
+            className='body-auth'
             style={{
               backgroundImage: `url(${authImg})`,
               backgroundSize: "cover",

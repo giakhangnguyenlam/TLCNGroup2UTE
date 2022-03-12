@@ -20,6 +20,8 @@ import AdminModal from "./admin/AdminModal"
 import Checkout from "./user/Checkout"
 import AlreadyOrder from "./shipper/AlreadyOrder"
 import About from "./rest/About"
+import Store from "./seller/Store"
+import FooterSeller from "./seller/FooterSeller"
 
 function App() {
   const expire = localStorage.getItem("expire")
@@ -87,9 +89,15 @@ function App() {
               <UserOrder />
               <Footer />
             </Route>
-            <Route path='/seller'>
+            <Route path='/seller/store/:storeId'>
+              <HeaderSeller />
+              <Store />
+              <FooterSeller />
+            </Route>
+            <Route path='/seller/store'>
               <HeaderSeller />
               <BodySell />
+              <FooterSeller />
             </Route>
             <Route path='/shipper'>
               <HeaderSeller />

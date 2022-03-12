@@ -14,6 +14,7 @@ function Info2() {
     setRaise,
     loading,
     setLoading,
+    setIdStoreProd,
   } = useGlobalContext()
   const [isEdit, setIsEdit] = useState(false)
   const addArr = (type, ele) => {
@@ -66,6 +67,7 @@ function Info2() {
         headers: { Authorization: `Bearer ${jwt}` },
       })
       if (res.status === 200) {
+        setIdStoreProd(null)
         setIsDetailInfo(false)
         clearCateSho()
         setLoading(false)

@@ -2,7 +2,9 @@ import React from "react"
 import { useGlobalContext } from "../context"
 import CreateStore from "../seller/CreateStore"
 import UpdateStore from "../seller/UpdateStore"
-import DetailStore from "../seller/DetailStore"
+import ModalDetailCreate from "../seller/DetalStore/ModalDetailCreate"
+import ModalDetailUpdate from "../seller/DetalStore/ModalDetailUpdate"
+import ModalDetailInfo from "../seller/DetalStore/ModalDetailInfo"
 import UserComment from "../user/UserComment"
 import OrderDetail from "../seller/OrderDetail"
 import Static from "../seller/Static"
@@ -10,10 +12,12 @@ function Modal() {
   const {
     isCreateStore,
     isUpdateStore,
-    isDetailStore,
     isOrderDetail,
     isStatic,
     isComment,
+    isDetailCreate,
+    isDetailUpdate,
+    isDetailInfo,
   } = useGlobalContext()
   if (isCreateStore) {
     return <CreateStore />
@@ -21,8 +25,14 @@ function Modal() {
   if (isUpdateStore) {
     return <UpdateStore />
   }
-  if (isDetailStore) {
-    return <DetailStore />
+  if (isDetailCreate) {
+    return <ModalDetailCreate />
+  }
+  if (isDetailUpdate) {
+    return <ModalDetailUpdate />
+  }
+  if (isDetailInfo) {
+    return <ModalDetailInfo />
   }
   if (isOrderDetail) {
     return <OrderDetail />

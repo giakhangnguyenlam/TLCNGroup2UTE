@@ -10,6 +10,7 @@ function ModalDetailUpdate() {
   const {
     setIsDetailUpdate,
     idStoreProd,
+    setIdStoreProd,
     setReloadDetailStore,
     reloadDetailStore,
     setRaise,
@@ -18,10 +19,10 @@ function ModalDetailUpdate() {
   } = useGlobalContext()
   const refImg = useRef(null)
   const [prodUpdate, setProdUpdate] = useState({
-    name: idStoreProd.name,
-    quantity: idStoreProd.quantity,
-    price: idStoreProd.price,
-    description: idStoreProd.description,
+    name: idStoreProd ? idStoreProd.name : "",
+    quantity: idStoreProd ? idStoreProd.quantity : "",
+    price: idStoreProd ? idStoreProd.price : "",
+    description: idStoreProd ? idStoreProd.description : "",
     file: "",
   })
   const [fileName, setFileName] = useState("")
@@ -45,6 +46,7 @@ function ModalDetailUpdate() {
           },
         })
         if (res.status === 200) {
+          setIdStoreProd(null)
           setLoading(false)
           setReloadDetailStore(!reloadDetailStore)
           setIsDetailUpdate(false)
@@ -97,6 +99,7 @@ function ModalDetailUpdate() {
         responseType: "json",
       })
       if (res.status === 200) {
+        setIdStoreProd(null)
         setLoading(false)
         setIsDetailUpdate(false)
         setReloadDetailStore(!reloadDetailStore)

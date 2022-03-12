@@ -60,8 +60,8 @@ function BodySell() {
     }
   }
   const handleDetailStore = (store) => {
-    setIsDetailStore(true)
-    setIdStoreUpdate(store)
+    // setIdStoreUpdate(store)
+    history.push(`/seller/store/${store.id}`)
   }
   const handleOrderDetail = (store) => {
     setIsOrderDetail(true)

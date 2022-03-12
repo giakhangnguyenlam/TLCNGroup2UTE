@@ -47,7 +47,7 @@ function SingleProduct() {
   const handleAddCart = (action) => {
     const userId = localStorage.getItem("id")
     const role = localStorage.getItem("role")
-    console.log(choose)
+    // console.log(choose)
     if (userId) {
       if (
         role === "ROLE_USER" &&
@@ -114,7 +114,7 @@ function SingleProduct() {
         }
       }
     } else {
-      setIsLogin(true)
+      history.push("/user/auth")
     }
   }
 

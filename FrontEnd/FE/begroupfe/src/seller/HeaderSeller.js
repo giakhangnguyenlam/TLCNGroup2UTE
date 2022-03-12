@@ -9,7 +9,7 @@ function HeaderSeller() {
       <div className='grid'>
         <div className='header-sell'>
           <div className='header-sell__logo'>
-            <a href='/' className='header-sell__logo-link'>
+            <a href='/seller/store' className='header-sell__logo-link'>
               <img src={logo} alt='' />
             </a>
           </div>
