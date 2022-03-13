@@ -21,4 +21,7 @@ public interface StoreService {
     public List<OrderDetailModel> staticByStoreId(int storeId);
     public List<OrderDetailModel> staticByStoreIdAndDate(int storeId, String date);
     public List<OrderDetailModel> staticByStoreIdAndMonthAndYear(int storeId, String month, String year);
+    public List<OrderDetailModel> staticByStoreIdAndYear(int storeId, String year);
+    public List<OrderDetailModel> staticByStoreIdAndDateOption(int storeId, String dateStart, String dateEnd);
+    public List<OrderDetailModel> staticByStoreIdAndQuarterOfYear(int storeId, int quarter, String year);
 }

@@ -1,6 +1,8 @@
 package ute.tlcn.begroup2.Services.GoogleServices.GoogleServiceImpl;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 // This class references from https://github.com/ttlang/DRIVE_REST_API_SPRING_BOOT/tree/master/GDrive
 
@@ -47,9 +49,11 @@ public class GoogleDriveServiceImpl implements GoogleService {
 	public Drive getDriveService() {
 		Drive service = null;
 		try {
-
-			URL resource = GoogleDriveServiceImpl.class.getResource("/" + this.serviceAccountKey);
-			java.io.File key = Paths.get(resource.toURI()).toFile();
+			// URL resource = GoogleDriveServiceImpl.class.getResource("/");
+			// System.out.println("Path key: "+resource.toURI());
+			String userDirectory = System.getProperty("user.dir");
+			// System.out.println(userDirectory);
+			java.io.File key = Paths.get(userDirectory+"/target/classes/evident-wind-327616-32382019eb7e.p12").toFile();
 			HttpTransport httpTransport = new NetHttpTransport();
 			JacksonFactory jsonFactory = new JacksonFactory();
 
@@ -61,7 +65,7 @@ public class GoogleDriveServiceImpl implements GoogleService {
 					.setHttpRequestInitializer(credential).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
-
+			System.out.println("Faie drive: "+ e.getMessage());
 		}
 
 		return service;
@@ -92,10 +96,19 @@ public class GoogleDriveServiceImpl implements GoogleService {
 
 	@Override
 	public String saveImage(MultipartFile multifile) {
-		java.io.File file1 = new java.io.File("C:\\Users\\Khang\\Pictures\\Saved Pictures\\"+multifile.getOriginalFilename());
+		java.io.File file1 = new java.io.File(multifile.getOriginalFilename());
+		
+		System.out.println("file path: "+file1.getAbsolutePath());
+		System.out.println("file name: "+file1.getName());
         try {
-            multifile.transferTo(file1);
+			FileOutputStream fos = new FileOutputStream( file1 );
+			fos.write( multifile.getBytes() );
+        	fos.close();
+            // multifile.transferTo(file1);
             File file = uploadFile(file1.getName(), file1.getAbsolutePath(), URLConnection.guessContentTypeFromName(file1.getName()));
+			// System.out.println("web view link: "+file.getWebViewLink());
+			// System.out.println("web content link: " + file.getWebContentLink());
+			// System.out.println("web description: "+file.getDescription());
             return file.getWebContentLink();
         }
         catch (IOException e) {

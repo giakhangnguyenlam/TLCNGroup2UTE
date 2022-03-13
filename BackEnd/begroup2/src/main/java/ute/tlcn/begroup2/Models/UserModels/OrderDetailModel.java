@@ -16,4 +16,7 @@ public class OrderDetailModel {
     private int quantity;
     private String description;
     private String date;
+    private String productName;
+    private double price;
+    private String status;
 }

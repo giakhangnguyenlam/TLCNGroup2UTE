@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserOrderModel {
+
     private static final Date DEFAULT_ORDER_DATE = new Date();
     private static final String DEFAULT_ORDER_STATUS = "Đặt hàng thành công";
     private static final String DEFAULT_PAYMENT_STATUS = "chưa thanh toán";
@@ -28,6 +29,7 @@ public class UserOrderModel {
     private List<String> listProductNames;
     private List<Double> listPrices;
     
+
     public UserOrderModel(int userId, double total, List<Integer> listProducts, List<Integer> listQuantities, List<String> listDescription, List<String> listProductNames, List<Double> listPrices) {
         this(userId, DEFAULT_ORDER_DATE, total, DEFAULT_ORDER_STATUS, DEFAULT_PAYMENT_STATUS, listProducts, listQuantities, listDescription, listProductNames, listPrices);
     }

@@ -33,7 +33,7 @@ public class OrderDetailMapper {
             listProductId.get(i), 
             listQuantities.get(i), 
             listDescription.get(i), 
-            date,
+            dateMapper.convertStringToDate(dateMapper.convertDateToString(date)),
             listProductNames.get(i), 
             listPrices.get(i),
             "Chưa chuẩn bị");
@@ -51,7 +51,10 @@ public class OrderDetailMapper {
         orderDetailEntity.getProductId(), 
         orderDetailEntity.getQuantity(), 
         orderDetailEntity.getDescription(),
-        dateMapper.convertDateToString(orderDetailEntity.getDate()));
+        dateMapper.convertDateToString(orderDetailEntity.getDate()),
+        orderDetailEntity.getProductName(),
+        orderDetailEntity.getPrice(),
+        orderDetailEntity.getStatus());
 
         return orderDetailModel;
     }

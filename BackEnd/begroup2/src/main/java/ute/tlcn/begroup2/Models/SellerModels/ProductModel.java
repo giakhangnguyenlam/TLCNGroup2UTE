@@ -18,4 +18,6 @@ public class ProductModel {
     public double price;
     public String description;
     public String image;
+    public boolean IsDiscount;
+    public double discount;
 }

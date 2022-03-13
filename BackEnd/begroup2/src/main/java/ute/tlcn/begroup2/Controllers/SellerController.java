@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
+import ute.tlcn.begroup2.Models.SellerModels.CouponModel;
 import ute.tlcn.begroup2.Models.SellerModels.MessageModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
 import ute.tlcn.begroup2.Models.SellerModels.StoreModel;
@@ -31,6 +32,7 @@ import ute.tlcn.begroup2.Models.UserModels.UserModel;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryAccessoriesService;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryClothesService;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryShoesService;
+import ute.tlcn.begroup2.Services.SellerServices.CouponService;
 import ute.tlcn.begroup2.Services.SellerServices.ProductService;
 import ute.tlcn.begroup2.Services.SellerServices.SellerService;
 import ute.tlcn.begroup2.Services.SellerServices.StoreService;
@@ -38,6 +40,7 @@ import ute.tlcn.begroup2.Services.SellerServices.StoreService;
 @RestController
 @RequestMapping("/seller")
 @Slf4j
+
 public class SellerController {
     
     private SellerService sellerService;
@@ -46,15 +49,17 @@ public class SellerController {
     private CategoryClothesService categoryClothesService;
     private CategoryShoesService  categoryShoesService;
     private CategoryAccessoriesService categoryAccessoriesService;
+    private CouponService couponService;
 
     @Autowired
-    public SellerController(SellerService sellerService, StoreService storeService, ProductService productService, CategoryClothesService categoryClothesService, CategoryShoesService categoryShoesService, CategoryAccessoriesService categoryAccessoriesService) {
+    public SellerController(SellerService sellerService, StoreService storeService, ProductService productService, CategoryClothesService categoryClothesService, CategoryShoesService categoryShoesService, CategoryAccessoriesService categoryAccessoriesService, CouponService couponService) {
         this.sellerService = sellerService;
         this.storeService = storeService;
         this.productService = productService;
         this.categoryClothesService = categoryClothesService;
         this.categoryShoesService = categoryShoesService;
         this.categoryAccessoriesService = categoryAccessoriesService;
+        this.couponService = couponService;
     }
     
 
@@ -140,7 +145,7 @@ public class SellerController {
     @RequestParam("description") String description,
     @RequestParam("file") MultipartFile multipartFile) {
         try {
-            ProductModel productModel = new ProductModel(0, storeid, category, name, quantity, price, description, "");
+            ProductModel productModel = new ProductModel(0, storeid, category, name, quantity, price, description, "", false, 0);
             productModel = productService.createProduct(productModel, multipartFile);
             return new ResponseEntity<>(productModel, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -273,11 +278,6 @@ public class SellerController {
         return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
     }
 
-    // @GetMapping("/order/{id}/date/{date}")
-    // public ResponseEntity<?> getOrderProductByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
-    //     List<OrderDetailModel> orderDetailModels= storeService.getOrderProductByStoreIdAndDate(id, date);
-    //     return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
-    // }
 
     @GetMapping("/store/{id}")
     public ResponseEntity<?> getStoreByStoreId(@PathVariable("id") int id){
@@ -306,6 +306,7 @@ public class SellerController {
 
     @GetMapping("/order/{id}/date/{date}")
     public ResponseEntity<?> staticByStoreIdAndDate(@PathVariable("id") int id, @PathVariable("date") String date){
+        log.info("Go to static by store id and date");
         List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndDate(id, date);
         return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
     }
@@ -316,4 +317,67 @@ public class SellerController {
         return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
     }
 
+    @GetMapping("/order/{id}/year/{year}")
+    public ResponseEntity<?> staticByStoreIdAndYear(@PathVariable("id") int id, @PathVariable("year") String year){
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndYear(id, year);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/quarter/{quarter}/year/{year}")
+    public ResponseEntity<?> staticByStoreIdAndQuarterOfYear(@PathVariable("id") int id, @PathVariable("quarter") int quarter, @PathVariable("year") String year){
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndQuarterOfYear(id, quarter, year);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/order/{id}/datestart/{datestart}/dateend/{dateend}")
+    public ResponseEntity<?> staticByStoreIdAndDateOption(@PathVariable("id") int id, @PathVariable("datestart") String datestart, @PathVariable("dateend") String dateend){
+        List<OrderDetailModel> orderDetailModels = storeService.staticByStoreIdAndDateOption(id, datestart, dateend);
+        return new ResponseEntity<>(orderDetailModels, HttpStatus.OK);
+    }
+
+    @PostMapping("/coupon")
+    public ResponseEntity<?> createCoupon(@RequestBody CouponModel couponModel){
+        try {
+            couponModel = couponService.createCoupon(couponModel);
+            return new ResponseEntity<>(couponModel, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping("/coupon/{couponId}")
+    public ResponseEntity<?> updateCoupon(@PathVariable("couponId") int couponId, @RequestBody CouponModel couponModel){
+        try {
+            couponModel = couponService.updateCoupon(couponId, couponModel);
+            return new ResponseEntity<>(couponModel, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/coupon/productid/{productId}")
+    public ResponseEntity<?> getAllCouponByProductId(@PathVariable("productId") int productId){
+        List<CouponModel> couponModels = couponService.getCouponByProductId(productId);
+        return new ResponseEntity<>(couponModels, HttpStatus.OK);
+    }
+
+    @PutMapping("/coupon/active/{couponId}")
+    public ResponseEntity<?> changeActiveCoupon(@PathVariable("couponId") int couponId){
+        try {
+            couponService.changeActiveCoupon(couponId);
+            return new ResponseEntity<>(new MessageModel("Update successfully"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/coupon/{couponId}")
+    public ResponseEntity<?> getCouponByCouponId(@PathVariable("couponId") int couponId){
+        try {
+            CouponModel couponModel = couponService.getCouponByCouponId(couponId);
+            return new ResponseEntity<>(couponModel, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

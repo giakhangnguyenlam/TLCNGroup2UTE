@@ -1639,3 +1639,153 @@ link: https://tlcngroup2be.herokuapp.com/seller/order/4/date/31-10-2021
     }
 ]
 ```
+
+### Create a discount
+link: https://tlcngroup2be.herokuapp.com/seller/coupon
+
+> POST
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "productId":5,
+    "couponName":"firsttest",
+    "couponDesc":"thích thì giảm",
+    "discount":20,
+    "startDate":1647094536967,
+    "expireDate":1647194539967
+}
+```
+
+#### Response
+```
+{
+    "couponId": 128,
+    "productId": 5,
+    "couponName": "firsttest",
+    "couponDesc": "thích thì giảm",
+    "discount": 20.0,
+    "startDate": 1647094536967,
+    "expireDate": 1647194539967
+}
+```
+
+### Update coupon by coupon id
+link: https://tlcngroup2be.herokuapp.com/seller/coupon/128
+> PUT
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Note: 128 is coupon id
+#### Request
+```
+{
+    "couponName":"firsttest",
+    "couponDesc":"thích thì giảm",
+    "discount":20,
+    "startDate":1647094536967,
+    "expireDate":1647194539967
+}
+```
+
+#### Response
+```
+{
+    "couponId": 128,
+    "productId": 0,
+    "couponName": "firsttest",
+    "couponDesc": "thích thì giảmm",
+    "discount": 20.0,
+    "startDate": 1647094536967,
+    "expireDate": 1647194539967
+}
+```
+
+### Get all coupon by product id
+link: https://tlcngroup2be.herokuapp.com/seller/coupon/productid/5
+
+> GET
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Note: 5 is product id
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "couponId": 123,
+        "productId": 5,
+        "couponName": "firsttest",
+        "couponDesc": "thích thì giảm",
+        "discount": 20.0,
+        "startDate": 1647094536967,
+        "expireDate": 1647094539967
+    },
+    {
+        "couponId": 124,
+        "productId": 5,
+        "couponName": "firsttest",
+        "couponDesc": "thích thì giảm",
+        "discount": 20.0,
+        "startDate": 1647094536967,
+        "expireDate": 1647094536967
+    }
+]
+```
+
+### Get coupon by coupon id
+link: https://tlcngroup2be.herokuapp.com/seller/coupon/128
+
+> GET
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Note: 128 is coupon id
+
+#### Request
+
+#### Response
+```
+{
+    "couponId": 128,
+    "productId": 5,
+    "couponName": "firsttest",
+    "couponDesc": "thích thì giảm",
+    "discount": 20.0,
+    "startDate": 1647094536967,
+    "expireDate": 1647194539967
+}
+```
+
+### Change active coupon
+link: https://tlcngroup2be.herokuapp.com/seller/coupon/active/124
+
+> PUT
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Note: 124 is coupon id
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Update successfully"
+}
+```

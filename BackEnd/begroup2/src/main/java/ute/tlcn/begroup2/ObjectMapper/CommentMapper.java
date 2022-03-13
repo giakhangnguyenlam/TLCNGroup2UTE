@@ -20,7 +20,7 @@ public class CommentMapper {
 
 
     public CommentEntity convertCommentModelToCommentEntity(CommentModel commentModel){
-        CommentEntity commentEntity = new CommentEntity(0, 
+        CommentEntity commentEntity = new CommentEntity(commentModel.getId(), 
         commentModel.getProductId(), 
         commentModel.getUsername(), 
         commentModel.getComment(), 

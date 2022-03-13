@@ -79,8 +79,11 @@ public class CategoryAccessoriesServiceImpl implements CategoryAccessoriesServic
         List<CategoryAccessoriesEntity> categoryAccessoriesEntities = categoryAccessoriesRepository.getByType(type);
         List<ProductModel> productModels = categoryAccessoriesEntities.stream()
         .map((categoryAccessoriesEntity) -> {
-            ProductEntity productEntity = productRepository.getById(categoryAccessoriesEntity.getProductId());
-            return productMapper.convertProductEntityToProductModel(productEntity);
+            Optional<ProductEntity> productEntity = productRepository.findById(categoryAccessoriesEntity.getProductId());
+            if(productEntity.isPresent()){
+                return productMapper.convertProductEntityToProductModel(productEntity.get());
+            }
+            return null;
         })
         .collect(Collectors.toList());
 

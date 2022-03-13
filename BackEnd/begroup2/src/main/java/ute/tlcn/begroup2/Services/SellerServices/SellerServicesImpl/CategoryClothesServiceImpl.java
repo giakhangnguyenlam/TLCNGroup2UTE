@@ -79,8 +79,11 @@ public class CategoryClothesServiceImpl implements CategoryClothesService {
         List<CategoryClothesEntity> categoryClothesEntities = categoryClothesRepository.getByType(type);
         List<ProductModel> productModels = categoryClothesEntities.stream()
         .map((categoryClothesEntity) -> {
-            ProductEntity productEntity = productRepository.getById(categoryClothesEntity.getProductId());
-            return productMapper.convertProductEntityToProductModel(productEntity);
+            Optional<ProductEntity> productEntity = productRepository.findById(categoryClothesEntity.getProductId());
+            if(productEntity.isPresent()){
+                return productMapper.convertProductEntityToProductModel(productEntity.get());
+            }
+            return null;
         }).collect(Collectors.toList());
 
         return productModels;

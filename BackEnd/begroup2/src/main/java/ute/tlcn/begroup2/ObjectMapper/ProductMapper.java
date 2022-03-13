@@ -1,15 +1,26 @@
 package ute.tlcn.begroup2.ObjectMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ute.tlcn.begroup2.Entities.ProductEntity;
+import ute.tlcn.begroup2.Models.SellerModels.CouponModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
+import ute.tlcn.begroup2.Services.SellerServices.CouponService;
 
 @Component
 public class ProductMapper {
+
+    private CouponService couponService;
+
+    @Autowired
+    public ProductMapper(CouponService couponService) {
+        this.couponService = couponService;
+    }
     
     public ProductModel convertProductEntityToProductModel(ProductEntity productEntity){
         ProductModel productModel = new ProductModel(productEntity.getId(), 
@@ -19,8 +30,14 @@ public class ProductMapper {
         productEntity.getQuantity(), 
         productEntity.getPrice(), 
         productEntity.getDescription(), 
-        productEntity.getImage());
+        productEntity.getImage(), false, 0);
 
+        Optional<CouponModel> optionalCoupon = couponService.getActiveCoupon(productModel.getId());
+        if(optionalCoupon.isPresent()){
+            productModel.setIsDiscount(true);
+            productModel.setDiscount(optionalCoupon.get().getDiscount());
+        }
+        
         return productModel;
     }
 

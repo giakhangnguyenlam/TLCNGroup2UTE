@@ -129,6 +129,7 @@ public class HomeController {
 
     @GetMapping("/product/category/clothes/{type}")
     public ResponseEntity<?> getCategoryClothesByType(@PathVariable("type") String type){
+        System.out.println("Go to getCategoryClothesByType");
         List<ProductModel> categoryClothesModels = categoryClothesService.getCategoryClothesByType(type);
         return new ResponseEntity<>(categoryClothesModels, HttpStatus.OK);
     }

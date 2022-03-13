@@ -36,8 +36,6 @@ public class UserController {
         this.userService = userService;
     }
     
-    
-
 
     //update user without password
     @PutMapping("/{id}")

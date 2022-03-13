@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,6 +40,7 @@ import ute.tlcn.begroup2.Repositories.CommentRepository;
 import ute.tlcn.begroup2.Repositories.OrderDetailsRepository;
 import ute.tlcn.begroup2.Repositories.OrderRepository;
 import ute.tlcn.begroup2.Repositories.UserRepository;
+import ute.tlcn.begroup2.Services.MailServices.MailService;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 import ute.tlcn.begroup2.Utils.JWTUtil;
 
@@ -58,9 +61,10 @@ public class UserServiceImpl implements UserService {
     private OrderDetailsRepository orderDetailsRepository;
     private CommentMapper commentMapper;
     private CommentRepository commentRepository;
+    private MailService  mailService;
 
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder, OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, CommentMapper commentMapper, CommentRepository commentRepository) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder, OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, CommentMapper commentMapper, CommentRepository commentRepository, MailService mailService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -74,7 +78,9 @@ public class UserServiceImpl implements UserService {
         this.orderDetailsRepository = orderDetailsRepository;
         this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
+        this.mailService = mailService;
     }
+    
     
     
     // login
@@ -141,7 +147,7 @@ public class UserServiceImpl implements UserService {
             userEntity.setDateofbirth(dateMapper.convertStringToDate(signUpModel.getDateofbirth()));
             userEntity.setEmail(signUpModel.getEmail());
             userEntity.setAddress(signUpModel.getAddress());
-            userEntity.setPassword(passwordEncoder.encode(signUpModel.getPassword()));
+            userEntity.setPhone(signUpModel.getPhone());
 
             userEntity = userRepository.save(userEntity);
             UserDetailsModel userDetailsModel = new UserDetailsModel(userEntity);
@@ -213,6 +219,12 @@ public class UserServiceImpl implements UserService {
         orderEntity = orderRepository.save(orderEntity);
         List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
         orderDetailsRepository.saveAll(orderDetailEntities);
+        OrderHistoryModel orderHistoryModel = orderMapper.convertOrderEntityToOrderHistoryModel(orderEntity, orderDetailEntities.get(0).getProductName()+",...");
+        try {
+            mailService.sendMail(orderHistoryModel, userOrderModel.getUserId());
+        } catch (MessagingException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 
@@ -268,6 +280,11 @@ public class UserServiceImpl implements UserService {
         orderEntity = orderRepository.save(orderEntity);
         List<OrderDetailEntity> orderDetailEntities = orderDetailMapper.convertUserOrderModelToListOrderDetailEntity(orderEntity.getId(), userOrderModel.getListProducts(), userOrderModel.getListQuantities(), userOrderModel.getListDescription(), userOrderModel.getOrderDate(), userOrderModel.getListProductNames(), userOrderModel.getListPrices());
         orderDetailsRepository.saveAll(orderDetailEntities);
-        
+        OrderHistoryModel orderHistoryModel = orderMapper.convertOrderEntityToOrderHistoryModel(orderEntity, orderDetailEntities.get(0).getProductName()+",...");
+        try {
+            mailService.sendMail(orderHistoryModel, userOrderModel.getUserId());
+        } catch (MessagingException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

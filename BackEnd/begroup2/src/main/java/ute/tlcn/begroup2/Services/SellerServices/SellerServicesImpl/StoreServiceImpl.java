@@ -224,5 +224,90 @@ public class StoreServiceImpl implements StoreService{
         List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
         return orderDetailModels;
     }
+
+
+
+
+
+
+    @Override
+    public List<OrderDetailModel> staticByStoreIdAndYear(int storeId, String year) {
+        String startDate =  "01-01" +"-"+year;
+        String endDate = "31-12"  +"-"+year;
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        productEntities.stream().forEach(productEntity -> {
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatusAndDateBetween(productEntity.getId(), "Đang chuẩn bị",dateMapper.convertStringToDate(startDate),dateMapper.convertStringToDate(endDate));
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        });
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
+
+
+
+
+
+
+    @Override
+    public List<OrderDetailModel> staticByStoreIdAndDateOption(int storeId, String dateStart, String dateEnd) {
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        productEntities.stream().forEach(productEntity -> {
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatusAndDateBetween(productEntity.getId(), "Đang chuẩn bị",dateMapper.convertStringToDate(dateStart),dateMapper.convertStringToDate(dateEnd));
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        });
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
+
+
+
+
+
+
+    @Override
+    public List<OrderDetailModel> staticByStoreIdAndQuarterOfYear(int storeId, int quarter, String year) {
+        
+        String startDate = "";
+        String endDate = "";
+
+        switch (quarter) {
+            case 1:
+                startDate+="01-01-"+year;
+                endDate+="01-04-"+year;
+                break;
+            case 2:
+                startDate+="01-04-"+year;
+                endDate+="01-07-"+year;
+                break;
+            case 3:
+                startDate+="01-07-"+year;
+                endDate+="01-10-"+year;
+                break;
+            default:
+                startDate+="01-10-"+year;
+                endDate+="31-12-"+year;
+                break;
+        }
+
+        StoreEntity storeEntity = storeRepository.getById(storeId);
+        List<ProductEntity> productEntities = productRepository.getByStoreId(storeEntity.getId());
+        List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+        
+        for (ProductEntity productEntity: productEntities){
+            List<OrderDetailEntity> listOrderDetailEntities = orderDetailsRepository.getByProductIdAndStatusAndDateBetween(productEntity.getId(), "Đang chuẩn bị", dateMapper.convertStringToDate(startDate),dateMapper.convertStringToDate(endDate));
+            orderDetailEntities.addAll(listOrderDetailEntities);
+        }
+
+        List<OrderDetailModel> orderDetailModels = orderDetailMapper.convertListOrderDetailEntityToListOrderDetailModel(orderDetailEntities);
+        return orderDetailModels;
+    }
+
+    
     
 }

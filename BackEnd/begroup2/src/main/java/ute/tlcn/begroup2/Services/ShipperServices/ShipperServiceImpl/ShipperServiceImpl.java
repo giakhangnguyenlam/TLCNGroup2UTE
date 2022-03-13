@@ -99,13 +99,14 @@ public class ShipperServiceImpl implements ShipperService {
     @Override
     public void receiveOrder(int orderId, int shipperId) {
         OrderEntity orderEntity = orderRepository.getById(orderId);
+        orderEntity.setOrderStatus("Đang giao hàng");
         orderEntity.setShipperId(shipperId);
         orderRepository.save(orderEntity);
     }
 
     @Override
     public List<ShipperOrderModel> getOrderByShipperId(int shipperId) {
-        List<OrderEntity> orderEntities = orderRepository.getByShipperId(shipperId);
+        List<OrderEntity> orderEntities = orderRepository.getByOrderStatusAndShipperId("Đang giao hàng", shipperId);
         List<ShipperOrderModel> shipperOrderModels = orderEntities.stream()
         .map(orderEntity -> {
             UserEntity userEntity = userRepository.getById(orderEntity.getUserId());

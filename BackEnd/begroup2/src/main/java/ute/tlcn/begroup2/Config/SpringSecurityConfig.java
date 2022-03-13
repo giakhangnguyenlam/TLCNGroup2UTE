@@ -40,6 +40,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
         .passwordEncoder(passwordEncoder);
+
     }
 
     @Override
@@ -54,11 +55,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/signup/**").permitAll()
                 .antMatchers("/product/**").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER","SELLER","ADMIN")
+                .antMatchers("/user/**").hasAnyRole("USER","SELLER","ADMIN", "SHIPPER")
                 .antMatchers("/seller/signup/**").permitAll()
                 .antMatchers("/seller/**").hasAnyRole("SELLER","ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/shipper/signup/**").permitAll()
+				.antMatchers("/shipper/signup/**").permitAll()
                 .antMatchers("/shipper/**").hasAnyRole("ADMIN","SHIPPER")
                 .anyRequest().authenticated()
             .and()
