@@ -59,7 +59,16 @@ function StoreItem({ item }) {
             )
           ) : (
             productList.slice(itemOffset, itemOffset + item).map((product) => {
-              let { id, category, name, quantity, price, image } = product
+              let {
+                id,
+                category,
+                name,
+                quantity,
+                price,
+                image,
+                isDiscount,
+                discount,
+              } = product
               if (category === 1) {
                 category = "Quần áo"
               }
@@ -123,6 +132,14 @@ function StoreItem({ item }) {
                       <i className='fas fa-check'></i>
                       <span>Yêu thích</span>
                     </div>
+                    {isDiscount && (
+                      <div className='product-item__sale'>
+                        <span className='product-item__sale-percent'>
+                          {discount}%
+                        </span>
+                        <span className='product-item__sale-label'>GIẢM</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )

@@ -45,12 +45,12 @@ function Product({ item }) {
               .map((item) => {
                 let {
                   id,
-                  // storeId,
+                  discount,
                   category,
                   name,
                   quantity,
                   price,
-                  // description,
+                  isDiscount,
                   image,
                 } = item
                 if (category === 1) {
@@ -61,6 +61,9 @@ function Product({ item }) {
                 }
                 if (category === 3) {
                   category = "Phụ kiện"
+                }
+                if (isDiscount) {
+                  price = (price * (100 - discount)) / 100
                 }
                 return (
                   <div className='grid__colum-2-4' key={id}>
@@ -108,6 +111,14 @@ function Product({ item }) {
                         <i className='fas fa-check'></i>
                         <span>Yêu thích</span>
                       </div>
+                      {isDiscount && (
+                        <div className='product-item__sale'>
+                          <span className='product-item__sale-percent'>
+                            {discount}%
+                          </span>
+                          <span className='product-item__sale-label'>GIẢM</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

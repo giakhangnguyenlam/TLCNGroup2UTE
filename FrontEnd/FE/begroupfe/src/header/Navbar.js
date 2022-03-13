@@ -39,7 +39,7 @@ function Navbar() {
             className='header__navbar-item-link'
             onClick={
               userRole === "ROLE_SELLER"
-                ? () => redirect("/seller")
+                ? () => redirect("/seller/store")
                 : () => authPage("sellerSignup")
             }
           >

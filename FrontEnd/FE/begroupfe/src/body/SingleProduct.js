@@ -125,8 +125,16 @@ function SingleProduct() {
         url: `https://tlcngroup2be.herokuapp.com/product/${id}`,
       })
       if (res.status === 200) {
-        const { category, image, name, price, quantity, description } =
-          await res.data
+        const {
+          category,
+          image,
+          name,
+          price,
+          quantity,
+          description,
+          isDiscount,
+          discount,
+        } = await res.data
         return {
           status: 200,
           category,
@@ -135,6 +143,8 @@ function SingleProduct() {
           price,
           quantity,
           description,
+          isDiscount,
+          discount,
         }
       }
     } catch (error) {
@@ -240,8 +250,17 @@ function SingleProduct() {
     const fetch = async () => {
       setLoading(true)
       let res = await fetchData()
-      let { category, image, name, price, quantity, description, status } =
-        await res
+      let {
+        category,
+        image,
+        name,
+        price,
+        quantity,
+        description,
+        status,
+        isDiscount,
+        discount,
+      } = await res
       if (status === 200) {
         let result = await fetchCategory(id, category)
         if (category === 1 || category === 2) {
@@ -256,6 +275,8 @@ function SingleProduct() {
             size,
             color,
             description,
+            isDiscount,
+            discount,
           })
         }
         if (category === 3) {
@@ -269,6 +290,8 @@ function SingleProduct() {
             quantity,
             color,
             description,
+            isDiscount,
+            discount,
           })
         }
         let comment = await fetchComment()
@@ -338,12 +361,31 @@ function SingleProduct() {
                   <div className='brief__product-header'>
                     <span>{prod.name}</span>
                   </div>
-                  <div className='brief__product-price'>
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(prod.price)}
-                  </div>
+                  {prod.isDiscount ? (
+                    <div className='brief__product-price'>
+                      <div className='brief__product-price-cur'>
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format((prod.price * (100 - prod.discount)) / 100)}
+                      </div>
+                      <div className='brief__product-price-old'>
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(prod.price)}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className='brief__product-price'>
+                      <div className='brief__product-price-cur'>
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(prod.price)}
+                      </div>
+                    </div>
+                  )}
 
                   {prod.color.length ? (
                     <div className='brief__product-shipping'>

@@ -1963,8 +1963,20 @@ i.product-item__action-liked-icon {
   justify-content: center;
   min-height: 66px;
   width: 100%;
+  flex-direction: column;
+}
+
+.brief__product-price-cur {
   color: #dc143c;
   font-size: 3rem;
+  line-height: 3.2rem;
+}
+
+.brief__product-price-old {
+  text-decoration: line-through;
+  color: rgba(102, 102, 102, 0.6);
+  font-size: 2.4rem;
+  line-height: 2.6rem;
 }
 
 .brief__product-shipping {
