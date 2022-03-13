@@ -1789,3 +1789,23 @@ link: https://tlcngroup2be.herokuapp.com/seller/coupon/active/124
     "mess": "Update successfully"
 }
 ```
+
+### Delete coupon 
+link: https://tlcngroup2be.herokuapp.com/seller/coupon/128
+
+> DELETE
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+> Note: 128 is coupon id 
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Delete successfully"
+}
+```
