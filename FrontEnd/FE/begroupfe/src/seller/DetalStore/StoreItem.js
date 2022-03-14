@@ -35,7 +35,7 @@ function StoreItem({ item }) {
   }, [reloadDetailStore])
   useEffect(() => {
     document.documentElement.scrollTop = 0
-    setPageCount(Math.ceil(productList))
+    setPageCount(Math.ceil(productList.length))
   }, [item, productList])
 
   const handlePageClick = (event) => {

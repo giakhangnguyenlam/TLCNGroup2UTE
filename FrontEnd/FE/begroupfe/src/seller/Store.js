@@ -5,10 +5,13 @@ import Popup from "../ultis/Popup"
 import {
   AiOutlineEdit,
   AiOutlineDelete,
+  AiOutlineRollback,
   AiOutlineInfoCircle,
 } from "react-icons/ai"
+import { RiCoupon3Line } from "react-icons/ri"
 import axios from "axios"
 import { useParams } from "react-router-dom"
+import ModalDetailDiscount from "./DetalStore/ModalDetailDiscount"
 
 function Store() {
   const { storeId } = useParams()
@@ -17,6 +20,7 @@ function Store() {
   const jwt = localStorage.getItem("jwt")
   const {
     idStoreProd,
+    isDetailDiscount,
     setIdStoreUpdate,
     setIsDetailCreate,
     reloadDetailStore,
@@ -24,6 +28,7 @@ function Store() {
     setCateStoreProd,
     setIsDetailUpdate,
     setIsDetailInfo,
+    setIsDetailDiscount,
     setCateClo,
     setCateSho,
     setCateAcc,
@@ -34,6 +39,12 @@ function Store() {
   const handleUpdateProd = () => {
     setIsDetailUpdate(true)
     // setIdStoreProd(prod)
+  }
+  const handleDiscount = () => {
+    setIsDetailDiscount(true)
+  }
+  const handleBack = () => {
+    setIsDetailDiscount(false)
   }
   const handleDeleteProd = async () => {
     let del = window.confirm("Delete?")
@@ -187,52 +198,92 @@ function Store() {
   return (
     <div className='container'>
       <div className='grid'>
-        <div className='grid__row contain'>
-          <div className='grid__colum-2'>
-            <nav className='category' style={{ marginBottom: "10px" }}>
-              <div className='store-product__header-add' onClick={handleCreate}>
-                <p>+ Thêm sản phẩm</p>
-              </div>
-              {idStoreProd && (
-                <div
-                  className='store-product__header-ctrl'
-                  onClick={() => handleUpdateProd()}
-                >
+        {isDetailDiscount ? (
+          <>
+            <div
+              className='store-product__header-add'
+              style={{ marginTop: "10px", display: "flex" }}
+            >
+              <p onClick={handleBack}>
+                <AiOutlineRollback className='store-item__icon' />
+                Trở về
+              </p>
+            </div>
+            <ModalDetailDiscount />
+          </>
+        ) : (
+          <div className='grid__row contain'>
+            <div className='grid__colum-2'>
+              {/* {isDetailDiscount ? (
+              <nav className='category' style={{ marginBottom: "10px" }}>
+                <div className='store-product__header-add' onClick={handleBack}>
                   <p>
-                    <AiOutlineEdit className='store-item__icon' />
-                    Sửa thông tin
+                    <AiOutlineRollback className='store-item__icon' />
+                    Trở về
                   </p>
                 </div>
-              )}
-              {idStoreProd && (
+              </nav>
+            ) : ( */}
+              <nav className='category' style={{ marginBottom: "10px" }}>
                 <div
-                  className='store-product__header-ctrl'
-                  onClick={() => handleDeleteProd()}
+                  className='store-product__header-add'
+                  onClick={handleCreate}
                 >
-                  <p>
-                    <AiOutlineDelete className='store-item__icon' />
-                    Xóa sản phẩm
-                  </p>
+                  <p>+ Thêm sản phẩm</p>
                 </div>
-              )}
-              {idStoreProd && (
-                <div
-                  className='store-product__header-ctrl'
-                  onClick={() => handleInfo()}
-                >
-                  <p>
-                    <AiOutlineInfoCircle className='store-item__icon' />
-                    Thông tin chi tiết
-                  </p>
-                </div>
-              )}
-            </nav>
-          </div>
+                {idStoreProd && (
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleUpdateProd}
+                  >
+                    <p>
+                      <AiOutlineEdit className='store-item__icon' />
+                      Sửa thông tin
+                    </p>
+                  </div>
+                )}
+                {idStoreProd && (
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleDeleteProd}
+                  >
+                    <p>
+                      <AiOutlineDelete className='store-item__icon' />
+                      Xóa sản phẩm
+                    </p>
+                  </div>
+                )}
+                {idStoreProd && (
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleInfo}
+                  >
+                    <p>
+                      <AiOutlineInfoCircle className='store-item__icon' />
+                      Thông tin chi tiết
+                    </p>
+                  </div>
+                )}
+                {idStoreProd && (
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleDiscount}
+                  >
+                    <p>
+                      <RiCoupon3Line className='store-item__icon' />
+                      Mã giảm giá
+                    </p>
+                  </div>
+                )}
+              </nav>
+              {/* )} */}
+            </div>
 
-          <div className='grid__colum-10'>
-            <StoreItem item={10} />
+            <div className='grid__colum-10'>
+              <StoreItem item={10} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {load && (

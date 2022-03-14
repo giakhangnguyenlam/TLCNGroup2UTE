@@ -8,6 +8,7 @@ import ModalDetailInfo from "../seller/DetalStore/ModalDetailInfo"
 import UserComment from "../user/UserComment"
 import OrderDetail from "../seller/OrderDetail"
 import Static from "../seller/Static"
+import ModalDetailDiscount from "../seller/DetalStore/ModalDetailDiscount"
 function Modal() {
   const {
     isCreateStore,

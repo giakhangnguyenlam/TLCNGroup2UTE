@@ -21,6 +21,7 @@ const AppProvider = ({ children }) => {
   const [isDetailCreate, setIsDetailCreate] = useState(false)
   const [isDetailUpdate, setIsDetailUpdate] = useState(false)
   const [isDetailInfo, setIsDetailInfo] = useState(false)
+  const [isDetailDiscount, setIsDetailDiscount] = useState(false)
   const [isOrderDetail, setIsOrderDetail] = useState(false)
   const [isStatic, setIsStatic] = useState(false)
   const [isComment, setIsComment] = useState(false)
@@ -157,6 +158,7 @@ const AppProvider = ({ children }) => {
         isDetailCreate,
         isDetailUpdate,
         isDetailInfo,
+        isDetailDiscount,
         isOrderDetail,
         isStatic,
         isComment,
@@ -185,6 +187,7 @@ const AppProvider = ({ children }) => {
         setIsDetailCreate,
         setIsDetailUpdate,
         setIsDetailInfo,
+        setIsDetailDiscount,
         setIsOrderDetail,
         setIsStatic,
         setIsComment,

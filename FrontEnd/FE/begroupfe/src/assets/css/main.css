@@ -1624,6 +1624,38 @@ i.product-item__action-liked-icon {
   margin: 0 1px;
 }
 
+.store-item__state {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #333;
+  position: relative;
+}
+
+.store-item__state--active::before {
+  content: "";
+  border: 10px solid rgb(75, 181, 52);
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(4px, 4px);
+  cursor: pointer;
+}
+
+.store-item__state--disable::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 1px solid #333;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(4px, 4px);
+  cursor: pointer;
+}
+
+/* .store-item__state:hover.store-item__state--disable::before {
+  color: rgba(75, 181, 52, 0.8);
+} */
+
 .store-item__number {
   width: 4%;
 }
