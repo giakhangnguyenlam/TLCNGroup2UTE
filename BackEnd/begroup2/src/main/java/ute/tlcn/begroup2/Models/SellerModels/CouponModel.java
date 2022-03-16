@@ -18,5 +18,5 @@ public class CouponModel {
     private double discount;
     private long startDate;
     private long expireDate;
-    
+    private boolean IsActive;
 }

@@ -380,4 +380,14 @@ public class SellerController {
             return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/coupon/{couponId}")
+    public ResponseEntity<?> deleteCouponById(@PathVariable("couponId") int couponId){
+        try {
+            couponService.deleteCoupon(couponId);
+            return new ResponseEntity<>(new MessageModel("Delete successfully"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageModel(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -37,7 +37,12 @@ public class CouponServiceImpl implements CouponService {
     public CouponModel updateCoupon(int couponId, CouponModel couponModel) throws NotFoundException {
         Optional<CouponEntity> optionalCouponEntity = couponRepository.findById(couponId);
         if(optionalCouponEntity.isPresent()){
-            CouponEntity couponEntity = couponMapper.convertCouponModelToCouponEntity(couponModel);
+            CouponEntity couponEntity = optionalCouponEntity.get();
+            couponEntity.setCouponName(couponModel.getCouponName());
+            couponEntity.setCouponDesc(couponModel.getCouponDesc());
+            couponEntity.setDiscount(couponModel.getDiscount());
+            couponEntity.setStartDate(couponModel.getStartDate());
+            couponEntity.setExpireDate(couponModel.getExpireDate());
             couponEntity = couponRepository.save(couponEntity);
             return couponMapper.convertCouponEntityToCouponModel(couponEntity);
         }
@@ -67,8 +72,10 @@ public class CouponServiceImpl implements CouponService {
     public void changeActiveCoupon(int couponId) throws NotFoundException {
         Optional<CouponEntity> optionalCouponEntity = couponRepository.findById(couponId);
         if(optionalCouponEntity.isPresent()){
+            long time = new Date().getTime();
             CouponEntity couponEntity = optionalCouponEntity.get();
-            couponEntity.setExpireDate(couponEntity.getStartDate());
+            couponEntity.setExpireDate(time);
+            couponEntity.setStartDate(time);
             couponRepository.save(couponEntity);
         }
         else{
@@ -101,5 +108,18 @@ public class CouponServiceImpl implements CouponService {
         }
         return null;
     }
+
+    @Override
+    public boolean isActiveCoupon(int couponId) {
+        Optional<CouponEntity> optionalCoupon = couponRepository.findById(couponId);
+        if(optionalCoupon.isPresent()){
+            long time = new Date().getTime();
+            if(time<=optionalCoupon.get().getExpireDate()){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
 }

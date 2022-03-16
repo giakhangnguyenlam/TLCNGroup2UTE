@@ -14,4 +14,5 @@ public interface CouponService {
     public void changeActiveCoupon(int couponId) throws NotFoundException;
     public Optional<CouponModel> getActiveCoupon(int productId);
     public CouponModel getCouponByCouponId(int couponId);
+    public boolean isActiveCoupon(int couponId);
 }

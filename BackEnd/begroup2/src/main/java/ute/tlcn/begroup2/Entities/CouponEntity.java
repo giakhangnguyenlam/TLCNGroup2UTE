@@ -27,4 +27,5 @@ public class CouponEntity {
     private double discount;
     private long startDate;
     private long expireDate;
+
 }
