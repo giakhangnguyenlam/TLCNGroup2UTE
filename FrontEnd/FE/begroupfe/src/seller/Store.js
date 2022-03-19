@@ -201,15 +201,15 @@ function Store() {
         {isDetailDiscount ? (
           <>
             <div
-              className='store-product__header-add'
-              style={{ marginTop: "10px", display: "flex" }}
+              className='store-product__header-ctrl'
+              style={{ marginTop: "10px", display: "inline-flex" }}
             >
               <p onClick={handleBack}>
                 <AiOutlineRollback className='store-item__icon' />
-                Trở về
+                Đổi sản phẩm
               </p>
             </div>
-            <ModalDetailDiscount />
+            <ModalDetailDiscount setLoad={setLoad} />
           </>
         ) : (
           <div className='grid__row contain'>
@@ -224,9 +224,9 @@ function Store() {
                 </div>
               </nav>
             ) : ( */}
-              <nav className='category' style={{ marginBottom: "10px" }}>
+              <nav style={{ marginBottom: "10px" }}>
                 <div
-                  className='store-product__header-add'
+                  className='store-product__header-ctrl'
                   onClick={handleCreate}
                 >
                   <p>+ Thêm sản phẩm</p>

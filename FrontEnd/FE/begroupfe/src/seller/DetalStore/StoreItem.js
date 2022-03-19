@@ -31,11 +31,10 @@ function StoreItem({ item }) {
   }
   useEffect(() => {
     fetchData()
-    console.log(storeId)
   }, [reloadDetailStore])
   useEffect(() => {
     document.documentElement.scrollTop = 0
-    setPageCount(Math.ceil(productList.length))
+    setPageCount(Math.ceil(productList.length / item))
   }, [item, productList])
 
   const handlePageClick = (event) => {
@@ -90,7 +89,7 @@ function StoreItem({ item }) {
                     style={
                       idStoreProd
                         ? id === idStoreProd.id
-                          ? { border: "1px solid var(--primary-color)" }
+                          ? { border: "2px solid var(--primary-color)" }
                           : {}
                         : {}
                     }
