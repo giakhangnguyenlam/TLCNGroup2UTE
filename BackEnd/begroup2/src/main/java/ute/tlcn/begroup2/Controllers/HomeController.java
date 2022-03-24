@@ -17,11 +17,7 @@ import ute.tlcn.begroup2.Models.SellerModels.CategoryAccessoriesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryClothesModel;
 import ute.tlcn.begroup2.Models.SellerModels.CategoryShoesModel;
 import ute.tlcn.begroup2.Models.SellerModels.ProductModel;
-import ute.tlcn.begroup2.Models.UserModels.CommentModel;
-import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
-import ute.tlcn.begroup2.Models.UserModels.LoginModel;
-import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
-import ute.tlcn.begroup2.Models.UserModels.UserModel;
+import ute.tlcn.begroup2.Models.UserModels.*;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryAccessoriesService;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryClothesService;
 import ute.tlcn.begroup2.Services.SellerServices.CategoryShoesService;
@@ -161,6 +157,18 @@ public class HomeController {
     public ResponseEntity<?> getCommentByProductId(@PathVariable("id") int productId){
         List<CommentModel> commentModels = userService.getCommentByProductId(productId);
         return new ResponseEntity<>(commentModels, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/productnames")
+    public ResponseEntity<?> getAllProductName(){
+        List<String> productNames = userService.getAllNameProduct();
+        return new ResponseEntity<>(productNames, HttpStatus.OK);
+    }
+
+    @GetMapping("/product/suggestions/name/{name}")
+    public ResponseEntity<?> getSuggestionProduct(@PathVariable("name") String name){
+        List<SuggestionProductsModel> suggestionProductsModels = userService.getSuggestionProducts(name);
+        return new ResponseEntity<>(suggestionProductsModels, HttpStatus.OK);
     }
 
 }

@@ -486,6 +486,58 @@ link: https://tlcngroup2be.herokuapp.com/product/comment/1
 ]
 ```
 
+### Get all product names
+> link: https://tlcngroup2be.herokuapp.com/product/productnames
+
+> GET
+
+#### Request
+
+#### Response
+```
+[
+    "Áo thể thao",
+    "áo dài tay",
+    "áo hoodie",
+    "Quần ngủ",
+    "Giày thể thao",
+    "Giày thể thao 2",
+    "Áo nike chất lượng caoo",
+    "Giày dép chất lượng cao",
+    "Bình nước chất lượng cao",
+    "áo nike",
+    "Băng cổ tay",
+    "Ao",
+    "Quan",
+    "bình nước abccc",
+    "asdasdasdasd"
+]
+```
+
+### Get suggestion for product
+link: https://tlcngroup2be.herokuapp.com/product/suggestions/name/Áo thể thao
+
+> GET
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "storeId": 4,
+        "storeName": "Bán quần áo",
+        "image": "https://drive.google.com/uc?id=1ChgK_Bgl8LFIobNGMYUprwfTyIBQNs4n&export=download",
+        "productId": 5,
+        "name": "Áo thể thao",
+        "price": 100000.0
+    }
+]
+```
+
+
+
+
 ##  ===============>> User API <<====================
 
 ### Update user without password

@@ -2,14 +2,7 @@ package ute.tlcn.begroup2.Services.UserServices;
 
 import java.util.List;
 
-import ute.tlcn.begroup2.Models.UserModels.CommentModel;
-import ute.tlcn.begroup2.Models.UserModels.LoginModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
-import ute.tlcn.begroup2.Models.UserModels.PassWordModel;
-import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
-import ute.tlcn.begroup2.Models.UserModels.UserModel;
-import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
+import ute.tlcn.begroup2.Models.UserModels.*;
 
 public interface UserService {
     
@@ -26,4 +19,6 @@ public interface UserService {
     public List<OrderDetailModel> orderDetailsHistory(int orderId);
     public void createComment(CommentModel commentModel);
     public List<CommentModel> getCommentByProductId(int productId);
+    public List<String> getAllNameProduct();
+    public List<SuggestionProductsModel> getSuggestionProducts(String name);
 }

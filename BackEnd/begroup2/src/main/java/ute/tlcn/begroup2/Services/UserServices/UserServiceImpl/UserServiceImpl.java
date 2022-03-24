@@ -1,5 +1,6 @@
 package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,28 +19,14 @@ import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import ute.tlcn.begroup2.Entities.CommentEntity;
-import ute.tlcn.begroup2.Entities.OrderDetailEntity;
-import ute.tlcn.begroup2.Entities.OrderEntity;
-import ute.tlcn.begroup2.Entities.UserEntity;
-import ute.tlcn.begroup2.Models.UserModels.CommentModel;
-import ute.tlcn.begroup2.Models.UserModels.LoginModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
-import ute.tlcn.begroup2.Models.UserModels.PassWordModel;
-import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
-import ute.tlcn.begroup2.Models.UserModels.UserDetailsModel;
-import ute.tlcn.begroup2.Models.UserModels.UserModel;
-import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
+import ute.tlcn.begroup2.Entities.*;
+import ute.tlcn.begroup2.Models.UserModels.*;
 import ute.tlcn.begroup2.ObjectMapper.CommentMapper;
 import ute.tlcn.begroup2.ObjectMapper.DateMapper;
 import ute.tlcn.begroup2.ObjectMapper.OrderDetailMapper;
 import ute.tlcn.begroup2.ObjectMapper.OrderMapper;
 import ute.tlcn.begroup2.ObjectMapper.UserMapper;
-import ute.tlcn.begroup2.Repositories.CommentRepository;
-import ute.tlcn.begroup2.Repositories.OrderDetailsRepository;
-import ute.tlcn.begroup2.Repositories.OrderRepository;
-import ute.tlcn.begroup2.Repositories.UserRepository;
+import ute.tlcn.begroup2.Repositories.*;
 import ute.tlcn.begroup2.Services.MailServices.MailService;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 import ute.tlcn.begroup2.Utils.JWTUtil;
@@ -62,9 +49,11 @@ public class UserServiceImpl implements UserService {
     private CommentMapper commentMapper;
     private CommentRepository commentRepository;
     private MailService  mailService;
+    private ProductRepository productRepository;
+    private StoreRepository storeRepository;
 
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder, OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, CommentMapper commentMapper, CommentRepository commentRepository, MailService mailService) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JWTUtil jwtUtil, UserRepository userRepository, UserMapper userMapper, DateMapper dateMapper, PasswordEncoder passwordEncoder, OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, CommentMapper commentMapper, CommentRepository commentRepository, MailService mailService, ProductRepository productRepository, StoreRepository storeRepository) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -79,10 +68,13 @@ public class UserServiceImpl implements UserService {
         this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
         this.mailService = mailService;
+        this.productRepository = productRepository;
+        this.storeRepository = storeRepository;
     }
-    
-    
-    
+
+
+
+
     // login
     @Override
     public UserModel setLogin(LoginModel loginModel) throws Exception {
@@ -271,6 +263,40 @@ public class UserServiceImpl implements UserService {
         return commentModels;
     }
 
+    @Override
+    public List<String> getAllNameProduct() {
+        List<String> productNames = productRepository.findAll()
+                .stream()
+                .map(ProductEntity::getName)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return  productNames;
+    }
+
+    @Override
+    public List<SuggestionProductsModel> getSuggestionProducts(String name) {
+        List<ProductEntity> productEntities = productRepository.getAllByName(name);
+        List<SuggestionProductsModel> suggestionProductsModels = productEntities.stream()
+                .map(productEntity -> {
+            return new SuggestionProductsModel(0,"","", productEntity.getId(), productEntity.getName(), productEntity.getPrice());
+        }).collect(Collectors.toList());
+
+        List<StoreEntity> storeEntities = productEntities.stream()
+                .map(productEntity -> storeRepository.getById(productEntity.getStoreId()))
+                .collect(Collectors.toList());;
+        List<SuggestionProductsModel> result = new ArrayList<>();
+        for (int i = 0; i < storeEntities.size(); i++) {
+            StoreEntity storeEntity = storeEntities.get(i);
+            SuggestionProductsModel suggestionProductsModel = suggestionProductsModels.get(i);
+            suggestionProductsModel.setStoreId(storeEntity.getId());
+            suggestionProductsModel.setStoreName(storeEntity.getNameStore());
+            suggestionProductsModel.setImage(storeEntity.getImage());
+            result.add(suggestionProductsModel);
+        }
+        return  result;
+    }
+
 
     @Override
     public void orderWithPaypal(UserOrderModel userOrderModel) {
@@ -287,4 +313,6 @@ public class UserServiceImpl implements UserService {
             System.out.println(e.getMessage());
         }
     }
+
+
 }
