@@ -1,312 +1,123 @@
 import React, { useEffect, useState } from "react"
 import { useGlobalContext } from "../context"
-import StoreItem from "./DetalStore/StoreItem"
-import Popup from "../ultis/Popup"
-import {
-  AiOutlineEdit,
-  AiOutlineDelete,
-  AiOutlineRollback,
-  AiOutlineInfoCircle,
-} from "react-icons/ai"
-import { RiCoupon3Line } from "react-icons/ri"
+import ReactPaginate from "react-paginate"
 import axios from "axios"
-import { useParams } from "react-router-dom"
-import ModalDetailDiscount from "./DetalStore/ModalDetailDiscount"
 
-function Store() {
-  const { storeId } = useParams()
-  const [height, setHeight] = useState()
-  const [load, setLoad] = useState()
+function Store({ item }) {
+  const { idStoreUpdate, setIdStoreUpdate, reloadSell } = useGlobalContext()
+  const [pageCount, setPageCount] = useState(0)
+  const [itemOffset, setItemOffset] = useState(0)
+  const [storeList, setStoreList] = useState([])
+  const [isList, setIsList] = useState(false)
+  const userid = localStorage.getItem("id")
   const jwt = localStorage.getItem("jwt")
-  const {
-    idStoreProd,
-    isDetailDiscount,
-    setIdStoreUpdate,
-    setIsDetailCreate,
-    reloadDetailStore,
-    setReloadDetailStore,
-    setCateStoreProd,
-    setIsDetailUpdate,
-    setIsDetailInfo,
-    setIsDetailDiscount,
-    setCateClo,
-    setCateSho,
-    setCateAcc,
-    raise,
-    setIdStoreProd,
-  } = useGlobalContext()
 
-  const handleUpdateProd = () => {
-    setIsDetailUpdate(true)
-    // setIdStoreProd(prod)
-  }
-  const handleDiscount = () => {
-    setIsDetailDiscount(true)
-  }
-  const handleBack = () => {
-    setIsDetailDiscount(false)
-  }
-  const handleDeleteProd = async () => {
-    let del = window.confirm("Delete?")
-    if (del) {
-      setLoad(true)
-      try {
-        let res = await axios({
-          method: "delete",
-          url: `https://tlcngroup2be.herokuapp.com/seller/product/${idStoreProd.id}/category/${idStoreProd.category}`,
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        })
-        if (res.status === 200) {
-          setIdStoreProd(null)
-          setReloadDetailStore(!reloadDetailStore)
-          setLoad(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
-  const handleInfo = async () => {
-    setCateStoreProd(idStoreProd.category)
-    if (idStoreProd.category === 1) {
-      setLoad(true)
-      try {
-        let res = await axios({
-          method: "GET",
-          url: `https://tlcngroup2be.herokuapp.com/product/categoryclothes/${idStoreProd.id}`,
-          responseType: "json",
-        })
-        if (res.status === 200) {
-          const {
-            type,
-            brand,
-            origin,
-            size,
-            color,
-            material,
-            gender,
-            productId,
-          } = await res.data
-          setCateClo({
-            type,
-            brand,
-            origin,
-            size,
-            color,
-            material,
-            gender,
-            productId,
-          })
-          setLoad(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if (idStoreProd.category === 2) {
-      setLoad(true)
-      try {
-        let res = await axios({
-          method: "GET",
-          url: `https://tlcngroup2be.herokuapp.com/product/categoryshoes/${idStoreProd.id}`,
-          responseType: "json",
-        })
-        if (res.status === 200) {
-          const {
-            style,
-            sole,
-            height,
-            weight,
-            warranty,
-            origin,
-            size,
-            color,
-            material,
-            gender,
-            productId,
-          } = await res.data
-          setCateSho({
-            style,
-            sole,
-            height,
-            weight,
-            warranty,
-            origin,
-            size,
-            color,
-            material,
-            gender,
-            productId,
-          })
-          setLoad(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if (idStoreProd.category === 3) {
-      try {
-        setLoad(true)
-        let res = await axios({
-          method: "GET",
-          url: `https://tlcngroup2be.herokuapp.com/product/categoryaccessories/${idStoreProd.id}`,
-          responseType: "json",
-        })
-        if (res.status === 200) {
-          const { type, brand, origin, color, material, productId } =
-            await res.data
-          setCateAcc({
-            type,
-            brand,
-            origin,
-            color,
-            material,
-            productId,
-          })
-          setLoad(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    setIsDetailInfo(true)
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * item) % storeList.length
+    setItemOffset(newOffset)
   }
 
-  const handleCreate = () => {
-    setIdStoreUpdate({ id: storeId })
-    setIsDetailCreate(true)
+  const fetchData = async () => {
+    setIsList(false)
+    try {
+      let res = await axios({
+        method: "get",
+        url: `https://tlcngroup2be.herokuapp.com/seller/store/userid/${userid}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      if (res.status === 200) {
+        setStoreList(res.data)
+        setIsList(true)
+      }
+    } catch (error) {}
   }
 
   useEffect(() => {
-    let body = document.body,
-      html = document.documentElement
+    fetchData()
+  }, [reloadSell])
 
-    setHeight(
-      Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-      )
-    )
-  }, [])
+  useEffect(() => {
+    document.documentElement.scrollTop = 0
+    setPageCount(Math.ceil(storeList.length / item))
+  }, [item, storeList])
 
   return (
-    <div className='container'>
-      <div className='grid'>
-        {isDetailDiscount ? (
-          <>
-            <div
-              className='store-product__header-ctrl'
-              style={{ marginTop: "10px", display: "inline-flex" }}
-            >
-              <p onClick={handleBack}>
-                <AiOutlineRollback className='store-item__icon' />
-                Đổi sản phẩm
-              </p>
-            </div>
-            <ModalDetailDiscount setLoad={setLoad} />
-          </>
-        ) : (
-          <div className='grid__row contain'>
-            <div className='grid__colum-2'>
-              {/* {isDetailDiscount ? (
-              <nav className='category' style={{ marginBottom: "10px" }}>
-                <div className='store-product__header-add' onClick={handleBack}>
-                  <p>
-                    <AiOutlineRollback className='store-item__icon' />
-                    Trở về
-                  </p>
-                </div>
-              </nav>
-            ) : ( */}
-              <nav style={{ marginBottom: "10px" }}>
-                <div
-                  className='store-product__header-ctrl'
-                  onClick={handleCreate}
-                >
-                  <p>+ Thêm sản phẩm</p>
-                </div>
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleUpdateProd}
-                  >
-                    <p>
-                      <AiOutlineEdit className='store-item__icon' />
-                      Sửa thông tin
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDeleteProd}
-                  >
-                    <p>
-                      <AiOutlineDelete className='store-item__icon' />
-                      Xóa sản phẩm
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleInfo}
-                  >
-                    <p>
-                      <AiOutlineInfoCircle className='store-item__icon' />
-                      Thông tin chi tiết
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDiscount}
-                  >
-                    <p>
-                      <RiCoupon3Line className='store-item__icon' />
-                      Mã giảm giá
-                    </p>
-                  </div>
-                )}
-              </nav>
-              {/* )} */}
-            </div>
-
-            <div className='grid__colum-10'>
-              <StoreItem item={10} />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {load && (
+    <>
+      <div className='product'>
         <div
-          className='modal__overlay'
-          style={{ zIndex: "5", top: "0", height }}
+          className='grid__row'
+          key={789}
+          // onClick={() => setIdStoreProd(null)}
         >
-          <div className='loading'>
-            <div className='loading__one'></div>
-            <div className='loading__two'></div>
-            <div className='loading__three'></div>
-          </div>
+          {/* Product item */}
+          {storeList.length === 0 ? (
+            isList ? (
+              <div className='waiting'>Không có cửa hàng</div>
+            ) : (
+              <div className='waiting'>Loading...</div>
+            )
+          ) : (
+            storeList.slice(itemOffset, itemOffset + item).map((product) => {
+              const { id, nameStore, image } = product
+              return (
+                <div
+                  className='grid__colum-2-4'
+                  key={id}
+                  onClick={() => setIdStoreUpdate(product)}
+                >
+                  <div
+                    className='product-item'
+                    key={id}
+                    style={
+                      idStoreUpdate
+                        ? id === idStoreUpdate.id
+                          ? { border: "2px solid var(--primary-color)" }
+                          : {}
+                        : {}
+                    }
+                  >
+                    <div
+                      className='product-item__img'
+                      style={{
+                        backgroundImage: `url(${image})`,
+                      }}
+                    ></div>
+                    <h4 className='product-item__name'>{nameStore}</h4>
+                    <div className='product-item__price'>
+                      <span className='product-item__price-cur'></span>
+                    </div>
+                    <div className='product-item__origin'>
+                      <span className='product-item__brand'>Cửa hàng</span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
-      )}
-
-      {raise && (
-        <Popup
-          header={raise.header}
-          content={raise.content}
-          color={raise.color}
-        />
-      )}
-    </div>
+      </div>
+      <ReactPaginate
+        nextLabel='>'
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        pageCount={pageCount}
+        previousLabel='<'
+        pageClassName='pagination-item'
+        pageLinkClassName='pagination-item__link'
+        previousClassName='pagination-item'
+        previousLinkClassName='pagination-item__link'
+        nextClassName='pagination-item'
+        nextLinkClassName='pagination-item__link'
+        breakLabel='...'
+        breakClassName='pagination-item'
+        breakLinkClassName='pagination-item__link'
+        containerClassName='pagination product__pagination'
+        activeClassName='pagination-item--active'
+        renderOnZeroPageCount={null}
+      />
+    </>
   )
 }
 

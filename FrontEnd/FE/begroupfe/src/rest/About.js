@@ -24,7 +24,7 @@ function About() {
                   textAlign: "center",
                 }}
               >
-                <p>Đồ án môn Công nghệ phần mềm mới</p>
+                <p>Đồ án Khóa luận tốt nghiệp</p>
                 <p>Frontend: Nguyễn Thành Công 18110086</p>
                 <p>Backend: Nguyễn Lâm Gia Khang 18110132</p>
               </div>

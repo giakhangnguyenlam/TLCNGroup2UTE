@@ -1,12 +1,17 @@
 import React from "react"
+import { useHistory } from "react-router-dom"
 import { useGlobalContext } from "../context"
 import { cateShoList, cateCloList, cateAccList } from "../ultis/data"
 function Footer() {
   const { setCate, setCateType, setCateName } = useGlobalContext()
+  const history = useHistory()
   const clicked = (cate, type, name) => {
     setCate(cate)
     setCateType(type)
     setCateName(name)
+    if (window.location.pathname !== "/") {
+      history.push("/")
+    }
   }
   return (
     <footer className='footer'>

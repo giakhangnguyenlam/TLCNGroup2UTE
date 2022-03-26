@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { useGlobalContext } from "../../context"
 import axios from "axios"
 import ModalStep2 from "./ModalStep2"
@@ -24,6 +24,9 @@ function ModalDetailCreate() {
     loading,
     setLoading,
   } = useGlobalContext()
+  const [valid, setValid] = useState({ state: false, value: "" })
+  const [nameData, setNameData] = useState([])
+  const [displayData, setDisplayData] = useState()
   const [error, setError] = useState()
   const [isStep2, setIsStep2] = useState({ state: false, productId: 1 })
   const [newProduct, setNewProduct] = useState({
@@ -40,6 +43,12 @@ function ModalDetailCreate() {
 
   const handleUpImg = () => {
     refImg.current.click()
+  }
+  const checkValid = (e) => {
+    setNewProduct({ ...newProduct, name: e.target.value })
+    if (e.target.value !== "") {
+      setValid({ state: true, value: e.target.value })
+    }
   }
   const handleChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -144,6 +153,30 @@ function ModalDetailCreate() {
       uploadData()
     }
   }
+  const fetchData = async () => {
+    try {
+      let res = await axios({
+        method: "GET",
+        url: "https://tlcngroup2be.herokuapp.com/product/productnames",
+      })
+      if (res.status === 200) {
+        setNameData(res.data)
+      }
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (nameData.length !== 0) {
+      let ar = nameData.filter(
+        (item) => item.toLowerCase().indexOf(valid.value.toLowerCase()) + 1
+      )
+      setDisplayData(ar)
+    }
+  }, [valid.value])
 
   return (
     <div className='modal'>
@@ -167,16 +200,42 @@ function ModalDetailCreate() {
               />
             ) : (
               <div className='auth-form__form'>
-                <div className='auth-form__group'>
+                <div
+                  className='auth-form__group'
+                  style={{ position: "relative" }}
+                >
                   <input
                     type='text'
                     className='auth-form__input'
                     value={newProduct.name}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
+                    onChange={checkValid}
                     placeholder='Tên sản phẩm'
                   />
+                  <div
+                    className='header__search-history'
+                    style={{ maxHeight: "180px", overflowY: "overlay" }}
+                  >
+                    <h3 className='header__search-history-heading'>
+                      Tên sản phẩm
+                    </h3>
+                    <ul className='header__search-history-list'>
+                      {displayData
+                        ? displayData.map((item, index) => {
+                            return (
+                              <li
+                                className='header__search-history-item'
+                                key={index}
+                                onClick={() =>
+                                  setNewProduct({ ...newProduct, name: item })
+                                }
+                              >
+                                <div>{item}</div>
+                              </li>
+                            )
+                          })
+                        : ""}
+                    </ul>
+                  </div>
                 </div>
                 <div className='auth-form__group'>
                   <select

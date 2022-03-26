@@ -68,6 +68,12 @@ body {
   width: 100%;
 }
 
+.grid__colum-12-2 {
+  padding-left: 5px;
+  padding-right: 5px;
+  width: calc(100% / 6);
+}
+
 /* Animation */
 @keyframes fadeIn {
   from {
@@ -250,6 +256,7 @@ body {
 .pagination-item__link:hover {
   background-color: var(--primary-color);
   color: var(--white-color);
+  transition: 0.3s;
 }
 
 /* Product per store */
@@ -271,8 +278,14 @@ body {
 .w10 {
   width: 10% !important;
 }
+.w8 {
+  width: 8% !important;
+}
 .w6 {
   width: 6% !important;
+}
+.w5 {
+  width: 5% !important;
 }
 
 .w20 {

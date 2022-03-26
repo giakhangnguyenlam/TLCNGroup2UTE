@@ -1,29 +1,23 @@
 import axios from "axios"
-import React, { useEffect, useState } from "react"
-import { useHistory, useParams } from "react-router"
+import React, { useEffect, useState, useRef } from "react"
+import { useParams } from "react-router"
 import {
   AiOutlineRight,
   AiOutlineMinus,
   AiOutlinePlus,
   AiFillStar,
+  AiFillHeart,
 } from "react-icons/ai"
 import { cateAccList, cateShoList, cateCloList } from "../ultis/data"
 import { useGlobalContext } from "../context"
 import blank from "../assets/img/blank.png"
 import noCmt from "../assets/img/noCmt.png"
 import Popup from "../ultis/Popup"
-
+import { useHistory } from "react-router-dom"
 function SingleProduct() {
   const { id } = useParams()
-  const {
-    loading,
-    setLoading,
-    raise,
-    setRaise,
-    setIsLogin,
-    setReloadSell,
-    reloadSell,
-  } = useGlobalContext()
+  const { loading, setLoading, raise, setRaise, setReloadSell, reloadSell } =
+    useGlobalContext()
   const [prod, setProd] = useState({
     price: 0,
     image: blank,
@@ -33,6 +27,7 @@ function SingleProduct() {
     color: [],
     quantity: undefined,
   })
+  const [listSameItem, setListSameItem] = useState([])
   const [detail, setDetail] = useState([])
   const [label, setLabel] = useState([])
   const [cmtList, setCmtList] = useState([])
@@ -41,8 +36,12 @@ function SingleProduct() {
     productId: "",
     quantity: 1,
   })
+  const redirect = (path) => {
+    history.push(path)
+  }
 
   const history = useHistory()
+  const ref = useRef()
 
   const handleAddCart = (action) => {
     const userId = localStorage.getItem("id")
@@ -96,7 +95,7 @@ function SingleProduct() {
           })
           setReloadSell(!reloadSell)
         } else {
-          history.push("/cart")
+          redirect("/cart")
         }
       } else {
         if (role !== "ROLE_USER") {
@@ -114,7 +113,7 @@ function SingleProduct() {
         }
       }
     } else {
-      history.push("/user/auth")
+      redirect("/user/auth")
     }
   }
 
@@ -150,6 +149,17 @@ function SingleProduct() {
     } catch (error) {
       console.log(error)
     }
+  }
+  const fetchCompare = async (name) => {
+    try {
+      const res = await axios({
+        method: "get",
+        url: `https://tlcngroup2be.herokuapp.com/product/suggestions/name/${name}`,
+      })
+      if (res.status === 200) {
+        setListSameItem(res.data)
+      }
+    } catch (error) {}
   }
   const fetchCategory = async (id, category) => {
     if (category === 1) {
@@ -249,8 +259,8 @@ function SingleProduct() {
     document.documentElement.scrollTop = 0
     const fetch = async () => {
       setLoading(true)
-      let res = await fetchData()
-      let {
+      const res = await fetchData()
+      const {
         category,
         image,
         name,
@@ -260,11 +270,12 @@ function SingleProduct() {
         status,
         isDiscount,
         discount,
-      } = await res
+      } = res
       if (status === 200) {
-        let result = await fetchCategory(id, category)
+        const result = await fetchCategory(id, category)
+        fetchCompare(name)
         if (category === 1 || category === 2) {
-          let { size, color } = result
+          const { size, color } = result
           setProd({
             ...prod,
             category,
@@ -280,7 +291,7 @@ function SingleProduct() {
           })
         }
         if (category === 3) {
-          let { color } = result
+          const { color } = result
           setProd({
             ...prod,
             category,
@@ -294,7 +305,7 @@ function SingleProduct() {
             discount,
           })
         }
-        let comment = await fetchComment()
+        const comment = await fetchComment()
         if (comment.status === 200) {
           setCmtList(comment.data)
         }
@@ -305,7 +316,7 @@ function SingleProduct() {
   }, [])
 
   const handlInput = (e) => {
-    let newQuan = e.target.value
+    const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
       if (newQuan <= prod.quantity) {
         setInfo({ ...info, quantity: newQuan })
@@ -330,10 +341,11 @@ function SingleProduct() {
             >
               <div
                 className='singleProd__breadcrum-home'
-                onClick={() => history.push("/")}
+                onClick={() => redirect("/")}
               >
                 Trang chủ
               </div>
+
               <AiOutlineRight className='singleProd__breadcrum-divide' />
               <div className='singleProd__breadcrum-item'>
                 {prod.category === 1
@@ -502,6 +514,38 @@ function SingleProduct() {
                     </div>
                   </div>
 
+                  {listSameItem.length ? (
+                    <div className='brief__product-compare'>
+                      <div className='brief__product-compare-wrap'>
+                        <div className='compare__item-desc'>
+                          <div className='compare__item-title'>
+                            {listSameItem.length} sản phẩm khác
+                          </div>
+                          <div className='compare__item-min-price'>
+                            Giá từ{" "}
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(
+                              Math.min(
+                                ...listSameItem.map((item) => item.price)
+                              )
+                            )}
+                          </div>
+                        </div>
+                        <div
+                          className='compare__item-btn'
+                          onClick={() => (ref.current.style.display = "block")}
+                        >
+                          {" "}
+                          So sánh
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+
                   <div className='brief__product-controls'>
                     <div
                       className='brief__product-btn btn btn-enhance'
@@ -518,6 +562,100 @@ function SingleProduct() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div
+              className='singleProd__content'
+              ref={ref}
+              style={{ display: "none" }}
+            >
+              <div style={{ padding: "10px 10px 0" }}>
+                <div className='content__header'>
+                  So sánh giá sản phẩm: {prod.name}
+                </div>
+              </div>
+              <div
+                className='singleProd__content-wrap'
+                style={{ display: "flex" }}
+              >
+                {listSameItem.map((item) => {
+                  let {
+                    productId,
+                    discount,
+                    name,
+                    price,
+                    isDiscount,
+                    image,
+                    storeName,
+                  } = item
+                  if (isDiscount) {
+                    price = (price * (100 - discount)) / 100
+                  }
+                  return (
+                    <div className='grid__colum-12-2' key={productId}>
+                      <div
+                        className='product-item'
+                        key={productId}
+                        onClick={() =>
+                          (window.location.href = `${window.location.origin}/product/${productId}`)
+                        }
+                      >
+                        <div
+                          className='product-item__img'
+                          style={{
+                            backgroundImage: `url(${image})`,
+                          }}
+                        ></div>
+                        <h4 className='product-item__name'>{name}</h4>
+                        <div className='product-item__price'>
+                          <span className='product-item__price-cur'>
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(price)}
+                          </span>
+                        </div>
+                        <div className='product-item__action'>
+                          <span className='product-item__action-like product-item__action-like--liked'>
+                            <AiFillHeart className='product-item__action-like-icon product-item__heart' />
+                            <AiFillHeart className='product-item__action-liked-icon product-item__heart' />
+                          </span>
+                          <div className='product-item__rating'>
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star' />
+                          </div>
+                          {/* <span className='product-item__sold'>
+                            còn {quantity}
+                          </span> */}
+                        </div>
+                        <div className='product-item__origin'>
+                          <span className='product-item__brand'>
+                            Tiệm: {storeName}
+                          </span>
+                          {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
+                        </div>
+                        <div className='product-item__favorite'>
+                          <i className='fas fa-check'></i>
+                          <span>Yêu thích</span>
+                        </div>
+                        {isDiscount && (
+                          <div className='product-item__sale'>
+                            <span className='product-item__sale-percent'>
+                              {discount}%
+                            </span>
+                            <span className='product-item__sale-label'>
+                              GIẢM
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 

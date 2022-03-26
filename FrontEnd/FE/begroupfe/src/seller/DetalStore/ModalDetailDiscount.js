@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react"
 import { AiOutlineSave, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import { ImCancelCircle } from "react-icons/im"
 import { useGlobalContext } from "../../context"
+import Switch from "react-switch"
 
 function ModalDetailDiscount({ setLoad }) {
   const jwt = localStorage.getItem("jwt")
   const { idStoreProd, setRaise } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
+  const [isCheck, setIsCheck] = useState([])
   const [isFetch, setIsFetch] = useState(false)
   const [edit, setEdit] = useState("")
   const [dc, setDc] = useState({
@@ -25,7 +27,16 @@ function ModalDetailDiscount({ setLoad }) {
       startDate: "",
       expireDate: "",
     })
+
   const [reload, setReload] = useState(false)
+
+  const handleChange = (item, e) => {
+    if (e) {
+      handleEdit(item)
+    } else {
+      handleActive(item.couponId)
+    }
+  }
 
   const checkData = (type) => {
     for (var key in dc) {
@@ -220,6 +231,9 @@ function ModalDetailDiscount({ setLoad }) {
       })
       if (res.status === 200) {
         setDiscountList(res.data)
+        setIsCheck(
+          res.data.filter((item) => item.isActive).map((item) => item.couponId)
+        )
         setIsFetch(true)
       }
     } catch (error) {}
@@ -241,15 +255,13 @@ function ModalDetailDiscount({ setLoad }) {
                   height: "40px",
                 }}
               >
-                <div className='store-item store-item__number'>STT</div>
+                <div className='store-item w5'>STT</div>
                 <div className='store-item w250x'>Tên coupon</div>
-                <div className='store-item' style={{ width: "21%" }}>
-                  Mô tả coupon
-                </div>
+                <div className='store-item w300x'>Mô tả coupon</div>
                 <div className='store-item w6'>%</div>
                 <div className='store-item  w20'>Bắt đầu</div>
                 <div className='store-item  w20'>Kết thúc</div>
-                <div className='store-item w10'>Điều khiển</div>
+                <div className='store-item w8'>Điều khiển</div>
               </div>
             </div>
             <div className='store__contain-item'>
@@ -260,7 +272,7 @@ function ModalDetailDiscount({ setLoad }) {
                   height: "40px",
                 }}
               >
-                <div className='store-item store-item__number'></div>
+                <div className='store-item w5'></div>
                 <input
                   type='text'
                   className='store-item--border w250x'
@@ -299,7 +311,7 @@ function ModalDetailDiscount({ setLoad }) {
                     })
                   }
                 />
-                <div className='store-item--border w10'>
+                <div className='store-item--border w8'>
                   <AiOutlineSave
                     className='store-item__info--btn'
                     onClick={handleAdd}
@@ -310,8 +322,16 @@ function ModalDetailDiscount({ setLoad }) {
             {isFetch ? (
               discountList.length ? (
                 discountList.map((item, index) => {
+                  const {
+                    couponId,
+                    couponName,
+                    couponDesc,
+                    discount,
+                    startDate,
+                    expireDate,
+                  } = item
                   return (
-                    <div className='store__contain-item' key={item.couponId}>
+                    <div className='store__contain-item' key={couponId}>
                       <div
                         className='store-product__body-item '
                         style={{
@@ -319,67 +339,73 @@ function ModalDetailDiscount({ setLoad }) {
                           height: "40px",
                         }}
                       >
-                        <div className='store-item store-item__number'>
-                          <div
+                        <div className='store-item w5'>
+                          {/* <div
                             className={`store-item__state ${
                               item.isActive
                                 ? "store-item__state--active"
                                 : "store-item__state--disable"
                             }`}
-                            onClick={() =>
-                              item.isActive
-                                ? handleActive(item.couponId)
-                                : handleEdit(item)
-                            }
-                          ></div>
+                            // onClick={() =>
+                            //   item.isActive
+                            //     ? handleActive(item.couponId)
+                            //     : handleEdit(item)
+                            // }
+                          > */}
+                          <Switch
+                            checked={isCheck.includes(couponId)}
+                            onChange={(e) => handleChange(item, e)}
+                            onColor='#88df75'
+                            onHandleColor='#4bb534'
+                            handleDiameter={24}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow='0px 1px 5px rgba(0, 0, 0, 0.6)'
+                            activeBoxShadow='0px 0px 1px 10px rgba(0, 0, 0, 0.2)'
+                            height={24}
+                            width={42}
+                            className='react-switch'
+                            id='material-switch'
+                          />
+                          {/* </div> */}
                         </div>
                         <input
                           type='text'
                           className='store-item--border w250x'
                           placeholder='tên coupon'
-                          value={
-                            edit === item.couponId
-                              ? dc.couponName
-                              : item.couponName
-                          }
+                          value={edit === couponId ? dc.couponName : couponName}
                           onChange={(e) =>
                             setDc({ ...dc, couponName: e.target.value })
                           }
-                          disabled={edit === item.couponId ? "" : "disabled"}
+                          disabled={edit === couponId ? "" : "disabled"}
                         />
                         <input
                           type='text'
                           className='store-item--border w300x'
                           placeholder='mô tả'
-                          value={
-                            edit === item.couponId
-                              ? dc.couponDesc
-                              : item.couponDesc
-                          }
+                          value={edit === couponId ? dc.couponDesc : couponDesc}
                           onChange={(e) =>
                             setDc({ ...dc, couponDesc: e.target.value })
                           }
-                          disabled={edit === item.couponId ? "" : "disabled"}
+                          disabled={edit === couponId ? "" : "disabled"}
                         />
                         <input
                           type='text'
                           className='store-item--border w6'
                           placeholder='tỉ lệ giảm'
-                          value={
-                            edit === item.couponId ? dc.discount : item.discount
-                          }
+                          value={edit === couponId ? dc.discount : discount}
                           onChange={(e) =>
                             setDc({ ...dc, discount: e.target.value })
                           }
-                          disabled={edit === item.couponId ? "" : "disabled"}
+                          disabled={edit === couponId ? "" : "disabled"}
                         />
                         <input
                           type='datetime-local'
                           className='store-item--border w20'
                           value={
-                            edit === item.couponId
+                            edit === couponId
                               ? dateTrans(dc.startDate)
-                              : dateTrans(item.startDate)
+                              : dateTrans(startDate)
                           }
                           onChange={(e) =>
                             setDc({
@@ -387,15 +413,15 @@ function ModalDetailDiscount({ setLoad }) {
                               startDate: new Date(e.target.value).getTime(),
                             })
                           }
-                          disabled={edit === item.couponId ? "" : "disabled"}
+                          disabled={edit === couponId ? "" : "disabled"}
                         />
                         <input
                           type='datetime-local'
                           className='store-item--border w20'
                           value={
-                            edit === item.couponId
+                            edit === couponId
                               ? dateTrans(dc.expireDate)
-                              : dateTrans(item.expireDate)
+                              : dateTrans(expireDate)
                           }
                           onChange={(e) =>
                             setDc({
@@ -403,10 +429,10 @@ function ModalDetailDiscount({ setLoad }) {
                               expireDate: new Date(e.target.value).getTime(),
                             })
                           }
-                          disabled={edit === item.couponId ? "" : "disabled"}
+                          disabled={edit === couponId ? "" : "disabled"}
                         />
-                        <div className='store-item--border w10'>
-                          {edit === item.couponId ? (
+                        <div className='store-item--border w8'>
+                          {edit === couponId ? (
                             <ImCancelCircle
                               className='store-item__info--btn'
                               onClick={() => setEdit("")}
@@ -414,13 +440,13 @@ function ModalDetailDiscount({ setLoad }) {
                           ) : (
                             <AiOutlineDelete
                               className='store-item__info--btn'
-                              onClick={() => handleDelete(item.couponId)}
+                              onClick={() => handleDelete(couponId)}
                             />
                           )}
-                          {edit === item.couponId ? (
+                          {edit === couponId ? (
                             <AiOutlineSave
                               className='store-item__info--btn'
-                              onClick={() => handleUpdate(item.couponId)}
+                              onClick={() => handleUpdate(couponId)}
                             />
                           ) : (
                             <AiOutlineEdit

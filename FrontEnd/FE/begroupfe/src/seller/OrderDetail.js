@@ -54,6 +54,7 @@ function OrderDetail() {
   }
 
   const fetchData = async () => {
+    setScreen(false)
     let url = ""
     let dateUWant = new Date(date)
     let dateUHave = new Date(Date.now())
@@ -96,7 +97,6 @@ function OrderDetail() {
   }
 
   useEffect(() => {
-    setScreen(false)
     fetchData()
   }, [date, reloadSell])
 

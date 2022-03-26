@@ -21,7 +21,7 @@ function BodyAuth() {
     )
   }, [])
   return (
-    <div className='container' style={{ backgroundColor: "rgb(238 77 46)" }}>
+    <div className='container' style={{ backgroundColor: "rgb(42 69 178)" }}>
       <div className='grid'>
         <div className='body-auth__wrap'>
           <div

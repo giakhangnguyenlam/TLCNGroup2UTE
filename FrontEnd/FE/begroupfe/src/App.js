@@ -18,9 +18,9 @@ import UserOrder from "./user/UserOrder"
 import OrderItem from "./user/OrderItem"
 import AdminModal from "./admin/AdminModal"
 import Checkout from "./user/Checkout"
-import AlreadyOrder from "./shipper/AlreadyOrder"
+import BodyShipper from "./shipper/BodyShipper"
 import About from "./rest/About"
-import Store from "./seller/Store"
+import DetailStore from "./seller/DetailStore"
 import FooterSeller from "./seller/FooterSeller"
 
 function App() {
@@ -52,6 +52,7 @@ function App() {
             <Route path='/about'>
               <Header />
               <About />
+              <Footer />
             </Route>
             <Route path='/product/:id'>
               <Header />
@@ -91,7 +92,7 @@ function App() {
             </Route>
             <Route path='/seller/store/:storeId'>
               <HeaderSeller />
-              <Store />
+              <DetailStore />
               <FooterSeller />
             </Route>
             <Route path='/seller/store'>
@@ -101,7 +102,8 @@ function App() {
             </Route>
             <Route path='/shipper'>
               <HeaderSeller />
-              <AlreadyOrder />
+              <BodyShipper />
+              <FooterSeller />
             </Route>
             <Route path='/cart'>
               <Header />
