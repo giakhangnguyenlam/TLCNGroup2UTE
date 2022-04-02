@@ -18,7 +18,7 @@ function CartPage() {
   }
 
   const handlInput = (e, index) => {
-    let newQuan = e.target.value
+    const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
       cartInfo[index].quantity = newQuan < 0 ? 1 : newQuan
       cartInfo[index].total = newQuan * cartInfo[index].price
@@ -28,9 +28,9 @@ function CartPage() {
   }
 
   const handleDelete = (index) => {
-    let del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
+    const del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
     if (del) {
-      let newCart = cartInfo.filter((item, indexI) => {
+      const newCart = cartInfo.filter((item, indexI) => {
         if (index !== indexI) {
           return item
         }
@@ -46,7 +46,7 @@ function CartPage() {
   }
 
   const handleCheckout = async () => {
-    let data = {
+    const data = {
       userId: Number(userId),
       total: sum,
       listProducts: [],

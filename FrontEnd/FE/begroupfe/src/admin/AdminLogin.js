@@ -1,16 +1,17 @@
 import axios from "axios"
 import React, { useState } from "react"
-import { useGlobalContext } from "../context"
 import { formAuth } from "../ultis/data"
 import logo1 from "../assets/img/logo1.png"
+import { useHistory } from "react-router-dom"
 
 function AdminLogin() {
-  const { setIsAdmin } = useGlobalContext()
   const [errors, setErrors] = useState({})
   const [account, setAccount] = useState({
     username: "",
     password: "",
   })
+
+  const history = useHistory()
 
   const handlechange = (e) => {
     const name = e.target.name
@@ -39,7 +40,8 @@ function AdminLogin() {
         }
         localStorage.setItem("username", res.data.name)
         localStorage.setItem("jwtA", res.data.jwt)
-        setIsAdmin(true)
+        localStorage.setItem("expire", new Date().getTime() + 43200000)
+        history.push("/admin")
       }
     } catch (error) {
       setErrors(error.response.data)
@@ -82,6 +84,11 @@ function AdminLogin() {
                       className='auth-form__input'
                       value={account[name]}
                       onChange={handlechange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSubmit(e)
+                        }
+                      }}
                     />
                   </div>
                 )

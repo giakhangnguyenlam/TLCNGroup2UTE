@@ -54,10 +54,13 @@ function SingleProduct() {
         ((choose.size + 1 && (prod.category === 1 || prod.category === 2)) ||
           prod.category === 3)
       ) {
-        let cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
-        let totalN = info.quantity * prod.price
-        let product = Number(id)
-        let quantity = info.quantity
+        const cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
+        const price = prod.isDiscount
+          ? (prod.price * (100 - prod.discount)) / 100
+          : prod.price
+        const totalN = info.quantity * price
+        const product = Number(id)
+        const quantity = info.quantity
         let description = ""
 
         if (prod.category === 1 || prod.category === 2) {
@@ -78,7 +81,7 @@ function SingleProduct() {
         if (!res) {
           cartInfo.push({
             name: prod.name,
-            price: prod.price,
+            price,
             image: prod.image,
             total: totalN,
             product,

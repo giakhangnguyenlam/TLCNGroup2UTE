@@ -16,17 +16,22 @@ import SingleProduct from "./body/SingleProduct"
 import CartPage from "./user/CartPage"
 import UserOrder from "./user/UserOrder"
 import OrderItem from "./user/OrderItem"
-import AdminModal from "./admin/AdminModal"
 import Checkout from "./user/Checkout"
 import BodyShipper from "./shipper/BodyShipper"
 import About from "./rest/About"
 import DetailStore from "./seller/DetailStore"
 import FooterSeller from "./seller/FooterSeller"
+import Headeradmin from "./admin/Headeradmin"
+import AdminBody from "./admin/Adminbody"
+import AdminLogin from "./admin/AdminLogin"
 
 function App() {
   const expire = localStorage.getItem("expire")
   const exp = new Date()
-  if (exp.getTime() >= expire) {
+  if (
+    exp.getTime() >= expire ||
+    (window.location.href !== "/admin" && localStorage.getItem("jwtA"))
+  ) {
     localStorage.removeItem("id")
     localStorage.removeItem("name")
     localStorage.removeItem("username")
@@ -120,8 +125,12 @@ function App() {
               <SoonPage />
               <Footer />
             </Route>
+            <Route path='/admin/auth'>
+              <AdminLogin />
+            </Route>
             <Route path='/admin'>
-              <AdminModal />
+              <Headeradmin />
+              <AdminBody />
             </Route>
             <Route path='*'>
               <Header />

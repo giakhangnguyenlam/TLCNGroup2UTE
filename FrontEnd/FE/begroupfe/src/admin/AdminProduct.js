@@ -1,27 +1,19 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
-import { AiOutlineDelete } from "react-icons/ai"
 import ReactPaginate from "react-paginate"
-import logo1 from "../assets/img/logo1.png"
 import { useGlobalContext } from "../context"
-import Popup from "../ultis/Popup"
+import { AiFillStar, AiFillHeart } from "react-icons/ai"
 
-function AdminProduct() {
+function AdminProduct({ setHeight }) {
   const jwt = localStorage.getItem("jwtA")
-  const {
-    setAdminPage,
-    loading,
-    setLoading,
-    raise,
-    setRaise,
-    reloadSell,
-    setReloadSell,
-  } = useGlobalContext()
-  const [allUser, setAllUser] = useState()
+  const { idStoreProd, setIdStoreProd, reloadSell } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
+  const [productList, setProductList] = useState([])
+  const [isList, setIsList] = useState(false)
 
   const fetchData = async () => {
+    setIsList(false)
     try {
       let res = await axios({
         method: "get",
@@ -31,282 +23,163 @@ function AdminProduct() {
         },
       })
       if (res.status === 200) {
-        setAllUser(res.data)
+        setProductList(res.data)
+        setIsList(true)
       }
     } catch (error) {}
   }
 
   useEffect(() => {
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
     fetchData()
   }, [reloadSell])
 
   useEffect(() => {
-    if (allUser) {
-      setPageCount(Math.ceil(allUser.length / 20))
+    if (productList) {
+      setPageCount(Math.ceil(productList.length / 10))
     }
-  }, [allUser])
+  }, [productList])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 20) % allUser.length
+    const newOffset = (event.selected * 10) % productList.length
     setItemOffset(newOffset)
-  }
-
-  const handleDelete = async (id, category) => {
-    let del = window.confirm("Bạn muốn xóa cửa hàng chứ?")
-    if (del) {
-      setLoading(true)
-      try {
-        let res = await axios({
-          method: "delete",
-          url: `https://tlcngroup2be.herokuapp.com/seller/product/${id}/category/${category}`,
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        })
-        if (res.status === 200) {
-          setReloadSell(!reloadSell)
-          setLoading(false)
-          setRaise({
-            header: "Xóa cửa hàng",
-            content: "Xóa thành công!",
-            color: "#4bb534",
-          })
-        }
-      } catch (error) {}
-    }
   }
 
   return (
     <>
-      <div
-        className='container'
-        style={{ backgroundImage: `url(${logo1})`, backgroundColor: "unset" }}
-      >
-        <div className='grid' style={{ overflow: "hidden" }}>
-          <div className='grid__row'>
-            <div className='grid__colum-12'>
-              <div className='store'>
-                <div className='store-wrap'>
-                  <div className='store__nav-wrap'>
-                    <div className='store__nav-options'>
-                      <div
-                        className='store__nav-tab'
-                        onClick={() => setAdminPage("user")}
-                      >
-                        Tất cả người dùng
-                      </div>
-                      <div
-                        className='store__nav-tab'
-                        onClick={() => setAdminPage("store")}
-                      >
-                        Tất cả cửa hàng
-                      </div>
-                      <div
-                        className='store__nav-tab'
-                        onClick={() => setAdminPage("order")}
-                      >
-                        Tất cả đơn hàng
-                      </div>
-                      <div
-                        className='store__nav-tab store__nav-tab--active'
-                        onClick={() => setAdminPage("product")}
-                      >
-                        Tất cả sản phẩm
-                      </div>
+      <div className='product'>
+        <div
+          className='grid__row'
+          key={789}
+          // onClick={() => setIdStoreProd(null)}
+        >
+          {/* Product item */}
+          {productList.length === 0 ? (
+            isList ? (
+              <div className='waiting'>Không có sản phẩm</div>
+            ) : (
+              <div className='waiting'>Loading...</div>
+            )
+          ) : (
+            productList.slice(itemOffset, itemOffset + 10).map((product) => {
+              let {
+                id,
+                category,
+                name,
+                quantity,
+                price,
+                image,
+                isDiscount,
+                discount,
+              } = product
+              if (category === 1) {
+                category = "Quần áo"
+              }
+              if (category === 2) {
+                category = "Giày"
+              }
+              if (category === 3) {
+                category = "Phụ kiện"
+              }
+              return (
+                <div
+                  className='grid__colum-2-4'
+                  key={id}
+                  onClick={() => setIdStoreProd(product)}
+                >
+                  <div
+                    className='product-item'
+                    key={id}
+                    style={
+                      idStoreProd
+                        ? id === idStoreProd.id
+                          ? { border: "2px solid var(--primary-color)" }
+                          : {}
+                        : {}
+                    }
+                  >
+                    <div
+                      className='product-item__img'
+                      style={{
+                        backgroundImage: `url(${image})`,
+                      }}
+                    ></div>
+                    <h4 className='product-item__name'>{name}</h4>
+                    <div className='product-item__price'>
+                      <span className='product-item__price-cur'>
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(price)}
+                      </span>
                     </div>
-                  </div>
-                  <div className='store__contain' style={{ marginTop: "10px" }}>
-                    <div className='store__contain-wrap--enhance'>
-                      <div className='store__contain-item'>
-                        <div
-                          className='store-product__body-item '
-                          style={{
-                            border: "1px solid #979797",
-                            fontWeight: "600",
-                            height: "40px",
-                          }}
-                        >
-                          <div
-                            className='store-item store-item__number'
-                            style={{ borderRight: "1px solid #979797" }}
-                          >
-                            Stt
-                          </div>
-                          <div
-                            className='store-item w300x'
-                            style={{ borderRight: "1px solid #979797" }}
-                          >
-                            Ảnh sản phẩm
-                          </div>
-                          <div
-                            className='store-item__info-nav--35'
-                            style={{ borderRight: "1px solid #979797" }}
-                          >
-                            Thông tin sản phẩm
-                          </div>
-                          <div
-                            className='store-item__info-nav--35'
-                            style={{ borderRight: "1px solid #979797" }}
-                          >
-                            Mô tả sản phẩm
-                          </div>
-                          <div className='store-item__info-nav--4'>
-                            <AiOutlineDelete />
-                          </div>
-                        </div>
+                    <div className='product-item__action'>
+                      <span className='product-item__action-like product-item__action-like--liked'>
+                        <AiFillHeart className='product-item__action-like-icon product-item__heart' />
+                        <AiFillHeart className='product-item__action-liked-icon product-item__heart' />
+                      </span>
+                      <div className='product-item__rating'>
+                        <AiFillStar className='product-item__star--gold product-item__star' />
+                        <AiFillStar className='product-item__star--gold product-item__star' />
+                        <AiFillStar className='product-item__star--gold product-item__star' />
+                        <AiFillStar className='product-item__star--gold product-item__star' />
+                        <AiFillStar className='product-item__star' />
                       </div>
-                      {allUser ? (
-                        allUser
-                          .slice(itemOffset, itemOffset + 20)
-                          .map((product, index) => {
-                            let {
-                              id,
-                              image,
-                              name,
-                              price,
-                              quantity,
-                              storeId,
-                              category,
-                              description,
-                            } = product
-
-                            if (category === 1) {
-                              category = "Quần áo"
-                            } else if (category === 2) {
-                              category = "Giày dép"
-                            } else if (category === 3) {
-                              category = "Phụ kiện"
-                            }
-                            return (
-                              <div className='store__contain-item' key={index}>
-                                <div
-                                  className='store-product__body-item '
-                                  style={{ border: "1px solid #979797" }}
-                                >
-                                  <div
-                                    className='store-item store-item__number'
-                                    style={{ borderRight: "1px solid #979797" }}
-                                  >
-                                    {index + 1}
-                                  </div>
-                                  <div
-                                    className='store-item w300x'
-                                    style={{ borderRight: "1px solid #979797" }}
-                                  >
-                                    <div
-                                      className='store-item__img'
-                                      style={{
-                                        backgroundImage: `url(${image})`,
-                                      }}
-                                    ></div>
-                                  </div>
-                                  <div
-                                    className='store-item__info--35'
-                                    style={{ borderRight: "1px solid #979797" }}
-                                  >
-                                    <div className='store-item__info-item'>
-                                      Tên sản phẩm: {name}
-                                    </div>
-                                    <div className='store-item__info-item'>
-                                      Số lượng: {quantity}
-                                    </div>
-                                    <div className='store-item__info-item'>
-                                      Giá:{" "}
-                                      {new Intl.NumberFormat("vi-VN", {
-                                        style: "currency",
-                                        currency: "VND",
-                                      }).format(price)}
-                                    </div>
-                                  </div>
-                                  <div
-                                    className='store-item__info--35'
-                                    style={{ borderRight: "1px solid #979797" }}
-                                  >
-                                    <div className='store-item__info-item'>
-                                      Mã cửa hàng: {storeId}
-                                    </div>
-                                    <div className='store-item__info-item'>
-                                      Loại sản phẩm: {category}
-                                    </div>
-                                    <div className='store-item__info-item'>
-                                      Mô tả: {description}
-                                    </div>
-                                  </div>
-                                  <div className='store-item__info-nav--4'>
-                                    <AiOutlineDelete
-                                      className='store-item__info--btn'
-                                      onClick={() => handleDelete(id, category)}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          })
-                      ) : (
-                        <div
-                          className='store__contain-item'
-                          style={{
-                            height: "calc(100% - 50px)",
-                            width: "100%",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <div
-                            className='store-product__body-item '
-                            style={{
-                              display: "unset",
-                              width: "unset",
-                              fontSize: "26px",
-                            }}
-                          >
-                            Loading...
-                          </div>
-                        </div>
-                      )}
+                      <span className='product-item__sold'>còn {quantity}</span>
                     </div>
+                    <div className='product-item__origin'>
+                      <span className='product-item__brand'>{category}</span>
+                      {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
+                    </div>
+                    <div className='product-item__favorite'>
+                      <i className='fas fa-check'></i>
+                      <span>Yêu thích</span>
+                    </div>
+                    {isDiscount && (
+                      <div className='product-item__sale'>
+                        <span className='product-item__sale-percent'>
+                          {discount}%
+                        </span>
+                        <span className='product-item__sale-label'>GIẢM</span>
+                      </div>
+                    )}
                   </div>
-                  <ReactPaginate
-                    nextLabel='>'
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={3}
-                    pageCount={pageCount}
-                    previousLabel='<'
-                    pageClassName='pagination-item'
-                    pageLinkClassName='pagination-item__link'
-                    previousClassName='pagination-item'
-                    previousLinkClassName='pagination-item__link'
-                    nextClassName='pagination-item'
-                    nextLinkClassName='pagination-item__link'
-                    breakLabel='...'
-                    breakClassName='pagination-item'
-                    breakLinkClassName='pagination-item__link'
-                    containerClassName='pagination admin__pagination'
-                    activeClassName='pagination-item--active'
-                    renderOnZeroPageCount={null}
-                  />
                 </div>
-              </div>
-            </div>
-          </div>
+              )
+            })
+          )}
         </div>
-        {loading && (
-          <div className='modal__overlay' style={{ zIndex: "5", top: "0" }}>
-            <div className='loading'>
-              <div className='loading__one'></div>
-              <div className='loading__two'></div>
-              <div className='loading__three'></div>
-            </div>
-          </div>
-        )}
-        {raise && (
-          <Popup
-            header={raise.header}
-            content={raise.content}
-            color={raise.color}
-          />
-        )}
       </div>
+      <ReactPaginate
+        nextLabel='>'
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        pageCount={pageCount}
+        previousLabel='<'
+        pageClassName='pagination-item'
+        pageLinkClassName='pagination-item__link'
+        previousClassName='pagination-item'
+        previousLinkClassName='pagination-item__link'
+        nextClassName='pagination-item'
+        nextLinkClassName='pagination-item__link'
+        breakLabel='...'
+        breakClassName='pagination-item'
+        breakLinkClassName='pagination-item__link'
+        containerClassName='pagination product__pagination'
+        activeClassName='pagination-item--active'
+        renderOnZeroPageCount={null}
+      />
     </>
   )
 }
