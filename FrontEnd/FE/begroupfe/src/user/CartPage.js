@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
@@ -7,34 +7,27 @@ import { useGlobalContext } from "../context"
 
 function CartPage() {
   const userId = localStorage.getItem("id")
-  const { reloadSell, setReloadSell, setOrderData } = useGlobalContext()
+  const { reloadSell, setReloadSell, setOrderData, cart } = useGlobalContext()
   const history = useHistory()
-  const cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`))
   let sum = 0
-  if (userId && cartInfo) {
-    cartInfo.forEach((element) => {
-      sum += element.total
+  if (userId && cart.length) {
+    cart.forEach((element) => {
+      sum += element.price * element.amount
     })
   }
 
   const handlInput = (e, index) => {
     const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
-      cartInfo[index].quantity = newQuan < 0 ? 1 : newQuan
-      cartInfo[index].total = newQuan * cartInfo[index].price
-      localStorage.setItem(`cart${userId}`, JSON.stringify(cartInfo))
-      setReloadSell(!reloadSell)
+      cart[index].quantity = newQuan < 0 ? 1 : newQuan
+      cart[index].total = newQuan * cart[index].price
     }
   }
 
   const handleDelete = (index) => {
     const del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
     if (del) {
-      const newCart = cartInfo.filter((item, indexI) => {
-        if (index !== indexI) {
-          return item
-        }
-      })
+      const newCart = cart.filter((item, indexI) => index !== indexI)
       if (newCart.length === 0) {
         localStorage.removeItem(`cart${userId}`)
         setReloadSell(!reloadSell)
@@ -55,9 +48,9 @@ function CartPage() {
       listProductNames: [],
       listPrices: [],
     }
-    cartInfo.map((item) => {
-      data.listProducts.push(item.product)
-      data.listQuantities.push(item.quantity)
+    cart.map((item) => {
+      data.listProducts.push(item.idProduct)
+      data.listQuantities.push(item.amount)
       data.listDescription.push(item.description)
       data.listProductNames.push(item.name)
       data.listPrices.push(item.price)
@@ -93,8 +86,8 @@ function CartPage() {
               <div className='cart__header-item'>Thao tác</div>
             </div>
             <div className='cart__body'>
-              {cartInfo ? (
-                cartInfo.map((item, index) => {
+              {cart.length !== 0 ? (
+                cart.map((item, index) => {
                   return (
                     <div className='cart__body-wrap' key={index}>
                       <div
@@ -138,13 +131,13 @@ function CartPage() {
                           <div
                             className='amount__item'
                             onClick={() => {
-                              cartInfo[index].quantity =
+                              cart[index].quantity =
                                 item.quantity - 1 < 1 ? 1 : item.quantity - 1
-                              cartInfo[index].total =
-                                cartInfo[index].quantity * cartInfo[index].price
+                              cart[index].total =
+                                cart[index].quantity * cart[index].price
                               localStorage.setItem(
                                 `cart${userId}`,
-                                JSON.stringify(cartInfo)
+                                JSON.stringify(cart)
                               )
                               setReloadSell(!reloadSell)
                             }}
@@ -154,18 +147,18 @@ function CartPage() {
                           <input
                             type='text'
                             className='amount__item amount__input'
-                            value={item.quantity}
+                            value={item.amount}
                             onChange={(e) => handlInput(e, index)}
                           />
                           <div
                             className='amount__item'
                             onClick={() => {
-                              cartInfo[index].quantity = item.quantity + 1
-                              cartInfo[index].total =
-                                cartInfo[index].quantity * cartInfo[index].price
+                              cart[index].quantity = item.quantity + 1
+                              cart[index].total =
+                                cart[index].quantity * cart[index].price
                               localStorage.setItem(
                                 `cart${userId}`,
-                                JSON.stringify(cartInfo)
+                                JSON.stringify(cart)
                               )
                               setReloadSell(!reloadSell)
                             }}
@@ -181,7 +174,7 @@ function CartPage() {
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
-                        }).format(item.total)}
+                        }).format(item.price * item.amount)}
                       </div>
                       <div className='cart__header-item'>
                         <AiOutlineDelete
@@ -208,7 +201,7 @@ function CartPage() {
                 </div>
               )}
             </div>
-            {cartInfo ? (
+            {cart.length !== 0 ? (
               <div className='cart__footer'>
                 <div
                   className='btn btn--primary btn-enhance'

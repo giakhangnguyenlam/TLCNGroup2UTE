@@ -16,8 +16,17 @@ import Popup from "../ultis/Popup"
 import { useHistory } from "react-router-dom"
 function SingleProduct() {
   const { id } = useParams()
-  const { loading, setLoading, raise, setRaise, setReloadSell, reloadSell } =
-    useGlobalContext()
+  const [height, setHeight] = useState(0)
+  const [load, setLoad] = useState(false)
+  const {
+    loading,
+    setLoading,
+    raise,
+    setRaise,
+    setIsCartUpdate,
+    isCartUpdate,
+    cart,
+  } = useGlobalContext()
   const [prod, setProd] = useState({
     price: 0,
     image: blank,
@@ -43,10 +52,10 @@ function SingleProduct() {
   const history = useHistory()
   const ref = useRef()
 
-  const handleAddCart = (action) => {
+  const handleAddCart = async (action) => {
     const userId = localStorage.getItem("id")
     const role = localStorage.getItem("role")
-    // console.log(choose)
+
     if (userId) {
       if (
         role === "ROLE_USER" &&
@@ -54,11 +63,9 @@ function SingleProduct() {
         ((choose.size + 1 && (prod.category === 1 || prod.category === 2)) ||
           prod.category === 3)
       ) {
-        const cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
         const price = prod.isDiscount
           ? (prod.price * (100 - prod.discount)) / 100
           : prod.price
-        const totalN = info.quantity * price
         const product = Number(id)
         const quantity = info.quantity
         let description = ""
@@ -70,36 +77,45 @@ function SingleProduct() {
         } else if (prod.category === 3) {
           description = `màu ${prod.color[choose.color]}`
         }
-        let res = false
-        cartInfo.forEach((item) => {
-          if (item.product === product && item.description === description) {
-            item.quantity += quantity
-            item.total += totalN
-            res = true
+        const isDuplicate = cart.filter(
+          (item) =>
+            item.idProduct === Number(id) && item.description === description
+        )
+        setLoad(true)
+        try {
+          let response = await axios({
+            method: isDuplicate ? "put" : "post",
+            url: isDuplicate
+              ? `https://cnpmmbe.herokuapp.com/item/${isDuplicate[0].id}`
+              : "https://cnpmmbe.herokuapp.com/item",
+            data: isDuplicate
+              ? {
+                  amount: quantity + isDuplicate[0].amount,
+                }
+              : {
+                  idUser: userId,
+                  idProduct: product,
+                  image: prod.image,
+                  name: prod.name,
+                  description,
+                  price,
+                  amount: quantity,
+                },
+          })
+          if (response.status === 200 || response.status === 201) {
+            if (action === "add") {
+              setRaise({
+                header: "Thêm sản phẩm",
+                content: "Thêm vào giỏ hàng hoàn tất!",
+                color: "#4bb534",
+              })
+              setIsCartUpdate(!isCartUpdate)
+              setLoad(false)
+            } else {
+              redirect("/cart")
+            }
           }
-        })
-        if (!res) {
-          cartInfo.push({
-            name: prod.name,
-            price,
-            image: prod.image,
-            total: totalN,
-            product,
-            quantity,
-            description,
-          })
-        }
-        localStorage.setItem(`cart${userId}`, JSON.stringify(cartInfo))
-        if (action === "add") {
-          setRaise({
-            header: "Thêm sản phẩm",
-            content: "Thêm vào giỏ hàng hoàn tất!",
-            color: "#4bb534",
-          })
-          setReloadSell(!reloadSell)
-        } else {
-          redirect("/cart")
-        }
+        } catch (error) {}
       } else {
         if (role !== "ROLE_USER") {
           setRaise({
@@ -259,6 +275,18 @@ function SingleProduct() {
     }
   }
   useEffect(() => {
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
     document.documentElement.scrollTop = 0
     const fetch = async () => {
       setLoading(true)
@@ -751,6 +779,18 @@ function SingleProduct() {
         </div>
       </div>
 
+      {load && (
+        <div
+          className='modal__overlay'
+          style={{ zIndex: "101", top: "0", height }}
+        >
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
       {raise && (
         <Popup
           header={raise.header}

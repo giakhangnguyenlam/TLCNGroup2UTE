@@ -1,12 +1,16 @@
 import axios from "axios"
 import React, { useState, useContext, useEffect } from "react"
-import { useHistory } from "react-router-dom"
 
 const AppContext = React.createContext()
 
 const AppProvider = ({ children }) => {
+  const jwt = localStorage.getItem("jwt")
+  const userId = localStorage.getItem("id")
+
   const [searchInfo, setSearchInfo] = useState("")
   const [body, setBody] = useState([])
+  const [cart, setCart] = useState([])
+  const [isCartUpdate, setIsCartUpdate] = useState(false)
   const [isReady, setReady] = useState(false)
   const [orderData, setOrderData] = useState([])
 
@@ -103,7 +107,24 @@ const AppProvider = ({ children }) => {
       productId: "",
     })
 
-  useEffect(() => {
+  const fetchCart = async () => {
+    try {
+      let res = await axios({
+        method: "get",
+        url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}`,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      if (res.status === 200 && Array.isArray(res.data)) {
+        setCart(res.data)
+      }
+    } catch (error) {
+      console.log("cart", error)
+    }
+  }
+
+  const fetchData = async () => {
     let url = "https://tlcngroup2be.herokuapp.com/product"
     let categoryy =
       (cate === "1" && "clothes") ||
@@ -119,31 +140,44 @@ const AppProvider = ({ children }) => {
         url = `https://tlcngroup2be.herokuapp.com/product/category/${categoryy}/khac`
       }
     }
-
-    const fetchData = async () => {
-      setReady(false)
-      try {
-        let res = await axios({
-          method: "GET",
-          url,
-        })
-        if (res.status === 200) {
-          let arr = await res.data.filter((item) => item !== null)
-          await setBody(arr)
-          setReady(true)
-        }
-      } catch (error) {
-        console.log(error)
+    setReady(false)
+    try {
+      let res = await axios({
+        method: "GET",
+        url,
+      })
+      if (res.status === 200) {
+        let arr = await res.data.filter((item) => item !== null)
+        await setBody(arr)
+        setReady(true)
       }
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  useEffect(() => {
     fetchData()
   }, [cate, cateType])
+
+  useEffect(() => {
+    if (userId && jwt) {
+      fetchCart()
+    }
+  }, [isCartUpdate, jwt, userId])
+
+  // useEffect(() => {
+  //   userId && fetchCart()
+  //   fetchData()
+  // }, [])
 
   return (
     <AppContext.Provider
       value={{
         searchInfo,
         body,
+        cart,
+        isCartUpdate,
         isReady,
         orderData,
         isAdmin,
@@ -174,6 +208,8 @@ const AppProvider = ({ children }) => {
         adminPage,
         setSearchInfo,
         setBody,
+        setCart,
+        setIsCartUpdate,
         setOrderData,
         setIsAdmin,
         setAuth,
