@@ -35,7 +35,7 @@ public class MailServiceImpl implements MailService {
         String htmlString = "<html>\r\n"
         + "    <head>\r\n"
         + "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n"
-        + "        <title>Nhóm 2 tiểu luận chuyên ngành</title>\r\n"
+        + "        <title>Nhóm 2 khóa luận tốt nghiệp</title>\r\n"
         + "    </head>\r\n"
         + "    <body>\r\n"
         + "        <h1>Thank you for order my shopping & technology website!</h1>\r\n"
@@ -88,6 +88,39 @@ public class MailServiceImpl implements MailService {
         message.setContent(htmlString, "text/html; charset=UTF-8");
         helper.setTo(findEmailByUserName(userId));
         helper.setSubject("Comfirm your order in shopping & technology");
+        this.emailSender.send(message);
+
+        // simpleMailMessage.setFrom("giakhangnguyenlam@gmail.com");
+        // simpleMailMessage.setTo(findEmailByUserName(userId));
+        // simpleMailMessage.setSubject("Confirm your order in shopping & technology");
+        // simpleMailMessage.setText(htmlString);
+
+        // this.emailSender.send(simpleMailMessage);
+        System.out.println("mail send ....");
+    }
+
+    @Override
+    public void sendMailWithPassword(String password, int userId) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        boolean multipart = true;
+        MimeMessageHelper helper = new MimeMessageHelper(message, multipart, "UTF-8");
+        //SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        String htmlString = "<html>\r\n"
+                + "    <head>\r\n"
+                + "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n"
+                + "        <title>Nhóm 2 khóa luận tốt nghiệp</title>\r\n"
+                + "    </head>\r\n"
+                + "    <body>\r\n"
+                + "        <h1>Password của bạn đã reset thành công</h1>\r\n"
+                + "        <a href=\"\"></a>\r\n"
+                +"          <p>Mật khẩu mới của bạn là <h3>"+password+"</h3></p>\r\n"
+                + "    </body>\r\n"
+                + "</html>\r\n"
+                + "";
+
+        message.setContent(htmlString, "text/html; charset=UTF-8");
+        helper.setTo(findEmailByUserName(userId));
+        helper.setSubject("Changing your password in shopping & technology");
         this.emailSender.send(message);
 
         // simpleMailMessage.setFrom("giakhangnguyenlam@gmail.com");

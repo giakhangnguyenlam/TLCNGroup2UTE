@@ -6,4 +6,5 @@ import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
 
 public interface MailService {
     public void sendMail(OrderHistoryModel orderHistoryModel, int userId) throws MessagingException;
+    public void sendMailWithPassword(String password, int userId) throws MessagingException;
 }

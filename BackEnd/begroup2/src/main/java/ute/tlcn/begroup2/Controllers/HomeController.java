@@ -171,4 +171,29 @@ public class HomeController {
         return new ResponseEntity<>(suggestionProductsModels, HttpStatus.OK);
     }
 
+    @PostMapping("/signup/guestsignup")
+    public ResponseEntity<?> guestSignup(@RequestBody GuestSignupModel guestSignupModel){
+        try {
+            UserModel signUpModel = userService.guestSignup(guestSignupModel);
+            return new ResponseEntity<>(signUpModel, HttpStatus.OK);
+        }
+        catch (Exception e){
+            ErrorModel errorModel = new ErrorModel("Create guest sign up fail");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/forgotpassword")
+    public ResponseEntity<?> resetPassword(@RequestBody UserName username){
+        try {
+            System.out.println("Username is "+username.getUsername());
+            userService.resetPassword(username.getUsername());
+            ErrorModel errorModel = new ErrorModel("Reset password successfully");
+            return new ResponseEntity<>(errorModel, HttpStatus.OK);
+        }
+        catch (Exception e){
+            ErrorModel errorModel = new ErrorModel("Can't change password");
+            return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -21,4 +21,6 @@ public interface UserService {
     public List<CommentModel> getCommentByProductId(int productId);
     public List<String> getAllNameProduct();
     public List<SuggestionProductsModel> getSuggestionProducts(String name);
+    public UserModel guestSignup(GuestSignupModel guestSignupModel) throws Exception;
+    public void resetPassword(String username) throws Exception;
 }

@@ -12,4 +12,7 @@ Tiểu luận chuyên ngành: xây dựng website thương mại điện tử b�
 
 > Note: Because of heroku host is free so it sometimes break up. If it break up you can contact with me to open again: 18110132@student.hcmute.edu.vn or 18110086@student.hcmute.edu.vn
 
+> If you want to using API to integrated with your system you can to follow by document
+
+> link: https://github.com/giakhangnguyenlam/TLCNGroup2UTE/blob/main/BackEnd/begroup2/README.md 
 

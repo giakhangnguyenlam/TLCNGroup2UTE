@@ -14,14 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import ute.tlcn.begroup2.Models.UserModels.CommentModel;
-import ute.tlcn.begroup2.Models.UserModels.ErrorModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderDetailModel;
-import ute.tlcn.begroup2.Models.UserModels.OrderHistoryModel;
-import ute.tlcn.begroup2.Models.UserModels.PassWordModel;
-import ute.tlcn.begroup2.Models.UserModels.SignUpModel;
-import ute.tlcn.begroup2.Models.UserModels.UserModel;
-import ute.tlcn.begroup2.Models.UserModels.UserOrderModel;
+import ute.tlcn.begroup2.Models.UserModels.*;
 import ute.tlcn.begroup2.Services.UserServices.UserService;
 
 @RestController
@@ -130,4 +123,5 @@ public class UserController {
         }
         
     }
+
 }

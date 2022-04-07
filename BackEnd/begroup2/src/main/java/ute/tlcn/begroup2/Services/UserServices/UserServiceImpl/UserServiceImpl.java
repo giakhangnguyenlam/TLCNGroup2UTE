@@ -1,9 +1,6 @@
 package ute.tlcn.begroup2.Services.UserServices.UserServiceImpl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -295,6 +292,67 @@ public class UserServiceImpl implements UserService {
             result.add(suggestionProductsModel);
         }
         return  result;
+    }
+
+    @Override
+    public UserModel guestSignup(GuestSignupModel guestSignupModel) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByPhone(guestSignupModel.getPhone());
+        if(optionalUserEntity.isPresent()){
+            UserDetailsModel userDetailsModel = new UserDetailsModel(optionalUserEntity.get());
+            String jwt = jwtUtil.generationToken(userDetailsModel);
+            UserModel userModel = userMapper.convertUserEntityToUserModel(optionalUserEntity.get());
+            userModel.setJwt(jwt);
+            return userModel;
+        }
+        SignUpModel signUpModel = new SignUpModel(guestSignupModel.getName(),
+                "03-04-2022",
+                "laptrinhweb77@gmail.com",
+                guestSignupModel.getAddress(),
+                "male",
+                "guestusername",
+                "123",
+                guestSignupModel.getPhone());
+        return signUp(signUpModel);
+    }
+
+    @Override
+    public void resetPassword(String username) throws Exception {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(username);
+        if(optionalUserEntity.isPresent()){
+            UserEntity userEntity = optionalUserEntity.get();
+            String password = generatePassword();
+            userEntity.setPassword(passwordEncoder.encode(password));
+            userRepository.save(userEntity);
+            try {
+                mailService.sendMailWithPassword(password, userEntity.getId());
+            }
+            catch (Exception e){
+                throw new Exception(e);
+            }
+        }
+        else {
+            throw new Exception("fail to reset password");
+        }
+    }
+
+    private String generatePassword(){
+        String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String specialCharacters = "!@#$";
+        String numbers = "1234567890";
+        String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
+        Random random = new Random();
+        char[] password = new char[9];
+
+        password[0] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+        password[1] = capitalCaseLetters.charAt(random.nextInt(capitalCaseLetters.length()));
+        password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
+        password[3] = numbers.charAt(random.nextInt(numbers.length()));
+
+        for(int i = 4; i< 9; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+        return new String(password);
     }
 
 

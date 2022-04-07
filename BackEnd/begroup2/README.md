@@ -540,6 +540,155 @@ link: https://tlcngroup2be.herokuapp.com/product/suggestions/name/Áo thể thao
 
 ##  ===============>> User API <<====================
 
+### Add item
+link: https://cnpmmbe.herokuapp.com/item
+
+> POST
+
+#### Request
+```
+{
+    "idUser": 157,
+    "idProduct": 5,
+    "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
+    "name": "Áo thể thao",
+    "description": "size x, màu xanh",
+    "price": 100000.0,
+    "amount": 1
+}
+```
+
+#### Response
+```
+{
+    "idUser": 157,
+    "idProduct": 5,
+    "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
+    "name": "Áo thể thao",
+    "description": "size x, màu xanh",
+    "price": 100000,
+    "amount": 1,
+    "_id": "624af5b021a4f32323557035",
+    "shareCode": "oFRdBAEL",
+    "id": 8,
+    "__v": 0
+}
+```
+
+### Update amount item
+link: https://cnpmmbe.herokuapp.com/item/4
+
+> 4 is id of item
+
+> PUT
+
+#### Request
+```
+{
+    "amount": 3
+}
+```
+
+#### Response
+```
+{
+    "_id": "624af0928734d3105ce7a19e",
+    "idUser": 157,
+    "idProduct": 5,
+    "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
+    "name": "Áo thể thao",
+    "description": "size x, màu xanh",
+    "price": 100000,
+    "amount": 3,
+    "shareCode": "2UNExdmX",
+    "id": 4,
+    "__v": 0
+}
+```
+
+### Delete item
+link: https://cnpmmbe.herokuapp.com/item/8
+
+> 8 is item id
+
+> DELETE
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Delete item successfully"
+}
+```
+
+### Get item
+link: https://cnpmmbe.herokuapp.com/item/iduser/157
+
+> 157 is id user
+
+> GET
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Chưa có sản phẩm trong giỏ hàng"
+}
+```
+or
+```
+[
+	{
+		"idUser": 157,
+		"idProduct": 5,
+		"image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
+		"name": "Áo thể thao",
+		"description": "size x, màu xanh",
+		"price": 100000,
+		"amount": 1,
+		"_id": "624aff956cc2ec7255d05261",
+		"shareCode": "fWQKJFO4",
+		"id": 9,
+		"__v": 0
+	}
+]
+```
+
+### Update share code
+link: https://cnpmmbe.herokuapp.com/item/iduser/158/sharecode/2UNExdmX
+
+> 158 is id user
+
+> 2UNExdmX is share code
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Update share code successfully"
+}
+```
+
+### Delete all items
+link: https://cnpmmbe.herokuapp.com/items/sharecode/2UNExdmX
+
+> 2UNExdmX is share code
+
+> Delete
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Delete items successfully"
+}
+```
+
+
 ### Update user without password
 link: https://tlcngroup2be.herokuapp.com/user/1
 
