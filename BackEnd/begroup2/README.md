@@ -639,19 +639,21 @@ link: https://cnpmmbe.herokuapp.com/item/iduser/157
 ```
 or
 ```
-{
-    "idUser": 157,
-    "idProduct": 5,
-    "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
-    "name": "Áo thể thao",
-    "description": "size x, màu xanh",
-    "price": 100000,
-    "amount": 1,
-    "_id": "624aff956cc2ec7255d05261",
-    "shareCode": "fWQKJFO4",
-    "id": 9,
-    "__v": 0
-}
+[
+	{
+		"idUser": 157,
+		"idProduct": 5,
+		"image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
+		"name": "Áo thể thao",
+		"description": "size x, màu xanh",
+		"price": 100000,
+		"amount": 1,
+		"_id": "624aff956cc2ec7255d05261",
+		"shareCode": "fWQKJFO4",
+		"id": 9,
+		"__v": 0
+	}
+]
 ```
 
 ### Update share code
