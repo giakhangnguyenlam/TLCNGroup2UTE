@@ -118,6 +118,8 @@ const AppProvider = ({ children }) => {
       })
       if (res.status === 200 && Array.isArray(res.data)) {
         setCart(res.data)
+      } else {
+        setCart([])
       }
     } catch (error) {
       console.log("cart", error)

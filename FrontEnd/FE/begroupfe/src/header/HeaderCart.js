@@ -1,13 +1,14 @@
-import React, { useEffect } from "react"
-import { AiOutlineShoppingCart } from "react-icons/ai"
+import React, { useState, useEffect } from "react"
+import { AiOutlineShoppingCart, AiOutlineCopy } from "react-icons/ai"
 import { useHistory } from "react-router"
 import blankCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
+import { CopyToClipboard } from "react-copy-to-clipboard"
 
 function HeaderCart() {
   const history = useHistory()
   const { reloadSell, cart } = useGlobalContext()
-
+  const [copied, setCopy] = useState(false)
   const handleRedirect = () => {
     if (localStorage.getItem("role") === "ROLE_USER") {
       history.push("/cart")
@@ -38,7 +39,19 @@ function HeaderCart() {
           {cart.length === 0 ? (
             ""
           ) : (
-            <h4 className='header__cart-heading'>Sản phẩm đã thêm</h4>
+            <div className='header__cart-heading'>
+              Sản phẩm đã thêm
+              <div className='header__cart-heading-code'>
+                Share Code: {cart[0].shareCode}
+                <CopyToClipboard
+                  text={cart[0].shareCode}
+                  onCopy={() => setCopy(true)}
+                >
+                  <AiOutlineCopy className='cart__icon-copy' />
+                </CopyToClipboard>
+                {copied && <div style={{ color: "#4bb534" }}>copied!</div>}
+              </div>
+            </div>
           )}
 
           {cart.length === 0 ? (

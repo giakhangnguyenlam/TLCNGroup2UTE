@@ -1,13 +1,24 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
+import { BsArrowReturnRight } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
 
 function CartPage() {
   const userId = localStorage.getItem("id")
-  const { reloadSell, setReloadSell, setOrderData, cart } = useGlobalContext()
+  const {
+    reloadSell,
+    setReloadSell,
+    setOrderData,
+    cart,
+    isCartUpdate,
+    setIsCartUpdate,
+  } = useGlobalContext()
+  const [load, setLoad] = useState(false)
+  const [height, setHeight] = useState(0)
+  const [code, setCode] = useState("")
   const history = useHistory()
   let sum = 0
   if (userId && cart.length) {
@@ -16,26 +27,59 @@ function CartPage() {
     })
   }
 
-  const handlInput = (e, index) => {
+  const handlInput = (e, id) => {
     const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
-      cart[index].quantity = newQuan < 0 ? 1 : newQuan
-      cart[index].total = newQuan * cart[index].price
+      changeAmount(id, newQuan)
     }
   }
 
-  const handleDelete = (index) => {
+  const handleDelete = async (id) => {
     const del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
     if (del) {
-      const newCart = cart.filter((item, indexI) => index !== indexI)
-      if (newCart.length === 0) {
-        localStorage.removeItem(`cart${userId}`)
-        setReloadSell(!reloadSell)
-      } else {
-        localStorage.setItem(`cart${userId}`, JSON.stringify(newCart))
-        setReloadSell(!reloadSell)
-      }
+      setLoad(true)
+      try {
+        const res = await axios({
+          method: "DELETE",
+          url: `https://cnpmmbe.herokuapp.com/item/${id}`,
+        })
+        if (res.status === 200) {
+          setIsCartUpdate(!isCartUpdate)
+          setLoad(false)
+        }
+      } catch (error) {}
     }
+    // setReloadSell(!reloadSell)
+  }
+  const changeAmount = async (id, amount) => {
+    setLoad(true)
+    try {
+      await axios({
+        method: "put",
+        url: `https://cnpmmbe.herokuapp.com/item/${id}`,
+        data: {
+          amount,
+        },
+      })
+    } catch (error) {}
+
+    setLoad(false)
+    setIsCartUpdate(!isCartUpdate)
+    // setReloadSell(!reloadSell)
+  }
+
+  const handleGetCart = async () => {
+    setLoad(true)
+    try {
+      const res = await axios({
+        method: "get",
+        url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
+      })
+      if (res.status === 200) {
+        setIsCartUpdate(!isCartUpdate)
+        setLoad(false)
+      }
+    } catch (error) {}
   }
 
   const handleCheckout = async () => {
@@ -60,6 +104,18 @@ function CartPage() {
   }
 
   useEffect(() => {
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
     if (userId === null) {
       history.push("/")
     }
@@ -85,6 +141,30 @@ function CartPage() {
               </div>
               <div className='cart__header-item'>Thao tác</div>
             </div>
+            {cart.length === 0 ? (
+              <div className='cart__header-code-wrap'>
+                <div className='cart__header-code-label'>
+                  Nhập share code tại đây:
+                </div>
+                <input
+                  type='text'
+                  className='cart__header-code-input'
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onKeyUp={(e) =>
+                    e.key === "Enter" && code !== "" && handleGetCart()
+                  }
+                />
+                <BsArrowReturnRight
+                  className='cart__header-code-btn'
+                  onClick={() => {
+                    code !== "" && handleGetCart()
+                  }}
+                />
+              </div>
+            ) : (
+              ""
+            )}
             <div className='cart__body'>
               {cart.length !== 0 ? (
                 cart.map((item, index) => {
@@ -130,17 +210,9 @@ function CartPage() {
                         >
                           <div
                             className='amount__item'
-                            onClick={() => {
-                              cart[index].quantity =
-                                item.quantity - 1 < 1 ? 1 : item.quantity - 1
-                              cart[index].total =
-                                cart[index].quantity * cart[index].price
-                              localStorage.setItem(
-                                `cart${userId}`,
-                                JSON.stringify(cart)
-                              )
-                              setReloadSell(!reloadSell)
-                            }}
+                            onClick={() =>
+                              changeAmount(item.id, item.amount - 1 || 0)
+                            }
                           >
                             <AiOutlineMinus />
                           </div>
@@ -148,20 +220,13 @@ function CartPage() {
                             type='text'
                             className='amount__item amount__input'
                             value={item.amount}
-                            onChange={(e) => handlInput(e, index)}
+                            onChange={(e) => handlInput(e, item.id)}
                           />
                           <div
                             className='amount__item'
-                            onClick={() => {
-                              cart[index].quantity = item.quantity + 1
-                              cart[index].total =
-                                cart[index].quantity * cart[index].price
-                              localStorage.setItem(
-                                `cart${userId}`,
-                                JSON.stringify(cart)
-                              )
-                              setReloadSell(!reloadSell)
-                            }}
+                            onClick={() =>
+                              changeAmount(item.id, item.amount + 1)
+                            }
                           >
                             <AiOutlinePlus />
                           </div>
@@ -179,7 +244,7 @@ function CartPage() {
                       <div className='cart__header-item'>
                         <AiOutlineDelete
                           className='cart__icon'
-                          onClick={() => handleDelete(index)}
+                          onClick={() => handleDelete(item.id)}
                         />
                       </div>
                     </div>
@@ -226,6 +291,18 @@ function CartPage() {
           </div>
         </div>
       </div>
+      {load && (
+        <div
+          className='modal__overlay'
+          style={{ zIndex: "101", top: "0", height }}
+        >
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

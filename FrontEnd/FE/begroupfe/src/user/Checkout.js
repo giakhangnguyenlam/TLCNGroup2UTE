@@ -12,14 +12,14 @@ function Checkout() {
   const phone = localStorage.getItem("phone")
   const address = localStorage.getItem("address")
   const [height, setHeight] = useState(0)
-  const cartInfo = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
-  const { loading, setLoading, orderData, raise, setRaise } = useGlobalContext()
+  const { loading, setLoading, orderData, raise, setRaise, cart } =
+    useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
   const history = useHistory()
   let sum = 0
-  if (userId && cartInfo) {
-    cartInfo.forEach((element) => {
-      sum += element.total
+  if (userId && cart) {
+    cart.forEach((element) => {
+      sum += element.price * element.amount
     })
   }
 
@@ -117,7 +117,7 @@ function Checkout() {
                   Thành tiền
                 </div>
               </div>
-              {cartInfo.map((item, index) => {
+              {cart.map((item, index) => {
                 return (
                   <div className='cart__body-wrap' key={index}>
                     <div className='cart__header-item' style={{ width: "30%" }}>
@@ -150,7 +150,7 @@ function Checkout() {
                           className='amount__item amount__input'
                           style={{ border: "none" }}
                         >
-                          {item.quantity}
+                          {item.amount}
                         </div>
                       </div>
                     </div>
@@ -161,7 +161,7 @@ function Checkout() {
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      }).format(item.total)}
+                      }).format(item.price * item.amount)}
                     </div>
                   </div>
                 )
