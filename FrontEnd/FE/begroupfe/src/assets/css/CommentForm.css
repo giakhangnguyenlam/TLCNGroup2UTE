@@ -1,0 +1,37 @@
+.comment-form__group {
+  display: flex;
+  align-items: center;
+}
+
+.comment-form__label {
+  font-size: 16px;
+  line-height: 18px;
+}
+
+.comment-form__input {
+  width: 100%;
+  border: #dbdbdb solid 1px;
+  outline-color: rgba(0, 0, 0, 0.5);
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 18px;
+  border-radius: 2px;
+  margin: 0;
+  background-color: transparent;
+  margin-top: 6px;
+}
+
+.comment-form__icon {
+  height: 22px;
+}
+
+.comment-form__star {
+  margin: 0 10px;
+  font-size: 22px;
+  cursor: pointer;
+  fill: #d1d1d1;
+}
+
+.comment-form__star--fill {
+  fill: var(--star-gold-color);
+}

@@ -1,0 +1,40 @@
+/* User order  */
+.order__nav {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  line-height: 20px;
+  border-bottom: 1px solid #d6d6d6;
+  color: #787878;
+}
+
+.order__nav-item {
+  width: 15%;
+  padding: 20px 10px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.order__body {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 18px;
+  border-bottom: 1px solid #d6d6d6;
+  color: var(--text-color);
+}
+
+.order__body--hover:hover {
+  background-color: #a9e7ff8a;
+  cursor: pointer;
+}
+
+.order__id span {
+  color: #0b74e5;
+  line-height: 18px;
+  font-size: 14px;
+}
+
+.order__id span:hover {
+  opacity: 0.95;
+}

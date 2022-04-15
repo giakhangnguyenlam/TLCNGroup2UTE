@@ -83,24 +83,27 @@ function SingleProduct() {
         )
         setLoad(true)
         try {
+          const method = isDuplicate.length ? "put" : "post"
+          const url = isDuplicate.length
+            ? `https://cnpmmbe.herokuapp.com/item/${isDuplicate[0].id}`
+            : "https://cnpmmbe.herokuapp.com/item"
+          const data = isDuplicate.length
+            ? {
+                amount: quantity + isDuplicate[0].amount,
+              }
+            : {
+                idUser: userId,
+                idProduct: product,
+                image: prod.image,
+                name: prod.name,
+                description,
+                price,
+                amount: quantity,
+              }
           let response = await axios({
-            method: isDuplicate ? "put" : "post",
-            url: isDuplicate
-              ? `https://cnpmmbe.herokuapp.com/item/${isDuplicate[0].id}`
-              : "https://cnpmmbe.herokuapp.com/item",
-            data: isDuplicate
-              ? {
-                  amount: quantity + isDuplicate[0].amount,
-                }
-              : {
-                  idUser: userId,
-                  idProduct: product,
-                  image: prod.image,
-                  name: prod.name,
-                  description,
-                  price,
-                  amount: quantity,
-                },
+            method,
+            url,
+            data,
           })
           if (response.status === 200 || response.status === 201) {
             if (action === "add") {
@@ -115,7 +118,9 @@ function SingleProduct() {
               redirect("/cart")
             }
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log(error)
+        }
       } else {
         if (role !== "ROLE_USER") {
           setRaise({
@@ -275,19 +280,6 @@ function SingleProduct() {
     }
   }
   useEffect(() => {
-    let body = document.body,
-      html = document.documentElement
-
-    setHeight(
-      Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-      )
-    )
-    document.documentElement.scrollTop = 0
     const fetch = async () => {
       setLoading(true)
       const res = await fetchData()
@@ -344,6 +336,19 @@ function SingleProduct() {
       }
     }
     fetch()
+    let body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
+    document.documentElement.scrollTop = 0
   }, [])
 
   const handlInput = (e) => {

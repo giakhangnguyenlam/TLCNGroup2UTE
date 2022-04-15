@@ -1,10 +1,11 @@
 import axios from "axios"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { BsArrowReturnRight } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
+import "../assets/css/cart.css"
 
 function CartPage() {
   const userId = localStorage.getItem("id")
@@ -21,14 +22,25 @@ function CartPage() {
   const [code, setCode] = useState("")
   const history = useHistory()
   let sum = 0
+  let amountList = []
   if (userId && cart.length) {
     cart.forEach((element) => {
       sum += element.price * element.amount
     })
   }
 
-  const handlInput = (e, id) => {
-    const newQuan = e.target.value
+  const debounce = (callback, wait) => {
+    let timeoutId = null
+    return (...args) => {
+      window.clearTimeout(timeoutId)
+      timeoutId = window.setTimeout(() => {
+        callback.apply(null, args)
+      }, wait)
+    }
+  }
+
+  const handleInput = (index, id) => {
+    const newQuan = amountList[index]
     if (/^[0-9]*$/.test(newQuan)) {
       changeAmount(id, newQuan)
     }
@@ -67,12 +79,13 @@ function CartPage() {
     setIsCartUpdate(!isCartUpdate)
     // setReloadSell(!reloadSell)
   }
+  const changeAmountAfterStop = useCallback(debounce(changeAmount, 300), [])
 
   const handleGetCart = async () => {
     setLoad(true)
     try {
       const res = await axios({
-        method: "get",
+        method: "PUT",
         url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
       })
       if (res.status === 200) {
@@ -92,7 +105,7 @@ function CartPage() {
       listProductNames: [],
       listPrices: [],
     }
-    cart.map((item) => {
+    cart.forEach((item) => {
       data.listProducts.push(item.idProduct)
       data.listQuantities.push(item.amount)
       data.listDescription.push(item.description)
@@ -116,6 +129,7 @@ function CartPage() {
         html.offsetHeight
       )
     )
+    amountList = []
     if (userId === null) {
       history.push("/")
     }
@@ -168,8 +182,14 @@ function CartPage() {
             <div className='cart__body'>
               {cart.length !== 0 ? (
                 cart.map((item, index) => {
+                  amountList.push(item.amount)
                   return (
-                    <div className='cart__body-wrap' key={index}>
+                    <div
+                      className={`cart__body-wrap ${
+                        userId == item.idUser ? "" : "cart__body-wrap--disable"
+                      }`}
+                      key={index}
+                    >
                       <div
                         className='cart__header-item'
                         style={{ width: "30%" }}
@@ -211,7 +231,10 @@ function CartPage() {
                           <div
                             className='amount__item'
                             onClick={() =>
-                              changeAmount(item.id, item.amount - 1 || 0)
+                              changeAmountAfterStop(
+                                item.id,
+                                item.amount - 1 <= 0 ? 1 : item.amount
+                              )
                             }
                           >
                             <AiOutlineMinus />
@@ -219,13 +242,16 @@ function CartPage() {
                           <input
                             type='text'
                             className='amount__item amount__input'
-                            value={item.amount}
-                            onChange={(e) => handlInput(e, item.id)}
+                            value={amountList[index]}
+                            onChange={(e) =>
+                              (amountList[index] = e.target.value)
+                            }
+                            onBlur={(e) => handleInput(index, item.id)}
                           />
                           <div
                             className='amount__item'
                             onClick={() =>
-                              changeAmount(item.id, item.amount + 1)
+                              changeAmountAfterStop(item.id, item.amount)
                             }
                           >
                             <AiOutlinePlus />

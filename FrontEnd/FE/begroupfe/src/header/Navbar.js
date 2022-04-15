@@ -12,7 +12,7 @@ function Navbar() {
   const redirect = (page) => {
     history.push(`${page}`)
   }
-  const handleLogout = () => {
+  const handleLogout = (type) => {
     localStorage.removeItem("id")
     localStorage.removeItem("name")
     localStorage.removeItem("dateofbirth")
@@ -23,7 +23,11 @@ function Navbar() {
     localStorage.removeItem("jwt")
     localStorage.removeItem("role")
     localStorage.removeItem("expire")
-    redirect("/")
+    if (type !== "logout") {
+      authPage(type)
+    } else {
+      redirect("/")
+    }
   }
 
   const authPage = (authType) => {
@@ -78,19 +82,17 @@ function Navbar() {
 
             <ul className='header__navbar-user-menu'>
               <li className='header__navbar-user-item'>
-                <a onClick={() => redirect("/user/account/profile")}>
-                  Tài khoản của tôi
-                </a>
+                <a href='/user/setting'>Tài khoản của tôi</a>
               </li>
-              <li className='header__navbar-user-item'>
-                <a onClick={() => redirect("/user/order")}>Đơn hàng</a>
-              </li>
-              <li className='header__navbar-user-item'>
-                <a href=''>Cài đặt</a>
+              <li
+                className='header__navbar-user-item'
+                onClick={() => handleLogout("login")}
+              >
+                <a href=''>Đổi tài khoản</a>
               </li>
               <li
                 className='header__navbar-user-item --separate'
-                onClick={handleLogout}
+                onClick={() => handleLogout("logout")}
               >
                 <a href=''>Đăng xuất</a>
               </li>

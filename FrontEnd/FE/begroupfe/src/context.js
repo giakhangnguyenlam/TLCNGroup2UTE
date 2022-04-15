@@ -4,6 +4,25 @@ import React, { useState, useContext, useEffect } from "react"
 const AppContext = React.createContext()
 
 const AppProvider = ({ children }) => {
+  const expire = localStorage.getItem("expire")
+  const exp = new Date()
+  if (
+    exp.getTime() >= expire ||
+    (window.location.href !== "/admin" && localStorage.getItem("jwtA"))
+  ) {
+    localStorage.removeItem("id")
+    localStorage.removeItem("name")
+    localStorage.removeItem("username")
+    localStorage.removeItem("dateofbirth")
+    localStorage.removeItem("email")
+    localStorage.removeItem("address")
+    localStorage.removeItem("gender")
+    localStorage.removeItem("jwt")
+    localStorage.removeItem("jwtA")
+    localStorage.removeItem("role")
+    localStorage.removeItem("expire")
+  }
+
   const jwt = localStorage.getItem("jwt")
   const userId = localStorage.getItem("id")
 
@@ -117,7 +136,14 @@ const AppProvider = ({ children }) => {
         },
       })
       if (res.status === 200 && Array.isArray(res.data)) {
-        setCart(res.data)
+        const tempCart = []
+        res.data.forEach(async (item) =>
+          (await item.idUser) == userId
+            ? tempCart.unshift(item)
+            : tempCart.push(item)
+        )
+
+        setCart(tempCart)
       } else {
         setCart([])
       }
@@ -150,7 +176,7 @@ const AppProvider = ({ children }) => {
       })
       if (res.status === 200) {
         let arr = await res.data.filter((item) => item !== null)
-        await setBody(arr)
+        setBody(arr)
         setReady(true)
       }
     } catch (error) {

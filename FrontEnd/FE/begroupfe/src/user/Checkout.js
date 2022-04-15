@@ -5,6 +5,7 @@ import Paypal from "./Paypal"
 import axios from "axios"
 import { useHistory } from "react-router"
 import Popup from "../ultis/Popup"
+import "../assets/css/cart.css"
 
 function Checkout() {
   const userId = localStorage.getItem("id")

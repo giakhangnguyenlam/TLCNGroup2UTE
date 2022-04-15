@@ -5,8 +5,6 @@ import HeaderAuth from "./header/HeaderAuth"
 import BodyAuth from "./body/BodyAuth"
 import Body from "./body/Body"
 import Footer from "./footer/Footer"
-import UserProfile from "./user/UserProfile"
-import UserPass from "./user/UserPass"
 import SoonPage from "./rest/SoonPage"
 import Error from "./rest/Error"
 import HeaderSeller from "./seller/HeaderSeller"
@@ -14,7 +12,6 @@ import BodySell from "./seller/BodySell"
 import Modal from "./ultis/Modal"
 import SingleProduct from "./body/SingleProduct"
 import CartPage from "./user/CartPage"
-import UserOrder from "./user/UserOrder"
 import OrderItem from "./user/OrderItem"
 import Checkout from "./user/Checkout"
 import BodyShipper from "./shipper/BodyShipper"
@@ -24,26 +21,9 @@ import FooterSeller from "./seller/FooterSeller"
 import Headeradmin from "./admin/Headeradmin"
 import AdminBody from "./admin/Adminbody"
 import AdminLogin from "./admin/AdminLogin"
+import UserControl from "./user/UserControl"
 
 function App() {
-  const expire = localStorage.getItem("expire")
-  const exp = new Date()
-  if (
-    exp.getTime() >= expire ||
-    (window.location.href !== "/admin" && localStorage.getItem("jwtA"))
-  ) {
-    localStorage.removeItem("id")
-    localStorage.removeItem("name")
-    localStorage.removeItem("username")
-    localStorage.removeItem("dateofbirth")
-    localStorage.removeItem("email")
-    localStorage.removeItem("address")
-    localStorage.removeItem("gender")
-    localStorage.removeItem("jwt")
-    localStorage.removeItem("jwtA")
-    localStorage.removeItem("role")
-    localStorage.removeItem("expire")
-  }
   return (
     <div>
       <Router>
@@ -80,19 +60,9 @@ function App() {
               <BodyAuth />
               <Footer />
             </Route>
-            <Route path='/user/account/profile'>
+            <Route path='/user/setting'>
               <Header />
-              <UserProfile />
-              <Footer />
-            </Route>
-            <Route path='/user/account/password'>
-              <Header />
-              <UserPass />
-              <Footer />
-            </Route>
-            <Route path='/user/order'>
-              <Header />
-              <UserOrder />
+              <UserControl />
               <Footer />
             </Route>
             <Route path='/seller/store/:storeId'>

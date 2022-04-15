@@ -2,9 +2,9 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router"
 import { useGlobalContext } from "../context"
-import Popup from "../ultis/Popup"
+import "../assets/css/cart.css"
 
-function OrderItem() {
+function OrderItem({ orderId }) {
   const jwt = localStorage.getItem("jwt")
   const userid = localStorage.getItem("id")
   const nameUser = localStorage.getItem("name")
@@ -12,12 +12,8 @@ function OrderItem() {
 
   const [orderInfo, setOrderInfo] = useState()
   const [detail, setDetail] = useState()
-  const { orderId } = useParams()
   const history = useHistory()
 
-  const handleRedirect = (page) => {
-    history.push(`/user/${page}`)
-  }
   const handleCmt = (prodId) => {
     setIsComment(true)
     localStorage.setItem("prodId", prodId)
@@ -67,206 +63,148 @@ function OrderItem() {
   }, [])
 
   return (
-    <div className='container'>
-      <div className='grid'>
-        <div className='grid__row contain'>
-          <div className='grid__colum-2'>
-            <nav className='category'>
-              <h3
-                className='category__heading'
-                style={{ lineHeight: "2.2rem", padding: "10px 0" }}
-              >
-                Xin chào, {nameUser}
-              </h3>
-              <ul className='category-list'>
-                <h4
-                  className='category-list__heading'
-                  onClick={() => handleRedirect("account/profile")}
-                >
-                  Tài khoản
-                </h4>
-                <li className='category-item'>
-                  <div
-                    onClick={() => handleRedirect("account/profile")}
-                    className='category-item__link'
-                  >
-                    Hồ sơ người dùng
-                  </div>
-                </li>
-                <li className='category-item'>
-                  <div
-                    onClick={() => handleRedirect("account/password")}
-                    className='category-item__link'
-                  >
-                    Quản lý mật khẩu
-                  </div>
-                </li>
-                <h4
-                  className='category-list__heading category-list__heading--active'
-                  onClick={() => handleRedirect("order")}
-                >
-                  Đơn mua
-                </h4>
-              </ul>
-            </nav>
+    <div className='product'>
+      <div className='grid__row'>
+        <div
+          className='auth-form__container'
+          style={{
+            width: "100%",
+            backgroundColor: "var(--white-color)",
+            paddingBottom: "10px",
+            minHeight: "500px",
+          }}
+        >
+          <div
+            className='auth-form__header'
+            style={{
+              borderBottom: "1px solid #c3c3c3",
+              margin: "4px 0",
+            }}
+          >
+            <h4
+              className='auth-form__heading'
+              style={{
+                margin: "0",
+                padding: "10px 0",
+                fontSize: "1.8rem",
+                lineHeight: "2.2rem",
+              }}
+            >
+              Các sản phẩm của đơn {orderId}
+            </h4>
           </div>
 
-          <div className='grid__colum-10'>
-            <div className='product'>
-              <div className='grid__row'>
+          <div className='cart__header'>
+            <div className='cart__header-item cart__header-item--50'>
+              Sản phẩm
+            </div>
+            <div className='cart__header-item' style={{ width: "13%" }}>
+              Giá
+            </div>
+            <div className='cart__header-item' style={{ width: "14%" }}>
+              Số lượng
+            </div>
+            <div className='cart__header-item' style={{ width: "13%" }}>
+              Thành tiền
+            </div>
+            <div className='cart__header-item'>Thao tác</div>
+          </div>
+          <div className='cart__body'>
+            {orderInfo ? (
+              orderInfo.length ? (
+                orderInfo.map((item, index) => {
+                  return (
+                    <div className='cart__body-wrap' key={index}>
+                      <div
+                        className='cart__header-item'
+                        style={{ width: "30%" }}
+                      >
+                        <div className='cart__body-item'>
+                          <div
+                            className='cart__img'
+                            style={{
+                              backgroundImage: `url(${item.image})`,
+                            }}
+                          ></div>
+                          <div className='cart__item-name'>
+                            <p>{item.name}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        className='cart__header-item'
+                        style={{ width: "20%" }}
+                      >
+                        {detail.description[index]}
+                      </div>
+                      <div
+                        className='cart__header-item'
+                        style={{ width: "13%" }}
+                      >
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(item.price)}
+                      </div>
+                      <div
+                        className='cart__header-item'
+                        style={{ width: "14%" }}
+                      >
+                        {detail.quantities[index]}
+                      </div>
+                      <div
+                        className='cart__header-item cart__total'
+                        style={{ width: "13%" }}
+                      >
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(item.price * detail.quantities[index])}
+                      </div>
+                      <div className='cart__header-item'>
+                        <p
+                          className='cart__icon'
+                          style={{ fontSize: "14px" }}
+                          onClick={() => handleCmt(item.productId)}
+                        >
+                          Nhận xét
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })
+              ) : (
                 <div
-                  className='auth-form__container'
+                  className='order__body'
                   style={{
                     width: "100%",
-                    backgroundColor: "var(--white-color)",
-                    paddingBottom: "10px",
-                    minHeight: "500px",
+                    height: "378px",
+                    fontSize: "24px",
+                    borderBottom: "none",
+                    justifyContent: "center",
                   }}
                 >
-                  <div
-                    className='auth-form__header'
-                    style={{
-                      borderBottom: "1px solid #c3c3c3",
-                      margin: "4px 0",
-                    }}
-                  >
-                    <h4
-                      className='auth-form__heading'
-                      style={{
-                        margin: "0",
-                        padding: "10px 0",
-                        fontSize: "1.8rem",
-                        lineHeight: "2.2rem",
-                      }}
-                    >
-                      Lịch sử mua hàng đơn {orderId}
-                    </h4>
-                  </div>
-
-                  <div className='cart__header'>
-                    <div className='cart__header-item cart__header-item--50'>
-                      Sản phẩm
-                    </div>
-                    <div className='cart__header-item' style={{ width: "13%" }}>
-                      Giá
-                    </div>
-                    <div className='cart__header-item' style={{ width: "14%" }}>
-                      Số lượng
-                    </div>
-                    <div className='cart__header-item' style={{ width: "13%" }}>
-                      Thành tiền
-                    </div>
-                    <div className='cart__header-item'>Thao tác</div>
-                  </div>
-                  <div className='cart__body'>
-                    {orderInfo ? (
-                      orderInfo.length ? (
-                        orderInfo.map((item, index) => {
-                          return (
-                            <div className='cart__body-wrap' key={index}>
-                              <div
-                                className='cart__header-item'
-                                style={{ width: "30%" }}
-                              >
-                                <div className='cart__body-item'>
-                                  <div
-                                    className='cart__img'
-                                    style={{
-                                      backgroundImage: `url(${item.image})`,
-                                    }}
-                                  ></div>
-                                  <div className='cart__item-name'>
-                                    <p>{item.name}</p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div
-                                className='cart__header-item'
-                                style={{ width: "20%" }}
-                              >
-                                {detail.description[index]}
-                              </div>
-                              <div
-                                className='cart__header-item'
-                                style={{ width: "13%" }}
-                              >
-                                {new Intl.NumberFormat("vi-VN", {
-                                  style: "currency",
-                                  currency: "VND",
-                                }).format(item.price)}
-                              </div>
-                              <div
-                                className='cart__header-item'
-                                style={{ width: "14%" }}
-                              >
-                                {detail.quantities[index]}
-                              </div>
-                              <div
-                                className='cart__header-item cart__total'
-                                style={{ width: "13%" }}
-                              >
-                                {new Intl.NumberFormat("vi-VN", {
-                                  style: "currency",
-                                  currency: "VND",
-                                }).format(
-                                  item.price * detail.quantities[index]
-                                )}
-                              </div>
-                              <div className='cart__header-item'>
-                                <p
-                                  className='cart__icon'
-                                  style={{ fontSize: "14px" }}
-                                  onClick={() => handleCmt(item.productId)}
-                                >
-                                  Nhận xét
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        })
-                      ) : (
-                        <div
-                          className='order__body'
-                          style={{
-                            width: "100%",
-                            height: "378px",
-                            fontSize: "24px",
-                            borderBottom: "none",
-                            justifyContent: "center",
-                          }}
-                        >
-                          Không có sản phẩm.
-                        </div>
-                      )
-                    ) : (
-                      <div
-                        className='order__body'
-                        style={{
-                          width: "100%",
-                          height: "378px",
-                          fontSize: "24px",
-                          borderBottom: "none",
-                          justifyContent: "center",
-                        }}
-                      >
-                        Đang tải ...
-                      </div>
-                    )}
-                  </div>
+                  Không có sản phẩm.
                 </div>
+              )
+            ) : (
+              <div
+                className='order__body'
+                style={{
+                  width: "100%",
+                  height: "378px",
+                  fontSize: "24px",
+                  borderBottom: "none",
+                  justifyContent: "center",
+                }}
+              >
+                Đang tải ...
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
-      {raise && (
-        <Popup
-          header={raise.header}
-          content={raise.content}
-          color={raise.color}
-        />
-      )}
     </div>
   )
 }
