@@ -31,6 +31,7 @@ const AppProvider = ({ children }) => {
   const [cart, setCart] = useState([])
   const [isCartUpdate, setIsCartUpdate] = useState(false)
   const [isReady, setReady] = useState(false)
+  const [isCartReady, setCartReady] = useState(false)
   const [orderData, setOrderData] = useState([])
 
   const [isAdmin, setIsAdmin] = useState(false)
@@ -127,6 +128,7 @@ const AppProvider = ({ children }) => {
     })
 
   const fetchCart = async () => {
+    setCartReady(false)
     try {
       let res = await axios({
         method: "get",
@@ -142,11 +144,13 @@ const AppProvider = ({ children }) => {
             ? tempCart.unshift(item)
             : tempCart.push(item)
         )
-
         setCart(tempCart)
-      } else {
-        setCart([])
+        setCartReady(true)
       }
+      // else {
+      //   console.log(res.data, res.status)
+      //   setCart([])
+      // }
     } catch (error) {
       console.log("cart", error)
     }
@@ -192,7 +196,7 @@ const AppProvider = ({ children }) => {
     if (userId && jwt) {
       fetchCart()
     }
-  }, [isCartUpdate, jwt, userId])
+  }, [isCartUpdate])
 
   // useEffect(() => {
   //   userId && fetchCart()
@@ -207,6 +211,7 @@ const AppProvider = ({ children }) => {
         cart,
         isCartUpdate,
         isReady,
+        isCartReady,
         orderData,
         isAdmin,
         auth,
@@ -237,6 +242,7 @@ const AppProvider = ({ children }) => {
         setSearchInfo,
         setBody,
         setCart,
+        setCartReady,
         setIsCartUpdate,
         setOrderData,
         setIsAdmin,

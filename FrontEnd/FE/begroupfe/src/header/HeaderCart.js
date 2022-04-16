@@ -7,13 +7,22 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 
 function HeaderCart() {
   const history = useHistory()
-  const { reloadSell, cart } = useGlobalContext()
+  const { isCartReady, cart } = useGlobalContext()
   const [copied, setCopy] = useState(false)
+  const [reload, setReload] = useState(false)
   const handleRedirect = () => {
     if (localStorage.getItem("role") === "ROLE_USER") {
       history.push("/cart")
     }
   }
+
+  useEffect(() => {
+    if (cart.length !== 0 && isCartReady) {
+      setReload(true)
+    } else {
+      setReload(false)
+    }
+  }, [cart, isCartReady])
 
   return (
     <div className='header__cart'>
@@ -22,23 +31,17 @@ function HeaderCart() {
           className='header__cart-icon'
           onClick={() => handleRedirect()}
         />
-        {cart.length === 0 ? (
-          ""
-        ) : (
+        {reload ? (
           <span className='header__cart-notice'>{cart.length}</span>
+        ) : (
+          ""
         )}
 
-        <div
-          className={`header__cart-list ${
-            cart.length === 0 ? "--no-cart" : ""
-          }`}
-        >
+        <div className={`header__cart-list ${reload ? "" : "--no-cart"}`}>
           <img src={blankCart} alt='' className='header__cart-no-cart-img' />
           <span className='header__cart-no-cart-msg'>Chưa có sản phẩm</span>
 
-          {cart.length === 0 ? (
-            ""
-          ) : (
+          {reload ? (
             <div className='header__cart-heading'>
               Sản phẩm đã thêm
               <div className='header__cart-heading-code'>
@@ -52,17 +55,20 @@ function HeaderCart() {
                 {copied && <div style={{ color: "#4bb534" }}>copied!</div>}
               </div>
             </div>
+          ) : (
+            ""
           )}
 
-          {cart.length === 0 ? (
-            ""
-          ) : (
+          {reload ? (
             <ul className='header__cart-list-item'>
               {cart
                 .slice(0, cart.length > 4 ? 4 : cart.length)
                 .map((item, index) => {
                   return (
-                    <li className='header__cart-item' key={index}>
+                    <li
+                      className='header__cart-item'
+                      key={item.idProduct + item.amount + index}
+                    >
                       <img
                         src={item.image}
                         alt=''
@@ -93,17 +99,19 @@ function HeaderCart() {
                   )
                 })}
             </ul>
+          ) : (
+            ""
           )}
 
-          {cart.length === 0 ? (
-            ""
-          ) : (
+          {reload ? (
             <div
               className='header__cart-view btn btn--primary'
               onClick={() => handleRedirect()}
             >
               <span>Xem giỏ hàng</span>
             </div>
+          ) : (
+            ""
           )}
         </div>
       </div>

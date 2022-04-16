@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react"
 import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
 
-function Paypal({ value }) {
+function Paypal({ value, code }) {
   const userId = localStorage.getItem("id")
   const paypal = useRef()
   const history = useHistory()
@@ -23,9 +23,19 @@ function Paypal({ value }) {
         },
       })
       if (res.status === 201) {
-        localStorage.removeItem(`cart${userId}`)
-        setLoading(false)
-        history.push("/")
+        try {
+          const resp = await axios({
+            method: "delete",
+            url: `https://utesharecode.herokuapp.com/items/sharecode/${code}`,
+          })
+          if (resp.status === 200) {
+            setLoading(false)
+            history.push("/")
+          }
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+        }
       }
     } catch (error) {
       console.log(error)

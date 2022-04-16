@@ -15,13 +15,13 @@ import UserOrder from "./UserOrder"
 import OrderItem from "./OrderItem"
 
 function UserControl() {
-  const jwt = localStorage.getItem("jwt")
+  const urlParams = new URLSearchParams(window.location.search)
   const role = localStorage.getItem("role")
   const [load, setLoad] = useState(false)
   const { setAuth, raise } = useGlobalContext()
   const [height, setHeight] = useState(0)
   const [orderId, setOrderId] = useState()
-  const [userPage, setUserPage] = useState("profile")
+  const [userPage, setUserPage] = useState(urlParams.get("state") || "profile")
   const history = useHistory()
 
   const handleChange = (page) => {

@@ -1,15 +1,17 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
 import logo from "../assets/img/logo.png"
+import { useGlobalContext } from "../context"
 
 function HeaderSeller() {
+  const { setAuth } = useGlobalContext()
   const name = localStorage.getItem("name")
   const history = useHistory()
 
   const redirect = (page) => {
     history.push(`${page}`)
   }
-  const handleLogout = () => {
+  const handleLogout = (type) => {
     localStorage.removeItem("id")
     localStorage.removeItem("name")
     localStorage.removeItem("dateofbirth")
@@ -20,7 +22,16 @@ function HeaderSeller() {
     localStorage.removeItem("jwt")
     localStorage.removeItem("role")
     localStorage.removeItem("expire")
-    redirect("/")
+    if (type !== "logout") {
+      authPage(type)
+    } else {
+      redirect("/")
+    }
+  }
+
+  const authPage = (authType) => {
+    setAuth(authType)
+    redirect("/user/auth")
   }
 
   return (
@@ -37,13 +48,17 @@ function HeaderSeller() {
 
             <ul className='header__navbar-user-menu'>
               <li className='header__navbar-user-item'>
-                <a onClick={() => redirect("/user/account/profile")}>
-                  Tài khoản của tôi
-                </a>
+                <a href='/user/setting'>Tài khoản của tôi</a>
               </li>
               <li
                 className='header__navbar-user-item --separate'
-                onClick={handleLogout}
+                onClick={() => handleLogout("login")}
+              >
+                <a href=''>Đổi tài khoản</a>
+              </li>
+              <li
+                className='header__navbar-user-item --separate'
+                onClick={() => handleLogout("logout")}
               >
                 <a href=''>Đăng xuất</a>
               </li>

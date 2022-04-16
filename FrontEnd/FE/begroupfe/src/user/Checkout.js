@@ -45,14 +45,28 @@ function Checkout() {
           },
         })
         if (res.status === 201) {
-          localStorage.removeItem(`cart${userId}`)
-          setRaise({
-            header: "Đặt hàng",
-            content: "Đặt hàng thành công",
-            color: "#4bb534",
-          })
-          setLoading(false)
-          history.push("/")
+          try {
+            const resp = await axios({
+              method: "delete",
+              url: `https://utesharecode.herokuapp.com/items/sharecode/${cart[0].shareCode}`,
+            })
+            if (resp.status === 200) {
+              setRaise({
+                header: "Đặt hàng",
+                content: "Đặt hàng thành công",
+                color: "#4bb534",
+              })
+              setLoading(false)
+              history.push("/")
+            }
+          } catch (error) {
+            setRaise({
+              header: "Đặt hàng",
+              content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+              color: "#dc143c",
+            })
+            setLoading(false)
+          }
         }
       } catch (error) {
         setRaise({
@@ -236,7 +250,10 @@ function Checkout() {
                   </div>
 
                   {checkout.card ? (
-                    <Paypal value={((sum + 30000) / 23000).toFixed(1)} />
+                    <Paypal
+                      value={((sum + 30000) / 23000).toFixed(1)}
+                      code={cart[0].shareCode}
+                    />
                   ) : (
                     <div
                       className='cart__payment-item'

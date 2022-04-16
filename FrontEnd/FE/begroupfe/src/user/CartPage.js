@@ -1,48 +1,52 @@
 import axios from "axios"
-import React, { useEffect, useState, useCallback } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { BsArrowReturnRight } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
 import "../assets/css/cart.css"
+import { createRef } from "react/cjs/react.production.min"
 
 function CartPage() {
+  const refContainer = useRef([])
   const userId = localStorage.getItem("id")
-  const {
-    reloadSell,
-    setReloadSell,
-    setOrderData,
-    cart,
-    isCartUpdate,
-    setIsCartUpdate,
-  } = useGlobalContext()
+  const jwt = localStorage.getItem("jwt")
+  const { isCartReady, setOrderData, cart, setIsCartUpdate, isCartUpdate } =
+    useGlobalContext()
   const [load, setLoad] = useState(false)
   const [height, setHeight] = useState(0)
   const [code, setCode] = useState("")
+  const [reload, setReload] = useState(false)
   const history = useHistory()
+  const amount = []
   let sum = 0
-  let amountList = []
+
   if (userId && cart.length) {
     cart.forEach((element) => {
       sum += element.price * element.amount
     })
   }
 
-  const debounce = (callback, wait) => {
-    let timeoutId = null
-    return (...args) => {
-      window.clearTimeout(timeoutId)
-      timeoutId = window.setTimeout(() => {
-        callback.apply(null, args)
-      }, wait)
-    }
+  // const debounce = (callback, wait) => {
+  //   let timeoutId = null
+  //   return (...args) => {
+  //     window.clearTimeout(timeoutId)
+  //     timeoutId = window.setTimeout(() => {
+  //       callback.apply(null, args)
+  //     }, wait)
+  //   }
+  // }
+
+  const handleChange = (e, index) => {
+    console.log(refContainer.current[index].value)
+    refContainer.current[index].value = e.target.value
   }
 
-  const handleInput = (index, id) => {
-    const newQuan = amountList[index]
+  const handleInput = (id, index) => {
+    const newQuan = refContainer.current[index].value
     if (/^[0-9]*$/.test(newQuan)) {
-      changeAmount(id, newQuan)
+      // changeAmount(id, newQuan)
     }
   }
 
@@ -66,27 +70,55 @@ function CartPage() {
   const changeAmount = async (id, amount) => {
     setLoad(true)
     try {
-      await axios({
+      const res = await axios({
         method: "put",
         url: `https://cnpmmbe.herokuapp.com/item/${id}`,
         data: {
           amount,
         },
       })
+      if (res.status === 200) {
+        setIsCartUpdate(!isCartUpdate)
+        setLoad(false)
+      }
     } catch (error) {}
-
-    setLoad(false)
-    setIsCartUpdate(!isCartUpdate)
-    // setReloadSell(!reloadSell)
   }
-  const changeAmountAfterStop = useCallback(debounce(changeAmount, 300), [])
+  // const changeAmountAfterStop = useCallback(debounce(changeAmount, 300), [])
+  // const reFetchCart = async () => {
+  //   setCartReady(false)
+  //   try {
+  //     let res = await axios({
+  //       method: "get",
+  //       url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}`,
+  //       headers: {
+  //         Authorization: `Bearer ${jwt}`,
+  //       },
+  //     })
+  //     if (res.status === 200 && Array.isArray(res.data)) {
+  //       const tempCart = []
+  //       res.data.forEach(async (item) =>
+  //         (await item.idUser) == userId
+  //           ? tempCart.unshift(item)
+  //           : tempCart.push(item)
+  //       )
+  //       setCart(tempCart)
+  //       setCartReady(true)
+  //     }
+  //     // else {
+  //     //   console.log(res.data, res.status)
+  //     //   setCart([])
+  //     // }
+  //   } catch (error) {
+  //     console.log("cart", error)
+  //   }
+  // }
 
   const handleGetCart = async () => {
     setLoad(true)
     try {
       const res = await axios({
         method: "PUT",
-        url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
+        url: `https://utesharecode.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
       })
       if (res.status === 200) {
         setIsCartUpdate(!isCartUpdate)
@@ -116,6 +148,13 @@ function CartPage() {
     history.push("/checkout")
   }
 
+  const createRefC = async (cart) => {
+    refContainer.current = cart.map(
+      (element, i) => refContainer.current[i] ?? createRef()
+    )
+    cart.map((item, index) => (refContainer.current[index].value = item.amount))
+  }
+
   useEffect(() => {
     let body = document.body,
       html = document.documentElement
@@ -129,11 +168,21 @@ function CartPage() {
         html.offsetHeight
       )
     )
-    amountList = []
     if (userId === null) {
       history.push("/")
     }
-  }, [reloadSell])
+  }, [])
+
+  useEffect(() => {
+    if (cart.length !== 0 && isCartReady) {
+      setCode(cart[0].shareCode)
+      createRefC(cart)
+      setReload(true)
+      // console.log(refContainer)
+    } else {
+      setReload(false)
+    }
+  }, [cart, isCartReady])
 
   return (
     <div className='container'>
@@ -155,40 +204,16 @@ function CartPage() {
               </div>
               <div className='cart__header-item'>Thao tác</div>
             </div>
-            {cart.length === 0 ? (
-              <div className='cart__header-code-wrap'>
-                <div className='cart__header-code-label'>
-                  Nhập share code tại đây:
-                </div>
-                <input
-                  type='text'
-                  className='cart__header-code-input'
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  onKeyUp={(e) =>
-                    e.key === "Enter" && code !== "" && handleGetCart()
-                  }
-                />
-                <BsArrowReturnRight
-                  className='cart__header-code-btn'
-                  onClick={() => {
-                    code !== "" && handleGetCart()
-                  }}
-                />
-              </div>
-            ) : (
-              ""
-            )}
             <div className='cart__body'>
-              {cart.length !== 0 ? (
+              {reload ? (
                 cart.map((item, index) => {
-                  amountList.push(item.amount)
+                  amount[item.id] = item.amount
                   return (
                     <div
                       className={`cart__body-wrap ${
                         userId == item.idUser ? "" : "cart__body-wrap--disable"
                       }`}
-                      key={index}
+                      key={item.idProduct + item.amount + index}
                     >
                       <div
                         className='cart__header-item'
@@ -231,9 +256,9 @@ function CartPage() {
                           <div
                             className='amount__item'
                             onClick={() =>
-                              changeAmountAfterStop(
+                              changeAmount(
                                 item.id,
-                                item.amount - 1 <= 0 ? 1 : item.amount
+                                item.amount - 1 <= 0 ? 1 : item.amount - 1
                               )
                             }
                           >
@@ -242,16 +267,15 @@ function CartPage() {
                           <input
                             type='text'
                             className='amount__item amount__input'
-                            value={amountList[index]}
-                            onChange={(e) =>
-                              (amountList[index] = e.target.value)
-                            }
-                            onBlur={(e) => handleInput(index, item.id)}
+                            ref={refContainer.current[index]}
+                            value={refContainer.current[index].value}
+                            onChange={(e) => handleChange(e, index)}
+                            onBlur={() => handleInput(item.id, index)}
                           />
                           <div
                             className='amount__item'
                             onClick={() =>
-                              changeAmountAfterStop(item.id, item.amount)
+                              changeAmount(item.id, item.amount + 1)
                             }
                           >
                             <AiOutlinePlus />
@@ -288,11 +312,37 @@ function CartPage() {
                       style={{ width: "180px" }}
                     />
                   </div>
-                  <div className='item__text'>Giỏ hàng của bạn còn trống</div>
+                  <div className='item__text'>
+                    Giỏ hàng của bạn còn trống {console.log("cart", cart)}
+                  </div>
                 </div>
               )}
             </div>
-            {cart.length !== 0 ? (
+            {reload ? (
+              <div className='cart__header-code-wrap'>
+                <div className='cart__header-code-label'>
+                  Nhập share code tại đây:
+                </div>
+                <input
+                  type='text'
+                  className='cart__header-code-input'
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onKeyUp={(e) =>
+                    e.key === "Enter" && code !== "" && handleGetCart()
+                  }
+                />
+                <BsArrowReturnRight
+                  className='cart__header-code-btn'
+                  onClick={() => {
+                    code !== "" && handleGetCart()
+                  }}
+                />
+              </div>
+            ) : (
+              ""
+            )}
+            {reload ? (
               <div className='cart__footer'>
                 <div
                   className='btn btn--primary btn-enhance'

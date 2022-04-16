@@ -90,6 +90,9 @@ function Navbar() {
               >
                 <a href=''>Đổi tài khoản</a>
               </li>
+              <li className='header__navbar-user-item'>
+                <a href='/user/setting?state=order'>Đơn hàng</a>
+              </li>
               <li
                 className='header__navbar-user-item --separate'
                 onClick={() => handleLogout("logout")}
