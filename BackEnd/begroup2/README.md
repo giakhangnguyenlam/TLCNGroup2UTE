@@ -535,8 +535,53 @@ link: https://tlcngroup2be.herokuapp.com/product/suggestions/name/Áo thể thao
 ]
 ```
 
+### Guest login 
+> link: https://tlcngroup2be.herokuapp.com/signup/guestsignup
 
+> POST
 
+#### Request
+```
+{
+    "name":"khang",
+    "phone":"0919910213",
+    "address":"asdasdasd"
+}
+```
+
+#### Response
+```
+{
+    "id": 169,
+    "name": "khang",
+    "dateofbirth": "03-04-2022",
+    "email": "laptrinhweb77@gmail.com",
+    "address": "asdasdasd",
+    "gender": "male",
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3WiQ2dFRPanIiLCJleHAiOjE2NTAxNTk3MTMsImlhdCI6MTY1MDA3MzMxM30.Z5hCz6ib6ag9acoAKLSR2ENl_oQXy6It3D7_L6HJvZo",
+    "role": "ROLE_USER",
+    "phone": "0919910213"
+}
+```
+
+### Forgot password
+> link: https://tlcngroup2be.herokuapp.com/forgotpassword
+
+> POST 
+
+### Request
+```
+{
+    "username":"khanguser11"
+}
+```
+
+### Response
+```
+{
+    "mess": "Reset password successfully"
+}
+```
 
 ##  ===============>> User API <<====================
 

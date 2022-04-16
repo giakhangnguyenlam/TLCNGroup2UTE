@@ -178,6 +178,7 @@ public class HomeController {
             return new ResponseEntity<>(signUpModel, HttpStatus.OK);
         }
         catch (Exception e){
+            System.out.println(e.getMessage());
             ErrorModel errorModel = new ErrorModel("Create guest sign up fail");
             return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
         }
