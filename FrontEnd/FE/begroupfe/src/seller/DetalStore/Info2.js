@@ -23,7 +23,7 @@ function Info2() {
     setCateSho({ ...cateSho, [type]: newArr })
   }
   const rmvArr = (type, ele) => {
-    let newArr = cateSho[type].filter((item) => {
+    let newArr = cateSho[type].forEach((item) => {
       if (item !== ele) {
         return item
       }

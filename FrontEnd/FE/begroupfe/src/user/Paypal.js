@@ -4,7 +4,6 @@ import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
 
 function Paypal({ value, code }) {
-  const userId = localStorage.getItem("id")
   const paypal = useRef()
   const history = useHistory()
   const { orderData, setLoading } = useGlobalContext()

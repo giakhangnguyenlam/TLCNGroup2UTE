@@ -3,6 +3,8 @@ import { useGlobalContext } from "../context"
 import authImg from "../assets/img/auth.png"
 import Login from "../header/Login"
 import Signup from "../header/Signup"
+import Private from "../header/Private"
+import Lost from "../header/Lost"
 function BodyAuth() {
   const [height, setHeight] = useState(0)
   const { loading, auth } = useGlobalContext()
@@ -33,7 +35,10 @@ function BodyAuth() {
               backgroundPosition: "center center",
             }}
           >
-            {auth === "login" ? <Login /> : <Signup />}
+            {auth === "login" && <Login />}
+            {auth === "signup" && <Signup />}
+            {auth === "private" && <Private />}
+            {auth === "lost" && <Lost />}
           </div>
         </div>
       </div>

@@ -1,18 +1,14 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
-import { useHistory, useParams } from "react-router"
 import { useGlobalContext } from "../context"
 import "../assets/css/cart.css"
 
 function OrderItem({ orderId }) {
   const jwt = localStorage.getItem("jwt")
-  const userid = localStorage.getItem("id")
-  const nameUser = localStorage.getItem("name")
-  const { setIsComment, raise } = useGlobalContext()
+  const { setIsComment } = useGlobalContext()
 
   const [orderInfo, setOrderInfo] = useState()
   const [detail, setDetail] = useState()
-  const history = useHistory()
 
   const handleCmt = (prodId) => {
     setIsComment(true)

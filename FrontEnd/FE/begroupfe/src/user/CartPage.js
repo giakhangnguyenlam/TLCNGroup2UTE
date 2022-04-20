@@ -1,25 +1,21 @@
 import axios from "axios"
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { BsArrowReturnRight } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
 import "../assets/css/cart.css"
-import { createRef } from "react/cjs/react.production.min"
 
 function CartPage() {
-  const refContainer = useRef([])
   const userId = localStorage.getItem("id")
-  const jwt = localStorage.getItem("jwt")
-  const { isCartReady, setOrderData, cart, setIsCartUpdate, isCartUpdate } =
+  const { isCartReady, setOrderData, reloadSell, setReloadSell } =
     useGlobalContext()
+  let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [load, setLoad] = useState(false)
   const [height, setHeight] = useState(0)
   const [code, setCode] = useState("")
-  const [reload, setReload] = useState(false)
   const history = useHistory()
-  const amount = []
   let sum = 0
 
   if (userId && cart.length) {
@@ -28,29 +24,14 @@ function CartPage() {
     })
   }
 
-  // const debounce = (callback, wait) => {
-  //   let timeoutId = null
-  //   return (...args) => {
-  //     window.clearTimeout(timeoutId)
-  //     timeoutId = window.setTimeout(() => {
-  //       callback.apply(null, args)
-  //     }, wait)
-  //   }
-  // }
-
-  const handleChange = (e, index) => {
-    console.log(refContainer.current[index].value)
-    refContainer.current[index].value = e.target.value
-  }
-
-  const handleInput = (id, index) => {
-    const newQuan = refContainer.current[index].value
+  const handleChange = (e, id, index) => {
+    const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
-      // changeAmount(id, newQuan)
+      changeAmount(id, newQuan, index)
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, index) => {
     const del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
     if (del) {
       setLoad(true)
@@ -60,14 +41,22 @@ function CartPage() {
           url: `https://cnpmmbe.herokuapp.com/item/${id}`,
         })
         if (res.status === 200) {
-          setIsCartUpdate(!isCartUpdate)
+          // setIsCartUpdate(!isCartUpdate)
+          const newCart = cart.splice(index, 1)
+          console.log(newCart)
+          if (newCart.length === 0) {
+            localStorage.removeItem(`cart${userId}`)
+            setReloadSell(!reloadSell)
+          } else {
+            localStorage.setItem(`cart${userId}`, JSON.stringify(newCart))
+            setReloadSell(!reloadSell)
+          }
           setLoad(false)
         }
       } catch (error) {}
     }
-    // setReloadSell(!reloadSell)
   }
-  const changeAmount = async (id, amount) => {
+  const changeAmount = async (id, amount, index) => {
     setLoad(true)
     try {
       const res = await axios({
@@ -78,40 +67,15 @@ function CartPage() {
         },
       })
       if (res.status === 200) {
-        setIsCartUpdate(!isCartUpdate)
+        // setIsCartUpdate(!isCartUpdate)
+
+        cart[index].amount = amount
+        localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
         setLoad(false)
+        setReloadSell(!reloadSell)
       }
     } catch (error) {}
   }
-  // const changeAmountAfterStop = useCallback(debounce(changeAmount, 300), [])
-  // const reFetchCart = async () => {
-  //   setCartReady(false)
-  //   try {
-  //     let res = await axios({
-  //       method: "get",
-  //       url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}`,
-  //       headers: {
-  //         Authorization: `Bearer ${jwt}`,
-  //       },
-  //     })
-  //     if (res.status === 200 && Array.isArray(res.data)) {
-  //       const tempCart = []
-  //       res.data.forEach(async (item) =>
-  //         (await item.idUser) == userId
-  //           ? tempCart.unshift(item)
-  //           : tempCart.push(item)
-  //       )
-  //       setCart(tempCart)
-  //       setCartReady(true)
-  //     }
-  //     // else {
-  //     //   console.log(res.data, res.status)
-  //     //   setCart([])
-  //     // }
-  //   } catch (error) {
-  //     console.log("cart", error)
-  //   }
-  // }
 
   const handleGetCart = async () => {
     setLoad(true)
@@ -121,7 +85,8 @@ function CartPage() {
         url: `https://utesharecode.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
       })
       if (res.status === 200) {
-        setIsCartUpdate(!isCartUpdate)
+        // setIsCartUpdate(!isCartUpdate)
+        localStorage.setItem(`cart${userId}`, JSON.stringify(res.status))
         setLoad(false)
       }
     } catch (error) {}
@@ -148,13 +113,6 @@ function CartPage() {
     history.push("/checkout")
   }
 
-  const createRefC = async (cart) => {
-    refContainer.current = cart.map(
-      (element, i) => refContainer.current[i] ?? createRef()
-    )
-    cart.map((item, index) => (refContainer.current[index].value = item.amount))
-  }
-
   useEffect(() => {
     let body = document.body,
       html = document.documentElement
@@ -176,13 +134,10 @@ function CartPage() {
   useEffect(() => {
     if (cart.length !== 0 && isCartReady) {
       setCode(cart[0].shareCode)
-      createRefC(cart)
-      setReload(true)
-      // console.log(refContainer)
-    } else {
-      setReload(false)
     }
-  }, [cart, isCartReady])
+  }, [isCartReady])
+
+  useEffect(() => {}, [reloadSell])
 
   return (
     <div className='container'>
@@ -205,15 +160,14 @@ function CartPage() {
               <div className='cart__header-item'>Thao tác</div>
             </div>
             <div className='cart__body'>
-              {reload ? (
+              {cart ? (
                 cart.map((item, index) => {
-                  amount[item.id] = item.amount
                   return (
                     <div
                       className={`cart__body-wrap ${
                         userId == item.idUser ? "" : "cart__body-wrap--disable"
                       }`}
-                      key={item.idProduct + item.amount + index}
+                      key={index}
                     >
                       <div
                         className='cart__header-item'
@@ -258,7 +212,8 @@ function CartPage() {
                             onClick={() =>
                               changeAmount(
                                 item.id,
-                                item.amount - 1 <= 0 ? 1 : item.amount - 1
+                                item.amount - 1 <= 0 ? 1 : item.amount - 1,
+                                index
                               )
                             }
                           >
@@ -267,15 +222,13 @@ function CartPage() {
                           <input
                             type='text'
                             className='amount__item amount__input'
-                            ref={refContainer.current[index]}
-                            value={refContainer.current[index].value}
-                            onChange={(e) => handleChange(e, index)}
-                            onBlur={() => handleInput(item.id, index)}
+                            value={item.amount}
+                            onChange={(e) => handleChange(e, item.id, index)}
                           />
                           <div
                             className='amount__item'
                             onClick={() =>
-                              changeAmount(item.id, item.amount + 1)
+                              changeAmount(item.id, item.amount + 1, index)
                             }
                           >
                             <AiOutlinePlus />
@@ -294,7 +247,7 @@ function CartPage() {
                       <div className='cart__header-item'>
                         <AiOutlineDelete
                           className='cart__icon'
-                          onClick={() => handleDelete(item.id)}
+                          onClick={() => handleDelete(item.id, index)}
                         />
                       </div>
                     </div>
@@ -318,7 +271,7 @@ function CartPage() {
                 </div>
               )}
             </div>
-            {reload ? (
+            {cart ? (
               <div className='cart__header-code-wrap'>
                 <div className='cart__header-code-label'>
                   Nhập share code tại đây:
@@ -342,7 +295,7 @@ function CartPage() {
             ) : (
               ""
             )}
-            {reload ? (
+            {cart ? (
               <div className='cart__footer'>
                 <div
                   className='btn btn--primary btn-enhance'

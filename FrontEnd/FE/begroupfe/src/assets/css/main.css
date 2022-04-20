@@ -808,7 +808,18 @@ i.product-item__action-liked-icon {
 .auth-form__aside {
   font-size: 1.2rem;
   line-height: 1.8rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-form__aside div {
+  transition: 0.3s;
+}
+
+.auth-form__aside div:hover {
+  cursor: pointer;
+  color: var(--primary-color);
 }
 
 .auth-form__text-link {

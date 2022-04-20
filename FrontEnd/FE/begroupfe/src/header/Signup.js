@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 import { useGlobalContext } from "../context"
 import { formAuth } from "../ultis/data"
@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 
 const Signup = () => {
   const history = useHistory()
-  const hFit = window.screen.availHeight
+  // const hFit = window.screen.availHeight
   // const resp = hFit < 1000 ? true : false
   const resp = true
   const { auth, setAuth, setLoading } = useGlobalContext()
@@ -65,7 +65,7 @@ const Signup = () => {
     if (!person.email) {
       errs.email = "Không được bỏ trống trường này!"
     } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(person.email)
+      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(person.email)
     ) {
       errs.email = "Sai định dạng email"
     }

@@ -138,13 +138,48 @@ const AppProvider = ({ children }) => {
         },
       })
       if (res.status === 200 && Array.isArray(res.data)) {
+        const cartName = `cart${userId}`
         const tempCart = []
-        res.data.forEach(async (item) =>
-          (await item.idUser) == userId
-            ? tempCart.unshift(item)
-            : tempCart.push(item)
-        )
-        setCart(tempCart)
+        if (localStorage.getItem(cartName).length === 0) {
+          localStorage.removeItem(cartName)
+        }
+        res.data.forEach(async (item) => {
+          const {
+            idUser,
+            name,
+            image,
+            description,
+            amount,
+            price,
+            id,
+            shareCode,
+          } = item
+          if (idUser === userId) {
+            tempCart.unshift({
+              idUser,
+              name,
+              image,
+              description,
+              amount,
+              price,
+              id,
+              shareCode,
+            })
+          } else {
+            tempCart.push({
+              idUser,
+              name,
+              image,
+              description,
+              amount,
+              price,
+              id,
+              shareCode,
+            })
+          }
+        })
+
+        localStorage.setItem(cartName, JSON.stringify(tempCart))
         setCartReady(true)
       }
       // else {

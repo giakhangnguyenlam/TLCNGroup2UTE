@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useGlobalContext } from "../../context"
 import { Colors, SizeNumber } from "../../ultis/data"
 
@@ -10,7 +10,7 @@ function CategoryShoes() {
     setCateSho({ ...cateSho, [type]: newArr })
   }
   const rmvArr = (type, ele) => {
-    let newArr = cateSho[type].filter((item) => {
+    let newArr = cateSho[type].forEach((item) => {
       if (item !== ele) {
         return item
       }

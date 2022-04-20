@@ -15,7 +15,10 @@ function HeaderAuth() {
               </a>
             </div>
             <div className='header-auth__title'>
-              {auth === "login" ? "Đăng nhập" : "Đăng ký"}
+              {auth === "login" && "Đăng nhập"}
+              {auth === "signup" && "Đăng ký"}
+              {auth === "private" && "Đăng nhập ẩn danh"}
+              {auth === "lost" && "Quên mật khẩu"}
             </div>
           </div>
         </nav>

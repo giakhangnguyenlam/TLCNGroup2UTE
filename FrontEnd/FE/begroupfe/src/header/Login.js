@@ -7,7 +7,6 @@ import { formAuth } from "../ultis/data"
 const Login = () => {
   const history = useHistory()
   const {
-    auth,
     setAuth,
     // reloadSell,
     // setReloadSell,
@@ -23,8 +22,8 @@ const Login = () => {
     const value = e.target.value
     setAccount({ ...account, [name]: value })
   }
-  const changeSignup = () => {
-    auth === "login" ? setAuth("signup") : setAuth("login")
+  const changeSignup = (type) => {
+    setAuth(type)
   }
   const checkError = async ({ username, password }) => {
     let errs = {}
@@ -96,7 +95,10 @@ const Login = () => {
       <div className='auth-form__container'>
         <div className='auth-form__header'>
           <h3 className='auth-form__heading'> Đăng nhập</h3>
-          <span className='auth-form__switch-btn' onClick={changeSignup}>
+          <span
+            className='auth-form__switch-btn'
+            onClick={() => changeSignup("signup")}
+          >
             Đăng ký
           </span>
         </div>
@@ -135,7 +137,10 @@ const Login = () => {
         ) : (
           " "
         )}
-
+        <div className='auth-form__aside'>
+          <div onClick={() => changeSignup("private")}>Tài khoản ẩn danh</div>
+          <div onClick={() => changeSignup("lost")}>Quên mật khẩu</div>
+        </div>
         <div className='auth-form__controls'>
           {/* <button
             className='btn btn--normal auth-form__controls-back'
