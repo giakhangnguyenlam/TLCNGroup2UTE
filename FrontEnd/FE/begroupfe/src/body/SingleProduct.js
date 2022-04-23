@@ -85,8 +85,8 @@ function SingleProduct() {
         try {
           const method = isDuplicate.length ? "put" : "post"
           const url = isDuplicate.length
-            ? `https://cnpmmbe.herokuapp.com/item/${isDuplicate[0].id}`
-            : "https://cnpmmbe.herokuapp.com/item"
+            ? `https://utesharecode.herokuapp.com/item/${isDuplicate[0].id}`
+            : "https://utesharecode.herokuapp.com/item"
           const data = isDuplicate.length
             ? {
                 amount: quantity + isDuplicate[0].amount,

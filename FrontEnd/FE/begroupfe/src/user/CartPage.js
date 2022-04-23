@@ -38,7 +38,7 @@ function CartPage() {
       try {
         const res = await axios({
           method: "DELETE",
-          url: `https://cnpmmbe.herokuapp.com/item/${id}`,
+          url: `https://utesharecode.herokuapp.com/item/${id}`,
         })
         if (res.status === 200) {
           // setIsCartUpdate(!isCartUpdate)
@@ -61,7 +61,7 @@ function CartPage() {
     try {
       const res = await axios({
         method: "put",
-        url: `https://cnpmmbe.herokuapp.com/item/${id}`,
+        url: `https://utesharecode.herokuapp.com/item/${id}`,
         data: {
           amount,
         },

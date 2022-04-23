@@ -132,7 +132,7 @@ const AppProvider = ({ children }) => {
     try {
       let res = await axios({
         method: "get",
-        url: `https://cnpmmbe.herokuapp.com/item/iduser/${userId}`,
+        url: `https://utesharecode.herokuapp.com/item/iduser/${userId}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
