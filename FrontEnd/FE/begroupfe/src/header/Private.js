@@ -44,14 +44,12 @@ function Private() {
   }
   const fetchData = async () => {
     setLoading(true)
-    let url = "https://tlcngroup2be.herokuapp.com/login"
+    let url = "https://tlcngroup2be.herokuapp.com/signup/guestsignup"
     try {
       let res = await axios({
         method: "post",
         url,
-        data: { ...account },
-        headers: { "Access-Control-Allow-Origin": "*" },
-        responseType: "json",
+        data: account,
       })
       if (res.status === 200) {
         let {
@@ -103,9 +101,9 @@ function Private() {
           <h3 className='auth-form__heading'> Đăng nhập ẩn danh</h3>
           <span
             className='auth-form__switch-btn'
-            onClick={() => changeSignup("login")}
+            onClick={() => changeSignup("signup")}
           >
-            Đăng nhập
+            Đăng ký
           </span>
         </div>
 

@@ -34,7 +34,7 @@ function Lost() {
   }
   const fetchData = async () => {
     setLoading(true)
-    let url = "https://tlcngroup2be.herokuapp.com/login"
+    let url = "https://tlcngroup2be.herokuapp.com/forgotpassword"
     try {
       let res = await axios({
         method: "post",
@@ -44,30 +44,31 @@ function Lost() {
         responseType: "json",
       })
       if (res.status === 200) {
-        let {
-          id,
-          name,
-          dateofbirth,
-          email,
-          address,
-          gender,
-          jwt,
-          role,
-          phone,
-        } = await res.data
-        localStorage.setItem("id", id)
-        localStorage.setItem("name", name)
-        localStorage.setItem("dateofbirth", dateofbirth)
-        localStorage.setItem("email", email)
-        localStorage.setItem("address", address)
-        localStorage.setItem("phone", phone)
-        localStorage.setItem("gender", gender)
-        localStorage.setItem("jwt", jwt)
-        localStorage.setItem("role", role)
-        localStorage.setItem("expire", new Date().getTime() + 43200000)
-        // setReloadSell(!reloadSell)
+        // let {
+        //   id,
+        //   name,
+        //   dateofbirth,
+        //   email,
+        //   address,
+        //   gender,
+        //   jwt,
+        //   role,
+        //   phone,
+        // } = await res.data
+        // localStorage.setItem("id", id)
+        // localStorage.setItem("name", name)
+        // localStorage.setItem("dateofbirth", dateofbirth)
+        // localStorage.setItem("email", email)
+        // localStorage.setItem("address", address)
+        // localStorage.setItem("phone", phone)
+        // localStorage.setItem("gender", gender)
+        // localStorage.setItem("jwt", jwt)
+        // localStorage.setItem("role", role)
+        // localStorage.setItem("expire", new Date().getTime() + 43200000)
+        // // setReloadSell(!reloadSell)
+        setErrors({ form: res.data.mess + "!!! Please check your email." })
         setLoading(false)
-        history.goBack()
+        // history.goBack()
       }
     } catch (error) {
       if (error.response) {
@@ -93,41 +94,14 @@ function Lost() {
           <h3 className='auth-form__heading'> Khôi phục mật khẩu</h3>
           <span
             className='auth-form__switch-btn'
-            onClick={() => changeSignup("signup")}
+            onClick={() => changeSignup("login")}
           >
-            Đăng ký
+            Đăng nhập
           </span>
         </div>
 
         <div className='auth-form__form'>
-          {formAuth.slice(0, 1).map((ele, index) => {
-            const { name, type, placeholder } = ele
-            return (
-              <div className='auth-form__group' key={index}>
-                <input
-                  type={type}
-                  name={name}
-                  placeholder={placeholder}
-                  className={`auth-form__input ${
-                    errors[name] && "auth-form__input--err"
-                  }`}
-                  value={account[name]}
-                  onChange={handlechange}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      handleSubmit(event)
-                    }
-                  }}
-                />
-                {errors[name] ? (
-                  <p className='auth-form__error'>{errors[name]}</p>
-                ) : (
-                  " "
-                )}
-              </div>
-            )
-          })}
-          {formAuth.slice(6, 8).map((ele, index) => {
+          {formAuth.slice(3, 4).map((ele, index) => {
             const { name, type, placeholder } = ele
             return (
               <div className='auth-form__group' key={index}>
@@ -156,7 +130,16 @@ function Lost() {
           })}
         </div>
         {errors["form"] ? (
-          <p className='auth-form__error'>{errors["form"]}</p>
+          <p
+            className='auth-form__error'
+            style={
+              errors["form"] !== "Can't change password"
+                ? { color: "#4bb534" }
+                : {}
+            }
+          >
+            {errors["form"]}
+          </p>
         ) : (
           " "
         )}
@@ -168,7 +151,7 @@ function Lost() {
             TRỞ LẠI
           </button> */}
           <button className='btn btn--primary' onClick={handleSubmit}>
-            ĐĂNG NHẬP
+            ĐẶT LẠI MẬT KHẨU
           </button>
         </div>
       </div>

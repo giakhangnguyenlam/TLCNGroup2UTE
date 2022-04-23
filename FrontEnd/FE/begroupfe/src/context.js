@@ -140,7 +140,10 @@ const AppProvider = ({ children }) => {
       if (res.status === 200 && Array.isArray(res.data)) {
         const cartName = `cart${userId}`
         const tempCart = []
-        if (localStorage.getItem(cartName).length === 0) {
+        if (
+          localStorage.getItem(cartName) &&
+          JSON.parse(localStorage.getItem(cartName)).length === 0
+        ) {
           localStorage.removeItem(cartName)
         }
         res.data.forEach(async (item) => {
@@ -178,7 +181,7 @@ const AppProvider = ({ children }) => {
             })
           }
         })
-
+        console.log(cartName, tempCart)
         localStorage.setItem(cartName, JSON.stringify(tempCart))
         setCartReady(true)
       }
