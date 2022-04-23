@@ -149,6 +149,7 @@ const AppProvider = ({ children }) => {
         res.data.forEach(async (item) => {
           const {
             idUser,
+            idProduct,
             name,
             image,
             description,
@@ -160,6 +161,7 @@ const AppProvider = ({ children }) => {
           if (idUser === userId) {
             tempCart.unshift({
               idUser,
+              idProduct,
               name,
               image,
               description,
@@ -171,6 +173,7 @@ const AppProvider = ({ children }) => {
           } else {
             tempCart.push({
               idUser,
+              idProduct,
               name,
               image,
               description,

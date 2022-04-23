@@ -12,7 +12,7 @@ function Checkout() {
   const name = localStorage.getItem("name")
   const phone = localStorage.getItem("phone")
   const address = localStorage.getItem("address")
-  const cart = JSON.parse(localStorage.getItem(`cart${userId}`))
+  const cart = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
   const [height, setHeight] = useState(0)
   const { loading, setLoading, orderData, raise, setRaise } = useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
@@ -57,7 +57,7 @@ function Checkout() {
                 color: "#4bb534",
               })
               localStorage.removeItem(`cart${userId}`)
-              setLoading(false)
+              // setLoading(false)
               history.push("/")
             }
           } catch (error) {

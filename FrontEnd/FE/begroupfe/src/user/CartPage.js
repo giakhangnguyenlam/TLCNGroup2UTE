@@ -18,7 +18,7 @@ function CartPage() {
   const history = useHistory()
   let sum = 0
 
-  if (userId && cart.length) {
+  if (userId && cart) {
     cart.forEach((element) => {
       sum += element.price * element.amount
     })
@@ -132,7 +132,7 @@ function CartPage() {
   }, [])
 
   useEffect(() => {
-    if (cart.length !== 0 && isCartReady) {
+    if (cart && cart.length !== 0 && isCartReady) {
       setCode(cart[0].shareCode)
     }
   }, [isCartReady])
@@ -265,9 +265,7 @@ function CartPage() {
                       style={{ width: "180px" }}
                     />
                   </div>
-                  <div className='item__text'>
-                    Giỏ hàng của bạn còn trống {console.log("cart", cart)}
-                  </div>
+                  <div className='item__text'>Giỏ hàng của bạn còn trống</div>
                 </div>
               )}
             </div>
