@@ -56,6 +56,7 @@ function Checkout() {
                 content: "Đặt hàng thành công",
                 color: "#4bb534",
               })
+              localStorage.removeItem(`cart${userId}`)
               setLoading(false)
               history.push("/")
             }
