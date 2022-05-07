@@ -583,6 +583,62 @@ link: https://tlcngroup2be.herokuapp.com/product/suggestions/name/Áo thể thao
 }
 ```
 
+## Recommendation
+link: https://tlcngroup2be.herokuapp.com/product/category/2/type/chay-bo
+
+> GET
+
+> 2 is category
+ 
+> chay-bo is type
+ 
+### Request
+
+### Response
+```
+[
+    {
+        "id": 58,
+        "storeId": 4,
+        "category": 2,
+        "name": "Giày thể thao",
+        "quantity": 200,
+        "price": 799000.0,
+        "description": "Giày thể thao, mang nhẹ êm chân",
+        "image": "https://drive.google.com/uc?id=1CyibR9tTAtNov3vQJWfhM9oX8joqvp1c&export=download",
+        "discount": 0.0,
+        "nameStore": "",
+        "isDiscount": false
+    },
+    {
+        "id": 60,
+        "storeId": 4,
+        "category": 2,
+        "name": "Giày thể thao 2",
+        "quantity": 80,
+        "price": 879000.0,
+        "description": "Giày thể thao nhẹ, chạy nhanh",
+        "image": "https://drive.google.com/uc?id=1oN9Z5c_jUyvumOiEBNQcu3hnnijNqaWf&export=download",
+        "discount": 0.0,
+        "nameStore": "",
+        "isDiscount": false
+    },
+    {
+        "id": 72,
+        "storeId": 71,
+        "category": 2,
+        "name": "Giày dép chất lượng cao",
+        "quantity": 250,
+        "price": 100000.0,
+        "description": "Giày dép chất lượng cao",
+        "image": "https://drive.google.com/uc?id=1xmoT23Q5TEHGr_-sN3yzWU6AstGsVBmw&export=download",
+        "discount": 0.0,
+        "nameStore": "",
+        "isDiscount": false
+    }
+]
+```
+
 ##  ===============>> User API <<====================
 
 ### Add item
