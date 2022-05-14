@@ -664,7 +664,7 @@ link: https://tlcngroup2be.herokuapp.com/voucher/storeid/1
 ```
 
 ### Add item
-link: https://cnpmmbe.herokuapp.com/item
+link: https://utesharecode.herokuapp.com/item
 
 > POST
 
@@ -673,6 +673,8 @@ link: https://cnpmmbe.herokuapp.com/item
 {
     "idUser": 157,
     "idProduct": 5,
+	"storeId":1,
+	"storeName":"abc"
     "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
     "name": "Áo thể thao",
     "description": "size x, màu xanh",
@@ -686,6 +688,8 @@ link: https://cnpmmbe.herokuapp.com/item
 {
     "idUser": 157,
     "idProduct": 5,
+	"storeId":1,
+	"storeName":"abc"
     "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
     "name": "Áo thể thao",
     "description": "size x, màu xanh",
