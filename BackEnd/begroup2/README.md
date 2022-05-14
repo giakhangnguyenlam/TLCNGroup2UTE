@@ -641,6 +641,28 @@ link: https://tlcngroup2be.herokuapp.com/product/category/2/type/chay-bo
 
 ##  ===============>> User API <<====================
 
+### Get active voucher by store Id
+link: https://tlcngroup2be.herokuapp.com/voucher/storeid/1
+
+#### Request
+
+#### Response
+```
+[
+    {
+        "voucherId": 206,
+        "storeId": 1,
+        "voucherName": "dadasdad",
+        "voucherDesc": "dasdasdasd",
+        "discount": 100000.0,
+        "bearerDiscount": 500000.0,
+        "startDate": 1652517759765,
+        "expireDate": 1652517759765,
+        "active": true
+    }
+]
+```
+
 ### Add item
 link: https://cnpmmbe.herokuapp.com/item
 
@@ -2111,3 +2133,177 @@ link: https://tlcngroup2be.herokuapp.com/seller/coupon/128
     "mess": "Delete successfully"
 }
 ```
+
+### Create voucher
+link: https://tlcngroup2be.herokuapp.com/seller/voucher
+
+> POST
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+
+#### Request
+```
+{
+    "storeId":"1",
+    "voucherName":"dadasdad",
+    "voucherDesc":"dasdasdasd",
+    "discount":100000,
+    "bearerDiscount":500000,
+    "startDate":123123123123,
+    "expireDate":11321231234
+}
+```
+
+#### Response
+```
+{
+    "voucherId": 205,
+    "storeId": 1,
+    "voucherName": "dadasdad",
+    "voucherDesc": "dasdasdasd",
+    "discount": 100000.0,
+    "bearerDiscount": 500000.0,
+    "startDate": 123123123123,
+    "expireDate": 11321231234,
+    "active": false
+}
+```
+
+### Update voucher
+link: https://tlcngroup2be.herokuapp.com/seller/voucher/205
+
+> PUT
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+ 
+> 205 is id voucher
+
+#### Request
+```
+{
+    "voucherName":"dadasddddad",
+    "voucherDesc":"dasdasdasd",
+    "discount":100000,
+    "bearerDiscount":500000,
+    "startDate":123123123123,
+    "expireDate":11321231234
+}
+```
+
+#### Response
+```
+{
+    "voucherId": 205,
+    "storeId": 1,
+    "voucherName": "dadasddddad",
+    "voucherDesc": "dasdasdasd",
+    "discount": 100000.0,
+    "bearerDiscount": 500000.0,
+    "startDate": 123123123123,
+    "expireDate": 11321231234,
+    "active": false
+}
+```
+
+### Delete voucher
+link: https://tlcngroup2be.herokuapp.com/seller/voucher/205
+
+> Delete
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+ 
+> 205 is id voucher
+
+#### Request
+
+#### Response
+```
+{
+    "mess": "Delete successfully"
+}
+```
+
+### Change active voucher
+link: https://tlcngroup2be.herokuapp.com/seller/voucher/active/206
+
+> PUT
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+ 
+> 206 is voucher id
+ 
+#### Request
+
+#### Response
+```
+{
+    "mess": "change active successfully"
+}
+```
+
+### Get voucher by voucher id
+link: https://tlcngroup2be.herokuapp.com/seller/voucher/206
+
+> GET
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+ 
+> 206 is voucher id
+
+#### Request
+
+#### Response
+```
+{
+    "voucherId": 206,
+    "storeId": 1,
+    "voucherName": "dadasdad",
+    "voucherDesc": "dasdasdasd",
+    "discount": 100000.0,
+    "bearerDiscount": 500000.0,
+    "startDate": 1652517759765,
+    "expireDate": 1652517759765,
+    "active": false
+}
+```
+
+### Get voucher by storeId
+link: https://tlcngroup2be.herokuapp.com/seller/voucher/storeid/1
+
+> GET
+
+> Note: You have to login with seller account to use this
+
+> Note: Headers has KEY: Authorization and VALUE: Bearer jwt
+ 
+> 1 is storeId
+ 
+#### Request
+
+#### Response
+```
+[
+    {
+        "voucherId": 206,
+        "storeId": 1,
+        "voucherName": "dadasdad",
+        "voucherDesc": "dasdasdasd",
+        "discount": 100000.0,
+        "bearerDiscount": 500000.0,
+        "startDate": 1652517759765,
+        "expireDate": 1652517759765,
+        "active": false
+    }
+]
+```
+
