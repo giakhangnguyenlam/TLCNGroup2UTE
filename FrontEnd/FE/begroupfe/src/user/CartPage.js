@@ -9,8 +9,14 @@ import "../assets/css/cart.css"
 
 function CartPage() {
   const userId = localStorage.getItem("id")
-  const { isCartReady, setOrderData, reloadSell, setReloadSell } =
-    useGlobalContext()
+  const {
+    isCartReady,
+    setOrderData,
+    reloadSell,
+    setReloadSell,
+    setIsCartUpdate,
+    isCartUpdate,
+  } = useGlobalContext()
   let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [load, setLoad] = useState(false)
   const [height, setHeight] = useState(0)
@@ -42,13 +48,12 @@ function CartPage() {
         })
         if (res.status === 200) {
           // setIsCartUpdate(!isCartUpdate)
-          const newCart = cart.splice(index, 1)
-          console.log(newCart)
-          if (newCart.length === 0) {
+          cart.splice(index, 1)
+          if (cart.length === 0) {
             localStorage.removeItem(`cart${userId}`)
             setReloadSell(!reloadSell)
           } else {
-            localStorage.setItem(`cart${userId}`, JSON.stringify(newCart))
+            localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
             setReloadSell(!reloadSell)
           }
           setLoad(false)
@@ -85,8 +90,9 @@ function CartPage() {
         url: `https://utesharecode.herokuapp.com/item/iduser/${userId}/sharecode/${code}`,
       })
       if (res.status === 200) {
-        // setIsCartUpdate(!isCartUpdate)
-        localStorage.setItem(`cart${userId}`, JSON.stringify(res.status))
+        setIsCartUpdate(!isCartUpdate)
+        localStorage.removeItem(`cart${userId}`)
+        // localStorage.setItem(`cart${userId}`, JSON.stringify(res.data))
         setLoad(false)
       }
     } catch (error) {}

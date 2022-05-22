@@ -35,7 +35,10 @@ function SingleProduct() {
     size: [],
     color: [],
     quantity: undefined,
+    storeId: undefined,
+    storeName: "",
   })
+  const [listCompareItem, setListCompareItem] = useState([])
   const [listSameItem, setListSameItem] = useState([])
   const [detail, setDetail] = useState([])
   const [label, setLabel] = useState([])
@@ -94,6 +97,8 @@ function SingleProduct() {
             : {
                 idUser: userId,
                 idProduct: product,
+                storeId: prod.storeId,
+                storeName: prod.nameStore,
                 image: prod.image,
                 name: prod.name,
                 description,
@@ -157,6 +162,8 @@ function SingleProduct() {
           description,
           isDiscount,
           discount,
+          storeId,
+          nameStore,
         } = await res.data
         return {
           status: 200,
@@ -168,6 +175,8 @@ function SingleProduct() {
           description,
           isDiscount,
           discount,
+          storeId,
+          nameStore,
         }
       }
     } catch (error) {
@@ -181,10 +190,23 @@ function SingleProduct() {
         url: `https://tlcngroup2be.herokuapp.com/product/suggestions/name/${name}`,
       })
       if (res.status === 200) {
+        setListCompareItem(res.data)
+      }
+    } catch (error) {}
+  }
+
+  const fetchSame = async (cate, type) => {
+    try {
+      const res = await axios({
+        method: "get",
+        url: `https://tlcngroup2be.herokuapp.com/product/category/${cate}/type/${type}`,
+      })
+      if (res.status === 200) {
         setListSameItem(res.data)
       }
     } catch (error) {}
   }
+
   const fetchCategory = async (id, category) => {
     if (category === 1) {
       try {
@@ -194,13 +216,21 @@ function SingleProduct() {
           responseType: "json",
         })
         if (res.status === 200) {
-          let { type, brand, origin, size, color, material } = await res.data
+          let { type, brand, origin, size, color, material, gender } =
+            await res.data
           cateCloList.forEach((item) =>
             item.value === type ? (type = item.name) : ""
           )
-          setLabel(["Loại", "Hãng", "Xuất xứ", "Chất liệu"])
-          setDetail([type, brand, origin, material])
-          return { size, color }
+          setLabel(["Loại", "Hãng", "Xuất xứ", "Chất liệu", "Dành cho phái"])
+          setDetail([
+            type,
+            brand,
+            origin,
+            material,
+            gender === "male" ? "nam" : "nữ",
+          ])
+          const typeCheck = res.data.type
+          return { typeCheck, size, color }
         }
       } catch (error) {
         console.log(error)
@@ -224,6 +254,7 @@ function SingleProduct() {
             size,
             color,
             material,
+            gender,
           } = await res.data
           cateShoList.forEach((item) =>
             item.value === style ? (style = item.name) : ""
@@ -236,9 +267,20 @@ function SingleProduct() {
             "Bảo hành",
             "Xuất xứ",
             "Chất liệu",
+            "Dành cho phái",
           ])
-          setDetail([style, sole, height, weight, warranty, origin, material])
-          return { size, color }
+          setDetail([
+            style,
+            sole,
+            height,
+            weight,
+            warranty,
+            origin,
+            material,
+            gender === "male" ? "nam" : "nữ",
+          ])
+          const typeCheck = res.data.style
+          return { typeCheck, size, color }
         }
       } catch (error) {
         console.log(error)
@@ -258,7 +300,8 @@ function SingleProduct() {
           )
           setLabel(["Loại", "Hãng", "Xuất xứ", "Chất liệu"])
           setDetail([type, brand, origin, material])
-          return { color }
+          const typeCheck = res.data.type
+          return { typeCheck, color }
         }
       } catch (error) {
         console.log(error)
@@ -293,9 +336,13 @@ function SingleProduct() {
         status,
         isDiscount,
         discount,
+        storeId,
+        nameStore,
       } = res
       if (status === 200) {
         const result = await fetchCategory(id, category)
+        console.log(category, result)
+        fetchSame(category, result.typeCheck)
         fetchCompare(name)
         if (category === 1 || category === 2) {
           const { size, color } = result
@@ -311,6 +358,8 @@ function SingleProduct() {
             description,
             isDiscount,
             discount,
+            storeId,
+            nameStore,
           })
         }
         if (category === 3) {
@@ -326,6 +375,8 @@ function SingleProduct() {
             description,
             isDiscount,
             discount,
+            storeId,
+            nameStore,
           })
         }
         const comment = await fetchComment()
@@ -550,12 +601,12 @@ function SingleProduct() {
                     </div>
                   </div>
 
-                  {listSameItem.length ? (
+                  {listCompareItem.length ? (
                     <div className='brief__product-compare'>
                       <div className='brief__product-compare-wrap'>
                         <div className='compare__item-desc'>
                           <div className='compare__item-title'>
-                            {listSameItem.length} sản phẩm khác
+                            {listCompareItem.length} sản phẩm khác
                           </div>
                           <div className='compare__item-min-price'>
                             Giá từ{" "}
@@ -564,7 +615,7 @@ function SingleProduct() {
                               currency: "VND",
                             }).format(
                               Math.min(
-                                ...listSameItem.map((item) => item.price)
+                                ...listCompareItem.map((item) => item.price)
                               )
                             )}
                           </div>
@@ -615,7 +666,7 @@ function SingleProduct() {
                 className='singleProd__content-wrap'
                 style={{ display: "flex" }}
               >
-                {listSameItem.map((item) => {
+                {listCompareItem.map((item) => {
                   let {
                     productId,
                     discount,
@@ -671,6 +722,94 @@ function SingleProduct() {
                         <div className='product-item__origin'>
                           <span className='product-item__brand'>
                             Tiệm: {storeName}
+                          </span>
+                          {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
+                        </div>
+                        <div className='product-item__favorite'>
+                          <i className='fas fa-check'></i>
+                          <span>Yêu thích</span>
+                        </div>
+                        {isDiscount && (
+                          <div className='product-item__sale'>
+                            <span className='product-item__sale-percent'>
+                              {discount}%
+                            </span>
+                            <span className='product-item__sale-label'>
+                              GIẢM
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className='singleProd__content'>
+              <div style={{ padding: "10px 10px 0" }}>
+                <div className='content__header'>SẢN PHẨM TƯƠNG TỰ</div>
+              </div>
+              <div
+                className='singleProd__content-wrap'
+                style={{ display: "flex" }}
+              >
+                {listSameItem.map((item) => {
+                  let {
+                    id,
+                    discount,
+                    name,
+                    price,
+                    isDiscount,
+                    image,
+                    nameStore,
+                  } = item
+                  if (isDiscount) {
+                    price = (price * (100 - discount)) / 100
+                  }
+                  return (
+                    <div className='grid__colum-12-2' key={`same_${id}`}>
+                      <div
+                        className='product-item'
+                        key={id}
+                        onClick={() =>
+                          (window.location.href = `${window.location.origin}/product/${id}`)
+                        }
+                      >
+                        <div
+                          className='product-item__img'
+                          style={{
+                            backgroundImage: `url(${image})`,
+                          }}
+                        ></div>
+                        <h4 className='product-item__name'>{name}</h4>
+                        <div className='product-item__price'>
+                          <span className='product-item__price-cur'>
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(price)}
+                          </span>
+                        </div>
+                        <div className='product-item__action'>
+                          <span className='product-item__action-like product-item__action-like--liked'>
+                            <AiFillHeart className='product-item__action-like-icon product-item__heart' />
+                            <AiFillHeart className='product-item__action-liked-icon product-item__heart' />
+                          </span>
+                          <div className='product-item__rating'>
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star--gold product-item__star' />
+                            <AiFillStar className='product-item__star' />
+                          </div>
+                          {/* <span className='product-item__sold'>
+                            còn {quantity}
+                          </span> */}
+                        </div>
+                        <div className='product-item__origin'>
+                          <span className='product-item__brand'>
+                            Tiệm: {nameStore}
                           </span>
                           {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
                         </div>

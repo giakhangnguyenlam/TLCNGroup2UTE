@@ -17,6 +17,8 @@ function HeaderAuth() {
             <div className='header-auth__title'>
               {auth === "login" && "Đăng nhập"}
               {auth === "signup" && "Đăng ký"}
+              {auth === "sellerSignup" && "Đăng ký trở thành người bán hàng"}
+              {auth === "shipperSignup" && "Đăng ký tờ thành người giao hàng"}
               {auth === "private" && "Đăng nhập ẩn danh"}
               {auth === "lost" && "Quên mật khẩu"}
             </div>

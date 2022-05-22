@@ -36,7 +36,9 @@ function BodyAuth() {
             }}
           >
             {auth === "login" && <Login />}
-            {auth === "signup" && <Signup />}
+            {["signup", "sellerSignup", "shipperSignup"].indexOf(auth) + 1 && (
+              <Signup />
+            )}
             {auth === "private" && <Private />}
             {auth === "lost" && <Lost />}
           </div>
