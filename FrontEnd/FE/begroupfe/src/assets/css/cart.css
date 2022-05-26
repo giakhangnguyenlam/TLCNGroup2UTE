@@ -345,3 +345,14 @@
   margin-left: 10px;
   text-align: center;
 }
+
+.cart-store__voucher {
+  color: var(--primary-color);
+  opacity: 0.8;
+  font-weight: 300;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 14px;
+  margin-left: 20px;
+  text-align: center;
+}

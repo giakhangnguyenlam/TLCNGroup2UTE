@@ -10,10 +10,12 @@ function Voucher() {
   const wFit = window.screen.availWidth * 0.8
   const hFit = window.screen.availHeight * 0.835
   const { setIsVoucher } = useGlobalContext()
-  const { setRaise, idStoreUpdate, setLoading } = useGlobalContext()
+  const { setRaise, idStoreUpdate } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
   const [isCheck, setIsCheck] = useState([])
   const [isFetch, setIsFetch] = useState(false)
+  const [height, setHeight] = useState()
+  const [load, setLoad] = useState()
   const [edit, setEdit] = useState("")
   const [dc, setDc] = useState({
     voucherName: "",
@@ -44,7 +46,7 @@ function Voucher() {
   }
 
   const checkData = (type) => {
-   console.log(dc)
+    console.log(dc)
     for (let key in dc) {
       if (dc[key] === null || dc[key] === "") {
         setRaise({
@@ -100,7 +102,7 @@ function Voucher() {
   const handleActive = async (id) => {
     let del = window.confirm("Bạn muốn tắt voucher?")
     if (del) {
-      setLoading(true)
+      setLoad(true)
       try {
         let res = await axios({
           method: "put",
@@ -110,7 +112,7 @@ function Voucher() {
           },
         })
         if (res.status === 200) {
-          setLoading(false)
+          setLoad(false)
           setReload(!reload)
           setRaise({
             header: "Mã giảm giá",
@@ -119,16 +121,16 @@ function Voucher() {
           })
         }
       } catch (error) {
-        setLoading(false)
+        setLoad(false)
       }
     }
-    setLoading(false)
+    setLoad(false)
   }
 
   const handleDelete = async (id) => {
     let del = window.confirm("Bạn muốn xóa voucher chứ?")
     if (del) {
-      setLoading(true)
+      setLoad(true)
       try {
         let res = await axios({
           method: "delete",
@@ -138,7 +140,7 @@ function Voucher() {
           },
         })
         if (res.status === 200) {
-          setLoading(false)
+          setLoad(false)
           setReload(!reload)
           setRaise({
             header: "Mã giảm giá",
@@ -147,14 +149,14 @@ function Voucher() {
           })
         }
       } catch (error) {
-        setLoading(false)
+        setLoad(false)
       }
     }
-    setLoading(false)
+    setLoad(false)
   }
 
   const handleUpdate = async (id) => {
-    setLoading(true)
+    setLoad(true)
     if (checkData("update")) {
       try {
         let res = await axios({
@@ -166,7 +168,7 @@ function Voucher() {
           },
         })
         if (res.status === 200) {
-          setLoading(false)
+          setLoad(false)
           setEdit("")
           setReload(!reload)
           setRaise({
@@ -176,11 +178,11 @@ function Voucher() {
           })
         }
       } catch (error) {
-        setLoading(false)
+        setLoad(false)
         console.log("modal detail discount", error)
       }
     }
-    setLoading(false)
+    setLoad(false)
   }
 
   const handleEdit = (item) => {
@@ -193,24 +195,32 @@ function Voucher() {
       startDate,
       expireDate,
     } = item
-    setDc({ ...dc, voucherName, voucherDesc, discount, bearerDiscount, startDate, expireDate })
+    setDc({
+      ...dc,
+      voucherName,
+      voucherDesc,
+      discount,
+      bearerDiscount,
+      startDate,
+      expireDate,
+    })
     setEdit(voucherId)
   }
 
   const handleAdd = async () => {
-    setLoading(true)
+    setLoad(true)
     if (checkData("create")) {
       try {
         let res = await axios({
           method: "post",
-          data: { ...dc, productId: idStoreUpdate.id },
+          data: { ...dc, storeId: idStoreUpdate.id },
           url: `https://tlcngroup2be.herokuapp.com/seller/voucher`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         })
         if (res.status === 201) {
-          setLoading(false)
+          setLoad(false)
           resetDc()
           setReload(!reload)
           setRaise({
@@ -220,11 +230,11 @@ function Voucher() {
           })
         }
       } catch (error) {
-        setLoading(false)
+        setLoad(false)
         console.log("modal detail discount", error)
       }
     }
-    setLoading(false)
+    setLoad(false)
   }
 
   const fetchData = async () => {
@@ -239,13 +249,25 @@ function Voucher() {
       if (res.status === 200) {
         setDiscountList(res.data)
         setIsCheck(
-          res.data.filter((item) => item.isActive).map((item) => item.voucherId)
+          res.data.filter((item) => item.active).map((item) => item.voucherId)
         )
         setIsFetch(true)
       }
     } catch (error) {}
   }
   useEffect(() => {
+    const body = document.body,
+      html = document.documentElement
+
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
     fetchData()
   }, [reload])
 
@@ -255,112 +277,126 @@ function Voucher() {
       <div className='modal__body'>
         <div className='auth-form' style={{ width: wFit, height: hFit }}>
           <div className='auth-form__container'>
-          <div className="store-wrap">
-           <div className='store__contain'>
-           <div className='store__contain-wrap--enhance' style={{width:"unset"}}>
-             <div className='store__contain-item'>
-               <div
-                 className='store-product__body-item '
-                 style={{
-                   fontWeight: "600",
-                   height: "40px",
-                 }}
-               >
-                 <div className='store-item w5'>STT</div>
-                 <div className='store-item w250x'>Tên coupon</div>
-                 <div className='store-item w300x' style={{flexGrow:1}}>Mô tả coupon</div>
-                 <div className='store-item w10'>Số tiền giảm</div>
-                 <div className='store-item w10'>Mức giảm</div>
-                 <div className='store-item  w12'>Bắt đầu</div>
-                 <div className='store-item  w12'>Kết thúc</div>
-                 <div className='store-item w8'>Điều khiển</div>
-               </div>
-             </div>
-             <div className='store__contain-item'>
-               <div
-                 className='store-product__body-item '
-                 style={{
-                   fontWeight: "600",
-                   height: "40px",
-                 }}
-               >
-                 <div className='store-item w5'></div>
-                 <input
-                   type='text'
-                   className='store-item--border w250x'
-                   placeholder='tên coupon'
-                   onChange={(e) => setDc({ ...dc, voucherName: e.target.value })}
-                 />
-                 <input
-                   type='text'
-                   className='store-item--border w300x'
-                   style={{flexGrow:1}}
-                   placeholder='mô tả'
-                   onChange={(e) => setDc({ ...dc, voucherDesc: e.target.value })}
-                 />
-                 <input
-                   type='number'
-                   className='store-item--border w10'
-                   placeholder='Tiền giảm'
-                   onChange={(e) => setDc({ ...dc, discount: e.target.value })}
-                 />
-                 <input
-                   type='number'
-                   className='store-item--border w10'
-                   placeholder='Mức giảm'
-                   onChange={(e) => setDc({ ...dc, bearerDiscount: e.target.value })}
-                 />
-                 <input
-                   type='datetime-local'
-                   className='store-item--border w12'
-                   onChange={(e) =>
-                     setDc({
-                       ...dc,
-                       startDate: new Date(e.target.value).getTime(),
-                     })
-                   }
-                 />
-                 <input
-                   type='datetime-local'
-                   className='store-item--border w12'
-                   onChange={(e) =>
-                     setDc({
-                       ...dc,
-                       expireDate: new Date(e.target.value).getTime(),
-                     })
-                   }
-                 />
-                 <div className='store-item--border w8'>
-                   <AiOutlineSave
-                     className='store-item__info--btn'
-                     onClick={handleAdd}
-                   />
-                 </div>
-               </div>
-             </div>
-             {isFetch ? (
-               discountList.length ? (
-                 discountList.map((item, index) => {
-                   const {
-                     voucherId,
-                     voucherName,
-                     voucherDesc,
-                     discount,
-                     bearerDiscount,
-                     startDate,
-                     expireDate,
-                   } = item
-                   return (
-                     <div className='store__contain-item' key={voucherId}>
-                       <div
-                         className='store-product__body-item '
-                         style={{
-                           fontWeight: "600",
-                           height: "40px",
-                         }}
-                       >
-                         <div className='store-item w5'>
-                           {/* <div
+            <div className='store-wrap'>
+              <div className='store__contain'>
+                <div
+                  className='store__contain-wrap--enhance'
+                  style={{ width: "unset", height: "calc(88vh - 10px)" }}
+                >
+                  <h3 className='store-product__heading'>Voucher</h3>
+                  <div className='store__contain-item'>
+                    <div
+                      className='store-product__body-item '
+                      style={{
+                        fontWeight: "600",
+                        height: "40px",
+                      }}
+                    >
+                      <div className='store-item w5'>STT</div>
+                      <div className='store-item w250x'>Tên coupon</div>
+                      <div className='store-item w300x' style={{ flexGrow: 1 }}>
+                        Mô tả coupon
+                      </div>
+                      <div className='store-item w10'>Số tiền giảm</div>
+                      <div className='store-item w10'>Mức giảm</div>
+                      <div className='store-item  w12'>Bắt đầu</div>
+                      <div className='store-item  w12'>Kết thúc</div>
+                      <div className='store-item w8'>Điều khiển</div>
+                    </div>
+                  </div>
+                  <div className='store__contain-item'>
+                    <div
+                      className='store-product__body-item '
+                      style={{
+                        fontWeight: "600",
+                        height: "40px",
+                      }}
+                    >
+                      <div className='store-item w5'></div>
+                      <input
+                        type='text'
+                        className='store-item--border w250x'
+                        placeholder='tên coupon'
+                        onChange={(e) =>
+                          setDc({ ...dc, voucherName: e.target.value })
+                        }
+                      />
+                      <input
+                        type='text'
+                        className='store-item--border w300x'
+                        style={{ flexGrow: 1 }}
+                        placeholder='mô tả'
+                        onChange={(e) =>
+                          setDc({ ...dc, voucherDesc: e.target.value })
+                        }
+                      />
+                      <input
+                        type='number'
+                        className='store-item--border w10'
+                        placeholder='Tiền giảm'
+                        onChange={(e) =>
+                          setDc({ ...dc, discount: e.target.value })
+                        }
+                      />
+                      <input
+                        type='number'
+                        className='store-item--border w10'
+                        placeholder='Mức giảm'
+                        onChange={(e) =>
+                          setDc({ ...dc, bearerDiscount: e.target.value })
+                        }
+                      />
+                      <input
+                        type='datetime-local'
+                        className='store-item--border w12'
+                        onChange={(e) =>
+                          setDc({
+                            ...dc,
+                            startDate: new Date(e.target.value).getTime(),
+                          })
+                        }
+                      />
+                      <input
+                        type='datetime-local'
+                        className='store-item--border w12'
+                        onChange={(e) =>
+                          setDc({
+                            ...dc,
+                            expireDate: new Date(e.target.value).getTime(),
+                          })
+                        }
+                      />
+                      <div className='store-item--border w8'>
+                        <AiOutlineSave
+                          className='store-item__info--btn'
+                          onClick={handleAdd}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {isFetch ? (
+                    discountList.length ? (
+                      discountList.map((item, index) => {
+                        const {
+                          voucherId,
+                          voucherName,
+                          voucherDesc,
+                          discount,
+                          bearerDiscount,
+                          startDate,
+                          expireDate,
+                        } = item
+                        return (
+                          <div className='store__contain-item' key={voucherId}>
+                            <div
+                              className='store-product__body-item '
+                              style={{
+                                fontWeight: "600",
+                                height: "40px",
+                              }}
+                            >
+                              <div className='store-item w5'>
+                                {/* <div
                              className={`store-item__state ${
                                item.isActive
                                  ? "store-item__state--active"
@@ -372,136 +408,171 @@ function Voucher() {
                              //     : handleEdit(item)
                              // }
                            > */}
-                           <Switch
-                             checked={isCheck.includes(voucherId)}
-                             onChange={(e) => handleChange(item, e)}
-                             onColor='#88df75'
-                             onHandleColor='#4bb534'
-                             handleDiameter={24}
-                             uncheckedIcon={false}
-                             checkedIcon={false}
-                             boxShadow='0px 1px 5px rgba(0, 0, 0, 0.6)'
-                             activeBoxShadow='0px 0px 1px 10px rgba(0, 0, 0, 0.2)'
-                             height={24}
-                             width={42}
-                             className='react-switch'
-                             id='material-switch'
-                           />
-                           {/* </div> */}
-                         </div>
-                         <input
-                           type='text'
-                           className='store-item--border w250x'
-                           placeholder='tên coupon'
-                           value={edit === voucherId ? dc.voucherName : voucherName}
-                           onChange={(e) =>
-                             setDc({ ...dc, voucherName: e.target.value })
-                           }
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <input
-                           type='text'
-                           className='store-item--border w300x'
-                           placeholder='mô tả'
-                           value={edit === voucherId ? dc.voucherDesc : voucherDesc}
-                           onChange={(e) =>
-                             setDc({ ...dc, voucherDesc: e.target.value })
-                           }
-                           style={{flexGrow:1}}
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <input
-                           type='text'
-                           className='store-item--border w10'
-                           placeholder='tiền giảm'
-                           value={edit === voucherId ? dc.discount : discount}
-                           onChange={(e) =>
-                             setDc({ ...dc, discount: e.target.value })
-                           }
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <input
-                           type='text'
-                           className='store-item--border w10'
-                           placeholder='mức giảm'
-                           value={edit === voucherId ? dc.bearerDiscount : bearerDiscount}
-                           onChange={(e) =>
-                             setDc({ ...dc, bearerDiscount: e.target.value })
-                           }
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <input
-                           type='datetime-local'
-                           className='store-item--border w12'
-                           value={
-                             edit === voucherId
-                               ? dateTrans(dc.startDate)
-                               : dateTrans(startDate)
-                           }
-                           onChange={(e) =>
-                             setDc({
-                               ...dc,
-                               startDate: new Date(e.target.value).getTime(),
-                             })
-                           }
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <input
-                           type='datetime-local'
-                           className='store-item--border w12'
-                           value={
-                             edit === voucherId
-                               ? dateTrans(dc.expireDate)
-                               : dateTrans(expireDate)
-                           }
-                           onChange={(e) =>
-                             setDc({
-                               ...dc,
-                               expireDate: new Date(e.target.value).getTime(),
-                             })
-                           }
-                           disabled={edit === voucherId ? "" : "disabled"}
-                         />
-                         <div className='store-item--border w8'>
-                           {edit === voucherId ? (
-                             <ImCancelCircle
-                               className='store-item__info--btn'
-                               onClick={() => setEdit("")}
-                             />
-                           ) : (
-                             <AiOutlineDelete
-                               className='store-item__info--btn'
-                               onClick={() => handleDelete(voucherId)}
-                             />
-                           )}
-                           {edit === voucherId ? (
-                             <AiOutlineSave
-                               className='store-item__info--btn'
-                               onClick={() => handleUpdate(voucherId)}
-                             />
-                           ) : (
-                             <AiOutlineEdit
-                               className='store-item__info--btn'
-                               onClick={() => handleEdit(item)}
-                             />
-                           )}
-                         </div>
-                       </div>
-                     </div>
-                   )
-                 })
-               ) : (
-                 <div className='store__contain-item--wait'>Không có coupon</div>
-               )
-             ) : (
-               <div className='store__contain-item--wait'>Loading</div>
-             )}
-           </div>
-                   </div>
-          </div>
+                                <Switch
+                                  checked={isCheck.includes(voucherId)}
+                                  onChange={(e) => handleChange(item, e)}
+                                  onColor='#88df75'
+                                  onHandleColor='#4bb534'
+                                  handleDiameter={24}
+                                  uncheckedIcon={false}
+                                  checkedIcon={false}
+                                  boxShadow='0px 1px 5px rgba(0, 0, 0, 0.6)'
+                                  activeBoxShadow='0px 0px 1px 10px rgba(0, 0, 0, 0.2)'
+                                  height={24}
+                                  width={42}
+                                  className='react-switch'
+                                  id='material-switch'
+                                />
+                                {/* </div> */}
+                              </div>
+                              <input
+                                type='text'
+                                className='store-item--border w250x'
+                                placeholder='tên coupon'
+                                value={
+                                  edit === voucherId
+                                    ? dc.voucherName
+                                    : voucherName
+                                }
+                                onChange={(e) =>
+                                  setDc({ ...dc, voucherName: e.target.value })
+                                }
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <input
+                                type='text'
+                                className='store-item--border w300x'
+                                placeholder='mô tả'
+                                value={
+                                  edit === voucherId
+                                    ? dc.voucherDesc
+                                    : voucherDesc
+                                }
+                                onChange={(e) =>
+                                  setDc({ ...dc, voucherDesc: e.target.value })
+                                }
+                                style={{ flexGrow: 1 }}
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <input
+                                type='text'
+                                className='store-item--border w10'
+                                placeholder='tiền giảm'
+                                value={
+                                  edit === voucherId ? dc.discount : discount
+                                }
+                                onChange={(e) =>
+                                  setDc({ ...dc, discount: e.target.value })
+                                }
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <input
+                                type='text'
+                                className='store-item--border w10'
+                                placeholder='mức giảm'
+                                value={
+                                  edit === voucherId
+                                    ? dc.bearerDiscount
+                                    : bearerDiscount
+                                }
+                                onChange={(e) =>
+                                  setDc({
+                                    ...dc,
+                                    bearerDiscount: e.target.value,
+                                  })
+                                }
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <input
+                                type='datetime-local'
+                                className='store-item--border w12'
+                                value={
+                                  edit === voucherId
+                                    ? dateTrans(dc.startDate)
+                                    : dateTrans(startDate)
+                                }
+                                onChange={(e) =>
+                                  setDc({
+                                    ...dc,
+                                    startDate: new Date(
+                                      e.target.value
+                                    ).getTime(),
+                                  })
+                                }
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <input
+                                type='datetime-local'
+                                className='store-item--border w12'
+                                value={
+                                  edit === voucherId
+                                    ? dateTrans(dc.expireDate)
+                                    : dateTrans(expireDate)
+                                }
+                                onChange={(e) =>
+                                  setDc({
+                                    ...dc,
+                                    expireDate: new Date(
+                                      e.target.value
+                                    ).getTime(),
+                                  })
+                                }
+                                disabled={edit === voucherId ? "" : "disabled"}
+                              />
+                              <div className='store-item--border w8'>
+                                {edit === voucherId ? (
+                                  <ImCancelCircle
+                                    className='store-item__info--btn'
+                                    onClick={() => setEdit("")}
+                                  />
+                                ) : (
+                                  <AiOutlineDelete
+                                    className='store-item__info--btn'
+                                    onClick={() => handleDelete(voucherId)}
+                                  />
+                                )}
+                                {edit === voucherId ? (
+                                  <AiOutlineSave
+                                    className='store-item__info--btn'
+                                    onClick={() => handleUpdate(voucherId)}
+                                  />
+                                ) : (
+                                  <AiOutlineEdit
+                                    className='store-item__info--btn'
+                                    onClick={() => handleEdit(item)}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <div className='store__contain-item--wait'>
+                        Không có coupon
+                      </div>
+                    )
+                  ) : (
+                    <div className='store__contain-item--wait'>Loading</div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      {load && (
+        <div
+          className='modal__overlay'
+          style={{ zIndex: "5", top: "0", height }}
+        >
+          <div className='loading'>
+            <div className='loading__one'></div>
+            <div className='loading__two'></div>
+            <div className='loading__three'></div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -17,6 +17,7 @@ function CartPage() {
     setReloadSell,
     setIsCartUpdate,
     isCartUpdate,
+    setSum,
   } = useGlobalContext()
   let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [load, setLoad] = useState(false)
@@ -50,8 +51,13 @@ function CartPage() {
         if (res.status === 200) {
           // setIsCartUpdate(!isCartUpdate)
           cart[ind].splice(index, 1)
-          if (cart.length === 0) {
-            localStorage.removeItem(`cart${userId}`)
+          if (cart[ind].length === 0) {
+            cart.splice(ind, 1)
+            if (cart.length === 0) {
+              localStorage.removeItem(`cart${userId}`)
+            } else {
+              localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
+            }
             setReloadSell(!reloadSell)
           } else {
             localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
@@ -100,6 +106,7 @@ function CartPage() {
   }
 
   const handleCheckout = async () => {
+    setSum(sum)
     const data = {
       userId: Number(userId),
       total: sum,
@@ -109,14 +116,15 @@ function CartPage() {
       listProductNames: [],
       listPrices: [],
     }
-    cart.forEach(ele =>
-      ele.forEach(item=> {
-      data.listProducts.push(item.idProduct)
-      data.listQuantities.push(item.amount)
-      data.listDescription.push(item.description)
-      data.listProductNames.push(item.name)
-      data.listPrices.push(item.price)
-    }))
+    cart.forEach((ele) =>
+      ele.forEach((item) => {
+        data.listProducts.push(item.idProduct)
+        data.listQuantities.push(item.amount)
+        data.listDescription.push(item.description)
+        data.listProductNames.push(item.name)
+        data.listPrices.push(item.price)
+      })
+    )
     setOrderData(data)
     history.push("/checkout")
   }
@@ -184,7 +192,10 @@ function CartPage() {
                 Thao tác
               </div>
             </div>
-            <div className='cart__body'>
+            <div
+              className='cart__body'
+              style={cart ? {} : { background: "#fff" }}
+            >
               {cart ? (
                 cart.map((item, ind) => {
                   return (

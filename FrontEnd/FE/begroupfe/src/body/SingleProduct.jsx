@@ -71,13 +71,15 @@ function SingleProduct() {
 
   const checkExist = async (desc) => {
     let isDuplicate = {}
-    cart.forEach((item) => {
-      item.forEach((ele) => {
-        if (ele.idProduct === Number(id) && ele.description === desc) {
-          isDuplicate = ele
-        }
+    if (cart) {
+      cart.forEach((item) => {
+        item.forEach((ele) => {
+          if (ele.idProduct === Number(id) && ele.description === desc) {
+            isDuplicate = ele
+          }
+        })
       })
-    })
+    }
     return isDuplicate
   }
 

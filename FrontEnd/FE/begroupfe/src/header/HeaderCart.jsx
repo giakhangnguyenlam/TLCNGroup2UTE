@@ -16,6 +16,8 @@ function HeaderCart() {
       history.push("/cart")
     }
   }
+  let length = 0
+  cart?.forEach((item) => item.forEach((ele) => length++))
 
   useEffect(() => {}, [isCartReady])
 
@@ -28,7 +30,7 @@ function HeaderCart() {
           className='header__cart-icon'
           onClick={() => handleRedirect()}
         />
-        {cart ? <span className='header__cart-notice'>{cart.length}</span> : ""}
+        {cart ? <span className='header__cart-notice'>{length}</span> : ""}
 
         <div className={`header__cart-list ${cart ? "" : "--no-cart"}`}>
           <img src={blankCart} alt='' className='header__cart-no-cart-img' />
@@ -55,12 +57,15 @@ function HeaderCart() {
           {cart ? (
             <ul className='header__cart-list-item'>
               {cart
-                ? cart.map((item,ind) => {
+                ? cart.map((item, ind) => {
                     return (
                       <React.Fragment key={ind}>
                         {item.map((ele, index) => {
                           return (
-                            <li className='header__cart-item' key={`${ind + 1}${index}`}>
+                            <li
+                              className='header__cart-item'
+                              key={`${ind + 1}${index}`}
+                            >
                               <img
                                 src={ele.image}
                                 alt=''

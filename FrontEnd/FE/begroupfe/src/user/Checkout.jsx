@@ -15,15 +15,24 @@ function Checkout() {
   const address = localStorage.getItem("address")
   const cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [height, setHeight] = useState(0)
-  const { loading, setLoading, orderData, raise, setRaise } = useGlobalContext()
+  const {
+    loading,
+    setLoading,
+    orderData,
+    raise,
+    setRaise,
+    sumCheckout,
+    setSum,
+  } = useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
+  const [voucher, setVoucher] = useState([])
   const history = useHistory()
   let sum = 0
+
   if (userId && cart) {
     cart.forEach((element) =>
-     element.forEach(item => {
-      sum += item.price * item.amount
-    }))
+      element.forEach((item) => (sum += item.price * item.amount))
+    )
   }
 
   const handleCheckout = async () => {
@@ -86,6 +95,54 @@ function Checkout() {
     if (orderData.length === 0) {
       history.push("/cart")
     }
+    const getVoucherPerStore = async () => {
+      let voucherActive = []
+      for (let item of cart) {
+        try {
+          const res = await axios({
+            method: "get",
+            url: `https://tlcngroup2be.herokuapp.com/voucher/storeid/${item[0]?.storeId}`,
+          })
+          if (res.status === 200) {
+            voucherActive.push(res.data)
+          }
+        } catch (error) {
+          console.log("voucher per store", error)
+        }
+      }
+      const voucherTemp = voucherActive.map((item, index) => {
+        let total = 0
+        cart[index]?.forEach((ele) => {
+          total += ele.amount * ele.price
+        })
+        if (item.length) {
+          const temp = item.map((item) => item.bearerDiscount)
+          temp.push(total)
+          temp.sort((a, b) => a - b)
+          const index = temp.lastIndexOf(total)
+          console.log(temp, index)
+          if (index <= 0) {
+            const discount = item.filter(
+              (item) => item.bearerDiscount === temp[index + 1]
+            )
+            return {
+              discount: 0,
+              range: temp[1] - temp[0],
+              disFeature: discount[0].discount,
+            }
+          }
+          const discount = item.filter(
+            (item) => item.bearerDiscount === temp[index - 1]
+          )
+          const tempSum = sumCheckout - discount[0].discount
+          setSum(tempSum)
+          return { discount: discount[0].discount }
+        }
+        return { discount: 0, range: 0 }
+      })
+      setVoucher(voucherTemp)
+    }
+    getVoucherPerStore()
     document.documentElement.scrollTop = 0
   }, [])
 
@@ -135,81 +192,116 @@ function Checkout() {
                   Thành tiền
                 </div>
               </div>
-              {cart ? cart.map((item, ind) => {
-                return (
-                  <React.Fragment key={ind}>
-                    <div className='cart-store-title' key={ind + 1}>
-                      <BsHouse />
-                      <div className='cart-store__name'>
-                        {item[0]?.storeName}
-                      </div>
-                    </div>
-                    {item.map((ele, index) => {
-                      return (
-                        <div className='cart__body-wrap' key={`${ind + 1}${index}`}>
-                          <div
-                            className='cart__header-item'
-                            style={{ width: "30%" }}
-                          >
-                            <div className='cart__body-item'>
-                              <div
-                                className='cart__img'
-                                style={{
-                                  backgroundImage: `url(${ele.image})`,
-                                }}
-                              ></div>
-                              <div className='cart__item-name'>
-                                <p>{ele.name}</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div
-                            className='cart__header-item'
-                            style={{ width: "20%" }}
-                          >
-                            {ele.description}
-                          </div>
-                          <div
-                            className='cart__header-item'
-                            style={{ width: "13%" }}
-                          >
-                            {new Intl.NumberFormat("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            }).format(ele.price)}
-                          </div>
-                          <div
-                            className='cart__header-item'
-                            style={{ width: "14%" }}
-                          >
-                            <div
-                              className='amount__choose'
-                              style={{ margin: "0", justifyContent: "center" }}
-                            >
-                              <div
-                                className='amount__item amount__input'
-                                style={{ border: "none" }}
-                              >
-                                {ele.amount}
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            className='cart__header-item cart__total'
-                            style={{ width: "13%" }}
-                          >
-                            {new Intl.NumberFormat("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            }).format(ele.price * ele.amount)}
+              {cart
+                ? cart.map((item, ind) => {
+                    return (
+                      <React.Fragment key={ind}>
+                        <div className='cart-store-title' key={ind + 1}>
+                          <BsHouse />
+                          <div className='cart-store__name'>
+                            {item[0]?.storeName}
                           </div>
                         </div>
-                      )
-                    })}
-                  </React.Fragment>
-                )
-              }):""}
+
+                        <div className='cart-store-title' key={ind + 2}>
+                          <div className='cart-store__voucher'>
+                            {voucher.length
+                              ? voucher[ind].discount
+                                ? `Bạn được giảm giá ${new Intl.NumberFormat(
+                                    "vi-VN",
+                                    {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }
+                                  ).format(voucher[ind].discount)}`
+                                : voucher[ind].range
+                                ? `Bạn hãy mua thêm ${
+                                    voucher[ind].range
+                                  } để được giảm giá ${new Intl.NumberFormat(
+                                    "vi-VN",
+                                    {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }
+                                  ).format(voucher[ind].disFeature)}`
+                                : "Hiện cửa hàng chưa có voucher"
+                              : ""}
+                          </div>
+                        </div>
+
+                        {item.map((ele, index) => {
+                          return (
+                            <div
+                              className='cart__body-wrap'
+                              key={`${ind + 1}${index}`}
+                            >
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "30%" }}
+                              >
+                                <div className='cart__body-item'>
+                                  <div
+                                    className='cart__img'
+                                    style={{
+                                      backgroundImage: `url(${ele.image})`,
+                                    }}
+                                  ></div>
+                                  <div className='cart__item-name'>
+                                    <p>{ele.name}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "20%" }}
+                              >
+                                {ele.description}
+                              </div>
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "13%" }}
+                              >
+                                {new Intl.NumberFormat("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                }).format(ele.price)}
+                              </div>
+                              <div
+                                className='cart__header-item'
+                                style={{ width: "14%" }}
+                              >
+                                <div
+                                  className='amount__choose'
+                                  style={{
+                                    margin: "0",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <div
+                                    className='amount__item amount__input'
+                                    style={{ border: "none" }}
+                                  >
+                                    {ele.amount}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                className='cart__header-item cart__total'
+                                style={{ width: "13%" }}
+                              >
+                                {new Intl.NumberFormat("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                }).format(ele.price * ele.amount)}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </React.Fragment>
+                    )
+                  })
+                : ""}
             </div>
             <div
               className='cart__section'
@@ -227,13 +319,31 @@ function Checkout() {
                     currency: "VND",
                   }).format(30000)}
                 </div>
+                {voucher.length
+                  ? voucher.map((item, index) =>
+                      Object.keys(item).length && item.discount ? (
+                        <div
+                          className='cart__section-item'
+                          style={{ color: "#dc143c", fontSize: "18px" }}
+                        >
+                          {cart[index][0]?.storeName}: -{" "}
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(item.discount)}
+                        </div>
+                      ) : (
+                        ""
+                      )
+                    )
+                  : ""}
                 <div className='cart__section-item'>
                   Tổng cộng:{" "}
                   <span>
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
-                    }).format(sum + 30000)}
+                    }).format(sumCheckout + 30000)}
                   </span>
                 </div>
               </div>
@@ -280,7 +390,7 @@ function Checkout() {
 
                   {checkout.card ? (
                     <Paypal
-                      value={((sum + 30000) / 23000).toFixed(1)}
+                      value={((sumCheckout + 30000) / 23000).toFixed(1)}
                       code={cart[0].shareCode}
                     />
                   ) : (
@@ -314,6 +424,17 @@ function Checkout() {
               <div className='cart__section-break'>
                 <div className='cart__section-col --right'>
                   <div>Tổng tiền hàng</div>
+                  {voucher.length
+                    ? voucher.map((item, index) =>
+                        Object.keys(item).length && item.discount ? (
+                          <div style={{ color: "#dc143c", fontSize: "18px" }}>
+                            {cart[index][0]?.storeName}:
+                          </div>
+                        ) : (
+                          ""
+                        )
+                      )
+                    : ""}
                   <div>Phí vận chuyển</div>
                   <div>Tổng thanh toán</div>
                 </div>
@@ -324,6 +445,21 @@ function Checkout() {
                       currency: "VND",
                     }).format(sum)}
                   </div>
+                  {voucher.length
+                    ? voucher.map((item) =>
+                        Object.keys(item).length && item.discount ? (
+                          <div style={{ color: "#dc143c", fontSize: "18px" }}>
+                            -{" "}
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(item.discount)}
+                          </div>
+                        ) : (
+                          ""
+                        )
+                      )
+                    : ""}
                   <div>
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
@@ -334,7 +470,7 @@ function Checkout() {
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
-                    }).format(sum + 30000)}
+                    }).format(sumCheckout + 30000)}
                   </div>
                 </div>
               </div>
