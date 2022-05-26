@@ -2,6 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { BsArrowReturnRight } from "react-icons/bs"
+import { BsHouse } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
 import { useGlobalContext } from "../context"
@@ -25,19 +26,19 @@ function CartPage() {
   let sum = 0
 
   if (userId && cart) {
-    cart.forEach((element) => {
-      sum += element.price * element.amount
-    })
+    cart.forEach((element) =>
+      element.forEach((item) => (sum += item.price * item.amount))
+    )
   }
 
-  const handleChange = (e, id, index) => {
+  const handleChange = (e, id, index, ind) => {
     const newQuan = e.target.value
     if (/^[0-9]*$/.test(newQuan)) {
-      changeAmount(id, newQuan, index)
+      changeAmount(id, newQuan, index, ind)
     }
   }
 
-  const handleDelete = async (id, index) => {
+  const handleDelete = async (id, index, ind) => {
     const del = window.confirm("Bạn muốn xóa sản phẩm chứ?")
     if (del) {
       setLoad(true)
@@ -48,7 +49,7 @@ function CartPage() {
         })
         if (res.status === 200) {
           // setIsCartUpdate(!isCartUpdate)
-          cart.splice(index, 1)
+          cart[ind].splice(index, 1)
           if (cart.length === 0) {
             localStorage.removeItem(`cart${userId}`)
             setReloadSell(!reloadSell)
@@ -61,7 +62,7 @@ function CartPage() {
       } catch (error) {}
     }
   }
-  const changeAmount = async (id, amount, index) => {
+  const changeAmount = async (id, amount, index, ind) => {
     setLoad(true)
     try {
       const res = await axios({
@@ -74,7 +75,7 @@ function CartPage() {
       if (res.status === 200) {
         // setIsCartUpdate(!isCartUpdate)
 
-        cart[index].amount = amount
+        cart[ind][index].amount = amount
         localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
         setLoad(false)
         setReloadSell(!reloadSell)
@@ -139,7 +140,7 @@ function CartPage() {
 
   useEffect(() => {
     if (cart && cart.length !== 0 && isCartReady) {
-      setCode(cart[0].shareCode)
+      setCode(cart[0][0].shareCode)
     }
   }, [isCartReady])
 
@@ -150,113 +151,165 @@ function CartPage() {
       <div className='grid'>
         <div className='grid__row' style={{ paddingTop: "14px" }}>
           <div className='grid__colum-12'>
-            <div className='cart__header'>
-              <div className='cart__header-item cart__header-item--50'>
+            <div className='cart__header' key={"cart_header"}>
+              <div
+                className='cart__header-item cart__header-item--50'
+                key={"cart__header-name"}
+              >
                 Sản phẩm
               </div>
-              <div className='cart__header-item' style={{ width: "13%" }}>
+              <div
+                className='cart__header-item'
+                style={{ width: "13%" }}
+                key={"cart__header-price"}
+              >
                 Giá
               </div>
-              <div className='cart__header-item' style={{ width: "14%" }}>
+              <div
+                className='cart__header-item'
+                style={{ width: "14%" }}
+                key={"cart__header-amount"}
+              >
                 Số lượng
               </div>
-              <div className='cart__header-item' style={{ width: "13%" }}>
+              <div
+                className='cart__header-item'
+                style={{ width: "13%" }}
+                key={"cart__header-total"}
+              >
                 Thành tiền
               </div>
-              <div className='cart__header-item'>Thao tác</div>
+              <div className='cart__header-item' key={"cart__header-ctrl"}>
+                Thao tác
+              </div>
             </div>
             <div className='cart__body'>
               {cart ? (
-                cart.map((item, index) => {
+                cart.map((item, ind) => {
                   return (
-                    <div
-                      className={`cart__body-wrap ${
-                        userId == item.idUser ? "" : "cart__body-wrap--disable"
-                      }`}
-                      key={index}
-                    >
-                      <div
-                        className='cart__header-item'
-                        style={{ width: "30%" }}
-                      >
-                        <div className='cart__body-item'>
-                          <div
-                            className='cart__img'
-                            style={{ backgroundImage: `url(${item.image})` }}
-                          ></div>
-                          <div className='cart__item-name'>
-                            <p>{item.name}</p>
-                          </div>
+                    <>
+                      <div className='cart-store-title' key={ind + 1}>
+                        <BsHouse />
+                        <div className='cart-store__name'>
+                          {item[0]?.storeName}
                         </div>
                       </div>
+                      {item.map((ele, index) => {
+                        return (
+                          <div
+                            className={`cart__body-wrap ${
+                              userId == ele.idUser
+                                ? ""
+                                : "cart__body-wrap--disable"
+                            }`}
+                            key={ind + 1 + "" + index}
+                          >
+                            <div
+                              className='cart__header-item'
+                              key={"cart__header-name" + index}
+                              style={{ width: "30%" }}
+                            >
+                              <div className='cart__body-item'>
+                                <div
+                                  className='cart__img'
+                                  style={{
+                                    backgroundImage: `url(${ele.image})`,
+                                  }}
+                                ></div>
+                                <div className='cart__item-name'>
+                                  <p>{ele.name}</p>
+                                </div>
+                              </div>
+                            </div>
 
-                      <div
-                        className='cart__header-item'
-                        style={{ width: "20%" }}
-                      >
-                        {item.description}
-                      </div>
-                      <div
-                        className='cart__header-item'
-                        style={{ width: "13%" }}
-                      >
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(item.price)}
-                      </div>
-                      <div
-                        className='cart__header-item'
-                        style={{ width: "14%" }}
-                      >
-                        <div
-                          className='amount__choose'
-                          style={{ margin: "0", justifyContent: "center" }}
-                        >
-                          <div
-                            className='amount__item'
-                            onClick={() =>
-                              changeAmount(
-                                item.id,
-                                item.amount - 1 <= 0 ? 1 : item.amount - 1,
-                                index
-                              )
-                            }
-                          >
-                            <AiOutlineMinus />
+                            <div
+                              className='cart__header-item'
+                              key={"cart__header-desc" + index}
+                              style={{ width: "20%" }}
+                            >
+                              {ele.description}
+                            </div>
+                            <div
+                              className='cart__header-item'
+                              key={"cart__header-price" + index}
+                              style={{ width: "13%" }}
+                            >
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(ele.price)}
+                            </div>
+                            <div
+                              className='cart__header-item'
+                              key={"cart__header-amount" + index}
+                              style={{ width: "14%" }}
+                            >
+                              <div
+                                className='amount__choose'
+                                style={{
+                                  margin: "0",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <div
+                                  className='amount__item'
+                                  onClick={() =>
+                                    changeAmount(
+                                      ele.id,
+                                      ele.amount - 1 <= 0 ? 1 : ele.amount - 1,
+                                      index,
+                                      ind
+                                    )
+                                  }
+                                >
+                                  <AiOutlineMinus />
+                                </div>
+                                <input
+                                  type='text'
+                                  className='amount__item amount__input'
+                                  value={ele.amount}
+                                  onChange={(e) =>
+                                    handleChange(e, ele.id, index, ind)
+                                  }
+                                />
+                                <div
+                                  className='amount__item'
+                                  onClick={() =>
+                                    changeAmount(
+                                      ele.id,
+                                      ele.amount + 1,
+                                      index,
+                                      ind
+                                    )
+                                  }
+                                >
+                                  <AiOutlinePlus />
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              className='cart__header-item cart__total'
+                              key={"cart__header-total" + index}
+                              style={{ width: "13%" }}
+                            >
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(ele.price * ele.amount)}
+                            </div>
+                            <div
+                              className='cart__header-item'
+                              key={"cart__header-icon" + index}
+                            >
+                              <AiOutlineDelete
+                                className='cart__icon'
+                                onClick={() => handleDelete(ele.id, index, ind)}
+                              />
+                            </div>
                           </div>
-                          <input
-                            type='text'
-                            className='amount__item amount__input'
-                            value={item.amount}
-                            onChange={(e) => handleChange(e, item.id, index)}
-                          />
-                          <div
-                            className='amount__item'
-                            onClick={() =>
-                              changeAmount(item.id, item.amount + 1, index)
-                            }
-                          >
-                            <AiOutlinePlus />
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className='cart__header-item cart__total'
-                        style={{ width: "13%" }}
-                      >
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(item.price * item.amount)}
-                      </div>
-                      <div className='cart__header-item'>
-                        <AiOutlineDelete
-                          className='cart__icon'
-                          onClick={() => handleDelete(item.id, index)}
-                        />
-                      </div>
-                    </div>
+                        )
+                      })}
+                    </>
                   )
                 })
               ) : (

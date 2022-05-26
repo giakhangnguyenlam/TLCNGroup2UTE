@@ -55,39 +55,45 @@ function HeaderCart() {
           {cart ? (
             <ul className='header__cart-list-item'>
               {cart
-                .slice(0, cart.length > 4 ? 4 : cart.length)
-                .map((item, index) => {
-                  return (
-                    <li className='header__cart-item' key={index}>
-                      <img
-                        src={item.image}
-                        alt=''
-                        className='header__cart-item-img'
-                      />
-                      <div className='header__cart-item-info'>
-                        <div className='header__cart-item-head'>
-                          <h5 className='header__cart-item-name'>
-                            {item.name}
-                          </h5>
-                          <div className='header__cart-item-wrap'>
-                            <span className='header__cart-item-price'>
-                              {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              }).format(item.price)}
-                            </span>
-                          </div>
-                        </div>
+                ? cart.map((item) => {
+                    return (
+                      <>
+                        {item.map((ele, index) => {
+                          return (
+                            <li className='header__cart-item' key={index}>
+                              <img
+                                src={ele.image}
+                                alt=''
+                                className='header__cart-item-img'
+                              />
+                              <div className='header__cart-item-info'>
+                                <div className='header__cart-item-head'>
+                                  <h5 className='header__cart-item-name'>
+                                    {ele.name}
+                                  </h5>
+                                  <div className='header__cart-item-wrap'>
+                                    <span className='header__cart-item-price'>
+                                      {new Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      }).format(ele.price)}
+                                    </span>
+                                  </div>
+                                </div>
 
-                        <div className='header__cart-item-body'>
-                          <span className='header__cart-item-description'>
-                            {item.description}
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  )
-                })}
+                                <div className='header__cart-item-body'>
+                                  <span className='header__cart-item-description'>
+                                    {ele.description}
+                                  </span>
+                                </div>
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </>
+                    )
+                  })
+                : ""}
             </ul>
           ) : (
             ""

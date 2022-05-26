@@ -25,7 +25,6 @@ function SingleProduct() {
     setRaise,
     setIsCartUpdate,
     isCartUpdate,
-    cart,
     setCate,
     setCateType,
     setCateName,
@@ -41,6 +40,8 @@ function SingleProduct() {
     storeId: undefined,
     storeName: "",
   })
+  const userId = localStorage.getItem("id")
+  let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [isReady, setReady] = useState(false)
   const [listCompareItem, setListCompareItem] = useState([])
   const [listSameItem, setListSameItem] = useState([])
@@ -68,6 +69,18 @@ function SingleProduct() {
     }
   }
 
+  const checkExist = async (desc) => {
+    let isDuplicate = {}
+    cart.forEach((item) => {
+      item.forEach((ele) => {
+        if (ele.idProduct === Number(id) && ele.description === desc) {
+          isDuplicate = ele
+        }
+      })
+    })
+    return isDuplicate
+  }
+
   const handleAddCart = async (action) => {
     const userId = localStorage.getItem("id")
     const role = localStorage.getItem("role")
@@ -93,19 +106,16 @@ function SingleProduct() {
         } else if (prod.category === 3) {
           description = `màu ${prod.color[choose.color]}`
         }
-        const isDuplicate = cart.filter(
-          (item) =>
-            item.idProduct === Number(id) && item.description === description
-        )
+        const isDuplicate = await checkExist(description)
         setLoad(true)
         try {
-          const method = isDuplicate.length ? "put" : "post"
-          const url = isDuplicate.length
-            ? `https://utesharecode.herokuapp.com/item/${isDuplicate[0].id}`
+          const method = Object.keys(isDuplicate).length ? "put" : "post"
+          const url = Object.keys(isDuplicate).length
+            ? `https://utesharecode.herokuapp.com/item/${isDuplicate.id}`
             : "https://utesharecode.herokuapp.com/item"
-          const data = isDuplicate.length
+          const data = Object.keys(isDuplicate).length
             ? {
-                amount: quantity + isDuplicate[0].amount,
+                amount: quantity + isDuplicate.amount,
               }
             : {
                 idUser: userId,

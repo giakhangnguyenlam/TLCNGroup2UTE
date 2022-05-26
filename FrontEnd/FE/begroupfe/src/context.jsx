@@ -130,7 +130,7 @@ const AppProvider = ({ children }) => {
   const fetchCart = async () => {
     setCartReady(false)
     try {
-      let res = await axios({
+      const res = await axios({
         method: "get",
         url: `https://utesharecode.herokuapp.com/item/iduser/${userId}`,
         headers: {
@@ -157,6 +157,8 @@ const AppProvider = ({ children }) => {
             price,
             id,
             shareCode,
+            storeId,
+            storeName,
           } = item
           if (idUser === userId) {
             tempCart.unshift({
@@ -169,6 +171,8 @@ const AppProvider = ({ children }) => {
               price,
               id,
               shareCode,
+              storeId,
+              storeName,
             })
           } else {
             tempCart.push({
@@ -181,11 +185,19 @@ const AppProvider = ({ children }) => {
               price,
               id,
               shareCode,
+              storeId,
+              storeName,
             })
           }
         })
-        console.log(cartName, tempCart)
-        localStorage.setItem(cartName, JSON.stringify(tempCart))
+        const storeDivide = tempCart
+          .map((item) => item.storeId)
+          .filter((v, i, a) => a.indexOf(v) === i)
+        const finishCart = []
+        storeDivide.forEach((item) =>
+          finishCart.push(tempCart.filter((ele) => ele.storeId === item))
+        )
+        localStorage.setItem(cartName, JSON.stringify(finishCart))
         setCartReady(true)
       }
       // else {
