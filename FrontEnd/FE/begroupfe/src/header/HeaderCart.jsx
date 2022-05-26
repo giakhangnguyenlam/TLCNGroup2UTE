@@ -40,7 +40,7 @@ function HeaderCart() {
             <div className='header__cart-heading'>
               Sản phẩm đã thêm
               <div className='header__cart-heading-code'>
-                Share Code: {cart[0].shareCode}
+                Share Code: {cart[0][0].shareCode}
                 <CopyToClipboard
                   text={cart[0].shareCode}
                   onCopy={() => setCopy(true)}
