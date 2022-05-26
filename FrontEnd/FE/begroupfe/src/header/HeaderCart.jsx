@@ -55,12 +55,12 @@ function HeaderCart() {
           {cart ? (
             <ul className='header__cart-list-item'>
               {cart
-                ? cart.map((item) => {
+                ? cart.map((item,ind) => {
                     return (
-                      <>
+                      <React.Fragment key={ind}>
                         {item.map((ele, index) => {
                           return (
-                            <li className='header__cart-item' key={index}>
+                            <li className='header__cart-item' key={`${ind + 1}${index}`}>
                               <img
                                 src={ele.image}
                                 alt=''
@@ -90,7 +90,7 @@ function HeaderCart() {
                             </li>
                           )
                         })}
-                      </>
+                      </React.Fragment>
                     )
                   })
                 : ""}

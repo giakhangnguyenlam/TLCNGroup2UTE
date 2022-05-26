@@ -109,13 +109,14 @@ function CartPage() {
       listProductNames: [],
       listPrices: [],
     }
-    cart.forEach((item) => {
+    cart.forEach(ele =>
+      ele.forEach(item=> {
       data.listProducts.push(item.idProduct)
       data.listQuantities.push(item.amount)
       data.listDescription.push(item.description)
       data.listProductNames.push(item.name)
       data.listPrices.push(item.price)
-    })
+    }))
     setOrderData(data)
     history.push("/checkout")
   }
@@ -151,7 +152,7 @@ function CartPage() {
       <div className='grid'>
         <div className='grid__row' style={{ paddingTop: "14px" }}>
           <div className='grid__colum-12'>
-            <div className='cart__header' key={"cart_header"}>
+            <div className='cart__header' key={1}>
               <div
                 className='cart__header-item cart__header-item--50'
                 key={"cart__header-name"}
@@ -187,7 +188,7 @@ function CartPage() {
               {cart ? (
                 cart.map((item, ind) => {
                   return (
-                    <>
+                    <React.Fragment key={ind}>
                       <div className='cart-store-title' key={ind + 1}>
                         <BsHouse />
                         <div className='cart-store__name'>
@@ -309,7 +310,7 @@ function CartPage() {
                           </div>
                         )
                       })}
-                    </>
+                    </React.Fragment>
                   )
                 })
               ) : (

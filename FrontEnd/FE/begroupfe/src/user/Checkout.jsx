@@ -4,6 +4,7 @@ import { useGlobalContext } from "../context"
 import Paypal from "./Paypal"
 import axios from "axios"
 import { useHistory } from "react-router"
+import { BsHouse } from "react-icons/bs"
 import Popup from "../ultis/Popup"
 import "../assets/css/cart.css"
 
@@ -12,16 +13,17 @@ function Checkout() {
   const name = localStorage.getItem("name")
   const phone = localStorage.getItem("phone")
   const address = localStorage.getItem("address")
-  const cart = JSON.parse(localStorage.getItem(`cart${userId}`)) || []
+  const cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [height, setHeight] = useState(0)
   const { loading, setLoading, orderData, raise, setRaise } = useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
   const history = useHistory()
   let sum = 0
   if (userId && cart) {
-    cart.forEach((element) => {
-      sum += element.price * element.amount
-    })
+    cart.forEach((element) =>
+     element.forEach(item => {
+      sum += item.price * item.amount
+    }))
   }
 
   const handleCheckout = async () => {
@@ -133,55 +135,81 @@ function Checkout() {
                   Thành tiền
                 </div>
               </div>
-              {cart.map((item, index) => {
+              {cart ? cart.map((item, ind) => {
                 return (
-                  <div className='cart__body-wrap' key={index}>
-                    <div className='cart__header-item' style={{ width: "30%" }}>
-                      <div className='cart__body-item'>
-                        <div
-                          className='cart__img'
-                          style={{ backgroundImage: `url(${item.image})` }}
-                        ></div>
-                        <div className='cart__item-name'>
-                          <p>{item.name}</p>
-                        </div>
+                  <React.Fragment key={ind}>
+                    <div className='cart-store-title' key={ind + 1}>
+                      <BsHouse />
+                      <div className='cart-store__name'>
+                        {item[0]?.storeName}
                       </div>
                     </div>
+                    {item.map((ele, index) => {
+                      return (
+                        <div className='cart__body-wrap' key={`${ind + 1}${index}`}>
+                          <div
+                            className='cart__header-item'
+                            style={{ width: "30%" }}
+                          >
+                            <div className='cart__body-item'>
+                              <div
+                                className='cart__img'
+                                style={{
+                                  backgroundImage: `url(${ele.image})`,
+                                }}
+                              ></div>
+                              <div className='cart__item-name'>
+                                <p>{ele.name}</p>
+                              </div>
+                            </div>
+                          </div>
 
-                    <div className='cart__header-item' style={{ width: "20%" }}>
-                      {item.description}
-                    </div>
-                    <div className='cart__header-item' style={{ width: "13%" }}>
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(item.price)}
-                    </div>
-                    <div className='cart__header-item' style={{ width: "14%" }}>
-                      <div
-                        className='amount__choose'
-                        style={{ margin: "0", justifyContent: "center" }}
-                      >
-                        <div
-                          className='amount__item amount__input'
-                          style={{ border: "none" }}
-                        >
-                          {item.amount}
+                          <div
+                            className='cart__header-item'
+                            style={{ width: "20%" }}
+                          >
+                            {ele.description}
+                          </div>
+                          <div
+                            className='cart__header-item'
+                            style={{ width: "13%" }}
+                          >
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(ele.price)}
+                          </div>
+                          <div
+                            className='cart__header-item'
+                            style={{ width: "14%" }}
+                          >
+                            <div
+                              className='amount__choose'
+                              style={{ margin: "0", justifyContent: "center" }}
+                            >
+                              <div
+                                className='amount__item amount__input'
+                                style={{ border: "none" }}
+                              >
+                                {ele.amount}
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            className='cart__header-item cart__total'
+                            style={{ width: "13%" }}
+                          >
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(ele.price * ele.amount)}
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div
-                      className='cart__header-item cart__total'
-                      style={{ width: "13%" }}
-                    >
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(item.price * item.amount)}
-                    </div>
-                  </div>
+                      )
+                    })}
+                  </React.Fragment>
                 )
-              })}
+              }):""}
             </div>
             <div
               className='cart__section'
@@ -210,7 +238,7 @@ function Checkout() {
                 </div>
               </div>
             </div>
-            <div className='cart__body'>
+            <div className='cart__body cart__body--white'>
               <div className='cart__payment-method'>
                 <div className='cart__payment-method-title'>
                   Phương thức thanh toán

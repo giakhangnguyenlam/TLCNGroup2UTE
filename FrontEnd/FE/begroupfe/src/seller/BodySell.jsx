@@ -7,6 +7,7 @@ import {
   AiOutlineOrderedList,
   AiOutlineLineChart,
 } from "react-icons/ai"
+import { HiOutlineTicket } from "react-icons/hi"
 import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
 import Popup from "../ultis/Popup"
@@ -27,6 +28,7 @@ function BodySell() {
     setReloadSell,
     setIsOrderDetail,
     setIsStatic,
+    setIsVoucher,
     raise,
     setRaise,
   } = useGlobalContext()
@@ -72,6 +74,10 @@ function BodySell() {
   }
   const handleStatic = () => {
     setIsStatic(true)
+  }
+
+  const handleVoucher = () => {
+    setIsVoucher(true)
   }
 
   useEffect(() => {
@@ -146,6 +152,15 @@ function BodySell() {
                     <p>
                       <AiOutlineLineChart className='store-item__icon' />
                       Thống kê
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleVoucher}
+                  >
+                    <p>
+                      <HiOutlineTicket className='store-item__icon' />
+                      Voucher
                     </p>
                   </div>
                 </>

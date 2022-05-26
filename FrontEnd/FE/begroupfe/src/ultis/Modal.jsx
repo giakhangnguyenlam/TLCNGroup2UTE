@@ -8,12 +8,14 @@ import ModalDetailInfo from "../seller/DetalStore/ModalDetailInfo"
 import UserComment from "../user/UserComment"
 import OrderDetail from "../seller/OrderDetail"
 import Static from "../seller/Static"
+import Voucher from "../seller/Voucher"
 function Modal() {
   const {
     isCreateStore,
     isUpdateStore,
     isOrderDetail,
     isStatic,
+    isVoucher,
     isComment,
     isDetailCreate,
     isDetailUpdate,
@@ -39,6 +41,9 @@ function Modal() {
   }
   if (isStatic) {
     return <Static />
+  }
+  if (isVoucher) {
+    return <Voucher />
   }
   if (isComment) {
     return <UserComment />

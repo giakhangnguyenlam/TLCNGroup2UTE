@@ -281,6 +281,9 @@ body {
 .w200px {
   width: 200px !important;
 }
+.w12 {
+  width: 12% !important;
+}
 .w10 {
   width: 10% !important;
 }

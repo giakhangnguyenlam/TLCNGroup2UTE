@@ -59,6 +59,10 @@
   padding: 0 20px;
 }
 
+.cart__body--white {
+  background: #fff;
+}
+
 .cart__body-wrap {
   display: flex;
   align-items: center;
