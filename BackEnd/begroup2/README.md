@@ -674,7 +674,7 @@ link: https://utesharecode.herokuapp.com/item
     "idUser": 157,
     "idProduct": 5,
 	"storeId":1,
-	"storeName":"abc"
+	"storeName":"abc",
     "image": "https://drive.google.com/uc?id=1xI9t6IZ24dummKkbqSZUnMv211pGKB2i&export=download",
     "name": "Áo thể thao",
     "description": "size x, màu xanh",
@@ -2311,3 +2311,146 @@ link: https://tlcngroup2be.herokuapp.com/seller/voucher/storeid/1
 ]
 ```
 
+## =======>> Admin API <<=======
+
+### Get all username
+link: https://tlcngroup2be.herokuapp.com/admin/usernames
+> GET
+> 
+> Need JWT
+> 
+
+### Request
+
+### Response
+```
+[
+    "conguser",
+    "congseller",
+    "congshipper",
+    "congadmin",
+    "khangadmin",
+    "khanguser",
+    "khanguserdemo",
+    "khangdemoseller"
+]
+```
+
+### Get all store names
+link: https://tlcngroup2be.herokuapp.com/admin/storenames
+> GET
+> 
+> Need JWT
+ 
+#### Request
+
+#### Response
+```
+[
+    "Bán quần áo",
+    "Cửa hàng quần áo demoo",
+    "Cửa hàng bán giày dép demo",
+    "Cửa hàng bán  phụ kiện",
+    "Cửa hàng mới",
+    "Cửa hàng 1"
+]
+```
+
+### Get all product names
+link: https://tlcngroup2be.herokuapp.com/admin/productnames
+
+> GET
+> 
+> Need JWT
+> 
+#### Request
+
+#### Response
+```
+[
+    "Áo thể thao",
+    "áo dài tay",
+    "áo hoodie",
+    "Quần ngủ",
+    "Giày thể thao",
+    "Giày thể thao 2",
+    "Áo nike chất lượng caoo",
+    "Giày dép chất lượng cao",
+    "Bình nước chất lượng cao",
+    "áo nike",
+    "Băng cổ tay",
+    "Băng cổ tay"
+]
+```
+
+### Counting product
+link: https://tlcngroup2be.herokuapp.com/admin/numberofproduct
+
+> GET
+> 
+> Need JWT
+> 
+#### Request
+
+#### Response
+```
+23
+```
+
+### Counting user
+
+link: https://tlcngroup2be.herokuapp.com/admin/numberofuser
+
+> GET
+> 
+> Need JWT
+> 
+
+#### Request
+
+#### Response
+```
+25
+```
+
+### Counting store
+link: https://tlcngroup2be.herokuapp.com/admin/numberofstore
+
+> GET
+> 
+> Need JWT
+
+#### Request
+
+#### Response
+```
+23
+```
+
+### Counting order
+link: https://tlcngroup2be.herokuapp.com/admin/numberoforder
+
+> GET
+> 
+> Need JWT
+> 
+#### Request
+
+#### Response
+```
+54
+```
+
+### Turnover
+link: https://tlcngroup2be.herokuapp.com/admin/turnover
+
+> GET
+> 
+> Need JWT
+> 
+#### Request
+
+#### Response
+```
+21451320
+```
