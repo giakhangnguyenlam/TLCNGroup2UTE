@@ -4,29 +4,12 @@ import ReactPaginate from "react-paginate"
 import { useGlobalContext } from "../context"
 
 function AdminStore({ setHeight }) {
-  const jwt = localStorage.getItem("jwtA")
+  const jwt = localStorage.getItem("jwt")
   const { idStoreUpdate, setIdStoreUpdate, reloadSell } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [storeList, setStoreList] = useState([])
   const [isList, setIsList] = useState(false)
-
-  const fetchData = async () => {
-    setIsList(false)
-    try {
-      let res = await axios({
-        method: "get",
-        url: "https://tlcngroup2be.herokuapp.com/admin/stores",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setStoreList(res.data)
-        setIsList(true)
-      }
-    } catch (error) {}
-  }
 
   useEffect(() => {
     let body = document.body,
@@ -41,7 +24,28 @@ function AdminStore({ setHeight }) {
         html.offsetHeight
       )
     )
+    let isApiSubscribed = true
+    const fetchData = async () => {
+      setIsList(false)
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/stores",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setStoreList(res.data)
+          setIsList(true)
+        }
+      } catch (error) {}
+    }
     fetchData()
+    return () => {
+      // cancel the subscription
+      isApiSubscribed = false
+    }
   }, [reloadSell])
 
   useEffect(() => {

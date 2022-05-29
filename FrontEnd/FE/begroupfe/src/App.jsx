@@ -44,12 +44,6 @@ function App() {
               <SingleProduct />
               <Footer />
             </Route>
-            {/* <Route path='/csbm'>
-            <SecurityRule />
-          </Route> */}
-            {/* <Route path='/dkdv'>
-            <ServiceRule />
-          </Route> */}
             <Route path='/user/order/:orderId'>
               <Header />
               <OrderItem />

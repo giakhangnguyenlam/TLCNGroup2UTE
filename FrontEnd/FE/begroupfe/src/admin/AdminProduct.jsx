@@ -5,29 +5,12 @@ import { useGlobalContext } from "../context"
 import { AiFillStar, AiFillHeart } from "react-icons/ai"
 
 function AdminProduct({ setHeight }) {
-  const jwt = localStorage.getItem("jwtA")
-  const { idStoreProd, setIdStoreProd, reloadSell } = useGlobalContext()
+  const jwt = localStorage.getItem("jwt")
+  const { idStoreProd, setIdStoreProd, reloadDetailStore } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [productList, setProductList] = useState([])
   const [isList, setIsList] = useState(false)
-
-  const fetchData = async () => {
-    setIsList(false)
-    try {
-      let res = await axios({
-        method: "get",
-        url: "https://tlcngroup2be.herokuapp.com/admin/products",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setProductList(res.data)
-        setIsList(true)
-      }
-    } catch (error) {}
-  }
 
   useEffect(() => {
     let body = document.body,
@@ -42,8 +25,31 @@ function AdminProduct({ setHeight }) {
         html.offsetHeight
       )
     )
+
+    let isApiSubscribed = true
+
+    const fetchData = async () => {
+      setIsList(false)
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/products",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setProductList(res.data)
+          setIsList(true)
+        }
+      } catch (error) {}
+    }
     fetchData()
-  }, [reloadSell])
+    return () => {
+      // cancel the subscription
+      isApiSubscribed = false
+    }
+  }, [reloadDetailStore])
 
   useEffect(() => {
     if (productList) {

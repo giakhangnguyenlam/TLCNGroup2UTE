@@ -13,7 +13,7 @@ function HeaderCart() {
   let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const handleRedirect = () => {
     if (localStorage.getItem("role") === "ROLE_USER") {
-      history.push("/cart")
+      window.location.href = window.location.origin + "/cart"
     }
   }
   let length = 0
@@ -42,7 +42,7 @@ function HeaderCart() {
               <div className='header__cart-heading-code'>
                 Share Code: {cart[0][0].shareCode}
                 <CopyToClipboard
-                  text={cart[0].shareCode}
+                  text={cart[0][0].shareCode}
                   onCopy={() => setCopy(true)}
                 >
                   <AiOutlineCopy className='cart__icon-copy' />

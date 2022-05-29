@@ -232,51 +232,46 @@ function DetailStore() {
                   <p>+ Thêm sản phẩm</p>
                 </div>
                 {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleUpdateProd}
-                  >
-                    <p>
-                      <AiOutlineEdit className='store-item__icon' />
-                      Sửa thông tin
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDeleteProd}
-                  >
-                    <p>
-                      <AiOutlineDelete className='store-item__icon' />
-                      Xóa sản phẩm
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleInfo}
-                  >
-                    <p>
-                      <AiOutlineInfoCircle className='store-item__icon' />
-                      Thông tin chi tiết
-                    </p>
-                  </div>
-                )}
-                {idStoreProd && (
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDiscount}
-                  >
-                    <p>
-                      <RiCoupon3Line className='store-item__icon' />
-                      Mã giảm giá
-                    </p>
-                  </div>
+                  <React.Fragment>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleUpdateProd}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Sửa thông tin
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleDeleteProd}
+                    >
+                      <p>
+                        <AiOutlineDelete className='store-item__icon' />
+                        Xóa sản phẩm
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleInfo}
+                    >
+                      <p>
+                        <AiOutlineInfoCircle className='store-item__icon' />
+                        Thông tin chi tiết
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleDiscount}
+                    >
+                      <p>
+                        <RiCoupon3Line className='store-item__icon' />
+                        Mã giảm giá
+                      </p>
+                    </div>
+                  </React.Fragment>
                 )}
               </nav>
-              {/* )} */}
             </div>
 
             <div className='grid__colum-10'>

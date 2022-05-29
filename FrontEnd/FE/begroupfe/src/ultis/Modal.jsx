@@ -9,6 +9,7 @@ import UserComment from "../user/UserComment"
 import OrderDetail from "../seller/OrderDetail"
 import Static from "../seller/Static"
 import Voucher from "../seller/Voucher"
+import AdminDiscount from "../admin/AdminDiscount"
 function Modal() {
   const {
     isCreateStore,
@@ -16,6 +17,7 @@ function Modal() {
     isOrderDetail,
     isStatic,
     isVoucher,
+    isDiscount,
     isComment,
     isDetailCreate,
     isDetailUpdate,
@@ -44,6 +46,9 @@ function Modal() {
   }
   if (isVoucher) {
     return <Voucher />
+  }
+  if (isDiscount) {
+    return <AdminDiscount />
   }
   if (isComment) {
     return <UserComment />

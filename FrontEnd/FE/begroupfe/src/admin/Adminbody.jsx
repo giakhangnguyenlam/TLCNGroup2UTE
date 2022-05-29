@@ -7,7 +7,11 @@ import {
   AiOutlineOrderedList,
   AiOutlineShopping,
   AiOutlineDelete,
+  AiOutlineLineChart,
+  AiOutlineEdit,
 } from "react-icons/ai"
+import { HiOutlineTicket } from "react-icons/hi"
+import { RiCoupon3Line } from "react-icons/ri"
 import AdminUser from "./AdminUser"
 import AdminStore from "./AdminStore"
 import AdminProduct from "./AdminProduct"
@@ -17,7 +21,7 @@ import Popup from "../ultis/Popup"
 import { useHistory } from "react-router-dom"
 
 function AdminBody() {
-  const jwt = localStorage.getItem("jwtA")
+  const jwt = localStorage.getItem("jwt")
   const [load, setLoad] = useState(false)
   const {
     raise,
@@ -26,13 +30,20 @@ function AdminBody() {
     setIdStoreProd,
     setIdStoreUpdate,
     setReloadSell,
+    setIsUpdateStore,
+    setIsOrderDetail,
+    setIsStatic,
+    setIsVoucher,
+    setIsDiscount,
     setRaise,
     reloadSell,
+    reloadDetailStore,
     setCateClo,
     setCateSho,
     setCateAcc,
     setIsDetailInfo,
     setCateStoreProd,
+    setIsDetailUpdate,
   } = useGlobalContext()
   const [height, setHeight] = useState(0)
   const [adminPage, setAdminPage] = useState("user")
@@ -188,11 +199,37 @@ function AdminBody() {
     }
   }
 
+  const handleUpdateStore = () => {
+    setIsUpdateStore(true)
+  }
+
+  const handleOrderDetail = () => {
+    setIsOrderDetail(true)
+  }
+
+  const handleStatic = () => {
+    setIsStatic(true)
+  }
+
+  const handleVoucher = () => {
+    setIsVoucher(true)
+  }
+
+  const handleUpdateProd = () => {
+    setIsDetailUpdate(true)
+  }
+
+  const handleDiscount = () => {
+    setIsDiscount(true)
+  }
+
   useEffect(() => {
-    if (!localStorage.getItem("username") || !localStorage.getItem("jwtA")) {
+    if (!localStorage.getItem("username") || !localStorage.getItem("adm")) {
       history.push("/admin/auth")
     }
   }, [])
+
+  useEffect(() => {}, [reloadSell, reloadDetailStore])
 
   return (
     <div className='container'>
@@ -241,22 +278,83 @@ function AdminBody() {
               >
                 <p>
                   <AiOutlineOrderedList className='store-item__icon' />
-                  Đơn hàng
+                  Tổng đơn hàng
                 </p>
               </div>
               {idStoreUpdate && (
-                <div
-                  className='store-product__header-ctrl'
-                  onClick={handleDelete}
-                >
-                  <p>
-                    <AiOutlineDelete className='store-item__icon' />
-                    Xóa cửa hàng
-                  </p>
-                </div>
+                <React.Fragment>
+                  <div
+                    style={{
+                      marginBottom: "10px",
+                      height: "1px",
+                      backgroundColor: "#999",
+                    }}
+                  ></div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleUpdateStore}
+                  >
+                    <p>
+                      <AiOutlineEdit className='store-item__icon' />
+                      Sửa thông tin
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleOrderDetail}
+                  >
+                    <p>
+                      <AiOutlineOrderedList className='store-item__icon' />
+                      Đơn hàng
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleStatic}
+                  >
+                    <p>
+                      <AiOutlineLineChart className='store-item__icon' />
+                      Thống kê
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleVoucher}
+                  >
+                    <p>
+                      <HiOutlineTicket className='store-item__icon' />
+                      Voucher
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleDelete}
+                  >
+                    <p>
+                      <AiOutlineDelete className='store-item__icon' />
+                      Xóa cửa hàng
+                    </p>
+                  </div>
+                </React.Fragment>
               )}
               {idStoreProd && (
-                <>
+                <React.Fragment>
+                  <div
+                    style={{
+                      marginBottom: "10px",
+                      height: "1px",
+                      backgroundColor: "#999",
+                    }}
+                  ></div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={handleUpdateProd}
+                  >
+                    <p>
+                      <AiOutlineEdit className='store-item__icon' />
+                      Sửa thông tin
+                    </p>
+                  </div>
                   <div
                     className='store-product__header-ctrl'
                     onClick={handleInfo}
@@ -268,6 +366,15 @@ function AdminBody() {
                   </div>
                   <div
                     className='store-product__header-ctrl'
+                    onClick={handleDiscount}
+                  >
+                    <p>
+                      <RiCoupon3Line className='store-item__icon' />
+                      Mã giảm giá
+                    </p>
+                  </div>
+                  <div
+                    className='store-product__header-ctrl'
                     onClick={handleDelete}
                   >
                     <p>
@@ -275,7 +382,7 @@ function AdminBody() {
                       Xóa sản phẩm
                     </p>
                   </div>
-                </>
+                </React.Fragment>
               )}
             </nav>
           </div>

@@ -6,32 +6,29 @@ import { useGlobalContext } from "../context"
 import Switch from "react-switch"
 import Loading from "../ultis/Loading"
 
-function Voucher() {
+function AdminDiscount() {
   const jwt = localStorage.getItem("jwt")
   const wFit = window.screen.availWidth * 0.8
   const hFit = window.screen.availHeight * 0.835
-  const { setIsVoucher } = useGlobalContext()
-  const { setRaise, idStoreUpdate } = useGlobalContext()
+  const { setIsDiscount } = useGlobalContext()
+  const { setRaise, idStoreProd } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
   const [isCheck, setIsCheck] = useState([])
   const [isFetch, setIsFetch] = useState(false)
-  const [height, setHeight] = useState()
   const [load, setLoad] = useState()
   const [edit, setEdit] = useState("")
   const [dc, setDc] = useState({
-    voucherName: "",
-    voucherDesc: "",
+    couponName: "",
+    couponDesc: "",
     discount: "",
-    bearerDiscount: "",
     startDate: "",
     expireDate: "",
   })
   const resetDc = () =>
     setDc({
-      voucherName: "",
-      voucherDesc: "",
+      couponName: "",
+      couponDesc: "",
       discount: "",
-      bearerDiscount: "",
       startDate: "",
       expireDate: "",
     })
@@ -42,13 +39,12 @@ function Voucher() {
     if (e) {
       handleEdit(item)
     } else {
-      handleActive(item.voucherId)
+      handleActive(item.couponId)
     }
   }
 
   const checkData = (type) => {
-    console.log(dc)
-    for (let key in dc) {
+    for (var key in dc) {
       if (dc[key] === null || dc[key] === "") {
         setRaise({
           header: "Lỗi thông tin",
@@ -101,13 +97,13 @@ function Voucher() {
   }
 
   const handleActive = async (id) => {
-    let del = window.confirm("Bạn muốn tắt voucher?")
+    let del = window.confirm("Bạn muốn tắt coupon?")
     if (del) {
       setLoad(true)
       try {
         let res = await axios({
           method: "put",
-          url: `https://tlcngroup2be.herokuapp.com/seller/voucher/active/${id}`,
+          url: `https://tlcngroup2be.herokuapp.com/seller/coupon/active/${id}`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -129,13 +125,13 @@ function Voucher() {
   }
 
   const handleDelete = async (id) => {
-    let del = window.confirm("Bạn muốn xóa voucher chứ?")
+    let del = window.confirm("Bạn muốn xóa cửa hàng chứ?")
     if (del) {
       setLoad(true)
       try {
         let res = await axios({
           method: "delete",
-          url: `https://tlcngroup2be.herokuapp.com/seller/voucher/${id}`,
+          url: `https://tlcngroup2be.herokuapp.com/seller/coupon/${id}`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -144,7 +140,7 @@ function Voucher() {
           setLoad(false)
           setReload(!reload)
           setRaise({
-            header: "Mã giảm giá",
+            header: "XMã giảm giá",
             content: "Xóa thành công",
             color: "#4bb534",
           })
@@ -163,7 +159,7 @@ function Voucher() {
         let res = await axios({
           method: "put",
           data: dc,
-          url: `https://tlcngroup2be.herokuapp.com/seller/voucher/${id}`,
+          url: `https://tlcngroup2be.herokuapp.com/seller/coupon/${id}`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -188,24 +184,15 @@ function Voucher() {
 
   const handleEdit = (item) => {
     const {
-      voucherId,
-      voucherName,
-      voucherDesc,
+      couponId,
+      couponName,
+      couponDesc,
       discount,
-      bearerDiscount,
       startDate,
       expireDate,
     } = item
-    setDc({
-      ...dc,
-      voucherName,
-      voucherDesc,
-      discount,
-      bearerDiscount,
-      startDate,
-      expireDate,
-    })
-    setEdit(voucherId)
+    setDc({ ...dc, couponName, couponDesc, discount, startDate, expireDate })
+    setEdit(couponId)
   }
 
   const handleAdd = async () => {
@@ -214,8 +201,8 @@ function Voucher() {
       try {
         let res = await axios({
           method: "post",
-          data: { ...dc, storeId: idStoreUpdate.id },
-          url: `https://tlcngroup2be.herokuapp.com/seller/voucher`,
+          data: { ...dc, productId: idStoreProd.id },
+          url: `https://tlcngroup2be.herokuapp.com/seller/coupon`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -238,43 +225,40 @@ function Voucher() {
     setLoad(false)
   }
 
-  const fetchData = async () => {
-    try {
-      let res = await axios({
-        method: "get",
-        url: `https://tlcngroup2be.herokuapp.com/seller/voucher/storeid/${idStoreUpdate.id}`,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setDiscountList(res.data)
-        setIsCheck(
-          res.data.filter((item) => item.active).map((item) => item.voucherId)
-        )
-        setIsFetch(true)
-      }
-    } catch (error) {}
-  }
   useEffect(() => {
-    const body = document.body,
-      html = document.documentElement
-
-    setHeight(
-      Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-      )
-    )
+    let isApiSubscribed = true
+    const fetchData = async () => {
+      try {
+        let res = await axios({
+          method: "get",
+          url: `https://tlcngroup2be.herokuapp.com/seller/coupon/productid/${idStoreProd.id}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setDiscountList(res.data)
+          setIsCheck(
+            res.data
+              .filter((item) => item.isActive)
+              .map((item) => item.couponId)
+          )
+          setIsFetch(true)
+        }
+      } catch (error) {}
+    }
     fetchData()
+    return () => {
+      isApiSubscribed = false
+    }
   }, [reload])
 
   return (
     <div className='modal'>
-      <div className='modal__overlay' onClick={() => setIsVoucher(false)}></div>
+      <div
+        className='modal__overlay'
+        onClick={() => setIsDiscount(false)}
+      ></div>
       <div className='modal__body'>
         <div className='auth-form' style={{ width: wFit, height: hFit }}>
           <div className='auth-form__container'>
@@ -284,7 +268,7 @@ function Voucher() {
                   className='store__contain-wrap--enhance'
                   style={{ width: "unset", height: "calc(88vh - 10px)" }}
                 >
-                  <h3 className='store-product__heading'>Voucher</h3>
+                  <h3 className='store-product__heading'>Coupon</h3>
                   <div className='store__contain-item'>
                     <div
                       className='store-product__body-item '
@@ -295,13 +279,10 @@ function Voucher() {
                     >
                       <div className='store-item w5'>STT</div>
                       <div className='store-item w250x'>Tên coupon</div>
-                      <div className='store-item w300x' style={{ flexGrow: 1 }}>
-                        Mô tả coupon
-                      </div>
-                      <div className='store-item w10'>Số tiền giảm</div>
-                      <div className='store-item w10'>Mức giảm</div>
-                      <div className='store-item  w12'>Bắt đầu</div>
-                      <div className='store-item  w12'>Kết thúc</div>
+                      <div className='store-item w300x'>Mô tả coupon</div>
+                      <div className='store-item w6'>%</div>
+                      <div className='store-item  w20'>Bắt đầu</div>
+                      <div className='store-item  w20'>Kết thúc</div>
                       <div className='store-item w8'>Điều khiển</div>
                     </div>
                   </div>
@@ -319,37 +300,28 @@ function Voucher() {
                         className='store-item--border w250x'
                         placeholder='tên coupon'
                         onChange={(e) =>
-                          setDc({ ...dc, voucherName: e.target.value })
+                          setDc({ ...dc, couponName: e.target.value })
                         }
                       />
                       <input
                         type='text'
                         className='store-item--border w300x'
-                        style={{ flexGrow: 1 }}
                         placeholder='mô tả'
                         onChange={(e) =>
-                          setDc({ ...dc, voucherDesc: e.target.value })
+                          setDc({ ...dc, couponDesc: e.target.value })
                         }
                       />
                       <input
                         type='number'
-                        className='store-item--border w10'
-                        placeholder='Tiền giảm'
+                        className='store-item--border w6'
+                        placeholder='%'
                         onChange={(e) =>
                           setDc({ ...dc, discount: e.target.value })
                         }
                       />
                       <input
-                        type='number'
-                        className='store-item--border w10'
-                        placeholder='Mức giảm'
-                        onChange={(e) =>
-                          setDc({ ...dc, bearerDiscount: e.target.value })
-                        }
-                      />
-                      <input
                         type='datetime-local'
-                        className='store-item--border w12'
+                        className='store-item--border w20'
                         onChange={(e) =>
                           setDc({
                             ...dc,
@@ -359,7 +331,7 @@ function Voucher() {
                       />
                       <input
                         type='datetime-local'
-                        className='store-item--border w12'
+                        className='store-item--border w20'
                         onChange={(e) =>
                           setDc({
                             ...dc,
@@ -379,16 +351,15 @@ function Voucher() {
                     discountList.length ? (
                       discountList.map((item, index) => {
                         const {
-                          voucherId,
-                          voucherName,
-                          voucherDesc,
+                          couponId,
+                          couponName,
+                          couponDesc,
                           discount,
-                          bearerDiscount,
                           startDate,
                           expireDate,
                         } = item
                         return (
-                          <div className='store__contain-item' key={voucherId}>
+                          <div className='store__contain-item' key={couponId}>
                             <div
                               className='store-product__body-item '
                               style={{
@@ -410,7 +381,7 @@ function Voucher() {
                              // }
                            > */}
                                 <Switch
-                                  checked={isCheck.includes(voucherId)}
+                                  checked={isCheck.includes(couponId)}
                                   onChange={(e) => handleChange(item, e)}
                                   onColor='#88df75'
                                   onHandleColor='#4bb534'
@@ -431,64 +402,42 @@ function Voucher() {
                                 className='store-item--border w250x'
                                 placeholder='tên coupon'
                                 value={
-                                  edit === voucherId
-                                    ? dc.voucherName
-                                    : voucherName
+                                  edit === couponId ? dc.couponName : couponName
                                 }
                                 onChange={(e) =>
-                                  setDc({ ...dc, voucherName: e.target.value })
+                                  setDc({ ...dc, couponName: e.target.value })
                                 }
-                                disabled={edit === voucherId ? "" : "disabled"}
+                                disabled={edit === couponId ? "" : "disabled"}
                               />
                               <input
                                 type='text'
                                 className='store-item--border w300x'
                                 placeholder='mô tả'
                                 value={
-                                  edit === voucherId
-                                    ? dc.voucherDesc
-                                    : voucherDesc
+                                  edit === couponId ? dc.couponDesc : couponDesc
                                 }
                                 onChange={(e) =>
-                                  setDc({ ...dc, voucherDesc: e.target.value })
+                                  setDc({ ...dc, couponDesc: e.target.value })
                                 }
-                                style={{ flexGrow: 1 }}
-                                disabled={edit === voucherId ? "" : "disabled"}
+                                disabled={edit === couponId ? "" : "disabled"}
                               />
                               <input
                                 type='text'
-                                className='store-item--border w10'
-                                placeholder='tiền giảm'
+                                className='store-item--border w6'
+                                placeholder='tỉ lệ giảm'
                                 value={
-                                  edit === voucherId ? dc.discount : discount
+                                  edit === couponId ? dc.discount : discount
                                 }
                                 onChange={(e) =>
                                   setDc({ ...dc, discount: e.target.value })
                                 }
-                                disabled={edit === voucherId ? "" : "disabled"}
-                              />
-                              <input
-                                type='text'
-                                className='store-item--border w10'
-                                placeholder='mức giảm'
-                                value={
-                                  edit === voucherId
-                                    ? dc.bearerDiscount
-                                    : bearerDiscount
-                                }
-                                onChange={(e) =>
-                                  setDc({
-                                    ...dc,
-                                    bearerDiscount: e.target.value,
-                                  })
-                                }
-                                disabled={edit === voucherId ? "" : "disabled"}
+                                disabled={edit === couponId ? "" : "disabled"}
                               />
                               <input
                                 type='datetime-local'
-                                className='store-item--border w12'
+                                className='store-item--border w20'
                                 value={
-                                  edit === voucherId
+                                  edit === couponId
                                     ? dateTrans(dc.startDate)
                                     : dateTrans(startDate)
                                 }
@@ -500,13 +449,13 @@ function Voucher() {
                                     ).getTime(),
                                   })
                                 }
-                                disabled={edit === voucherId ? "" : "disabled"}
+                                disabled={edit === couponId ? "" : "disabled"}
                               />
                               <input
                                 type='datetime-local'
-                                className='store-item--border w12'
+                                className='store-item--border w20'
                                 value={
-                                  edit === voucherId
+                                  edit === couponId
                                     ? dateTrans(dc.expireDate)
                                     : dateTrans(expireDate)
                                 }
@@ -518,10 +467,10 @@ function Voucher() {
                                     ).getTime(),
                                   })
                                 }
-                                disabled={edit === voucherId ? "" : "disabled"}
+                                disabled={edit === couponId ? "" : "disabled"}
                               />
                               <div className='store-item--border w8'>
-                                {edit === voucherId ? (
+                                {edit === couponId ? (
                                   <ImCancelCircle
                                     className='store-item__info--btn'
                                     onClick={() => setEdit("")}
@@ -529,13 +478,13 @@ function Voucher() {
                                 ) : (
                                   <AiOutlineDelete
                                     className='store-item__info--btn'
-                                    onClick={() => handleDelete(voucherId)}
+                                    onClick={() => handleDelete(couponId)}
                                   />
                                 )}
-                                {edit === voucherId ? (
+                                {edit === couponId ? (
                                   <AiOutlineSave
                                     className='store-item__info--btn'
-                                    onClick={() => handleUpdate(voucherId)}
+                                    onClick={() => handleUpdate(couponId)}
                                   />
                                 ) : (
                                   <AiOutlineEdit
@@ -550,7 +499,7 @@ function Voucher() {
                       })
                     ) : (
                       <div className='store__contain-item--wait'>
-                        Không có voucher
+                        Không có coupon
                       </div>
                     )
                   ) : (
@@ -567,4 +516,4 @@ function Voucher() {
   )
 }
 
-export default Voucher
+export default AdminDiscount

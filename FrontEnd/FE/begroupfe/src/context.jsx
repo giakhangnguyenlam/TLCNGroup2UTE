@@ -8,7 +8,7 @@ const AppProvider = ({ children }) => {
   const exp = new Date()
   if (
     exp.getTime() >= expire ||
-    (window.location.href !== "/admin" && localStorage.getItem("jwtA"))
+    (window.location.pathname !== "/admin" && localStorage.getItem("adm"))
   ) {
     localStorage.removeItem("id")
     localStorage.removeItem("name")
@@ -18,7 +18,7 @@ const AppProvider = ({ children }) => {
     localStorage.removeItem("address")
     localStorage.removeItem("gender")
     localStorage.removeItem("jwt")
-    localStorage.removeItem("jwtA")
+    localStorage.removeItem("adm")
     localStorage.removeItem("role")
     localStorage.removeItem("expire")
   }
@@ -52,6 +52,7 @@ const AppProvider = ({ children }) => {
   const [isOrderDetail, setIsOrderDetail] = useState(false)
   const [isStatic, setIsStatic] = useState(false)
   const [isVoucher, setIsVoucher] = useState(false)
+  const [isDiscount, setIsDiscount] = useState(false)
   const [isComment, setIsComment] = useState(false)
 
   const [idStoreUpdate, setIdStoreUpdate] = useState(null)
@@ -254,11 +255,6 @@ const AppProvider = ({ children }) => {
     }
   }, [isCartUpdate])
 
-  // useEffect(() => {
-  //   userId && fetchCart()
-  //   fetchData()
-  // }, [])
-
   return (
     <AppContext.Provider
       value={{
@@ -288,6 +284,7 @@ const AppProvider = ({ children }) => {
         isOrderDetail,
         isStatic,
         isVoucher,
+        isDiscount,
         isComment,
         idStoreUpdate,
         idStoreProd,
@@ -306,6 +303,7 @@ const AppProvider = ({ children }) => {
         setOrderData,
         setSum,
         setVoucher,
+        setIsDiscount,
         setIsAdmin,
         setAuth,
         setCate,

@@ -209,7 +209,7 @@ function CartPage() {
     if (userId === null) {
       history.push("/")
     }
-  }, [])
+  }, [reloadSell])
 
   useEffect(() => {
     if (cart && cart.length !== 0 && isCartReady) {

@@ -12,6 +12,7 @@ function UpdateStore() {
     isUpdateStore,
     setIsUpdateStore,
     idStoreUpdate,
+    setIdStoreUpdate,
     setReloadSell,
     reloadSell,
     loading,
@@ -49,6 +50,7 @@ function UpdateStore() {
           setLoading(false)
           setReloadSell(!reloadSell)
           setIsUpdateStore(false)
+          setIdStoreUpdate(null)
           setRaise({
             header: "Cập nhật cửa hàng",
             content: "Cập nhật ảnh hoàn tất!",
@@ -78,7 +80,7 @@ function UpdateStore() {
     ) {
       fetchData()
     } else {
-      setError("VUi lòng không để trống thông tin")
+      setError("Vui lòng không để trống thông tin")
     }
   }
   const fetchData = async () => {
@@ -99,6 +101,7 @@ function UpdateStore() {
         setLoading(false)
         setReloadSell(!reloadSell)
         setIsUpdateStore(false)
+        setIdStoreUpdate(null)
         setRaise({
           header: "Cập nhật cửa hàng",
           content: "Cập nhật thông tin thành công!",
@@ -130,6 +133,7 @@ function UpdateStore() {
                   className='auth-form__input'
                   value={storeUpdate.nameStore}
                   placeholder='Tên cửa hàng'
+                  onKeyDown={(e) => (e.key === "Enter" ? handleSubmit(e) : "")}
                   onChange={(e) =>
                     setStoreUpdate({
                       ...storeUpdate,
@@ -144,6 +148,7 @@ function UpdateStore() {
                   className='auth-form__input'
                   value={storeUpdate.storeDescription}
                   placeholder='Mô tả về cửa hàng'
+                  onKeyDown={(e) => (e.key === "Enter" ? handleSubmit(e) : "")}
                   onChange={(e) =>
                     setStoreUpdate({
                       ...storeUpdate,

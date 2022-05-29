@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate"
 import { useGlobalContext } from "../context"
 
 function AdminPage() {
-  const jwt = localStorage.getItem("jwtA")
+  const jwt = localStorage.getItem("jwt")
   const [allUser, setAllUser] = useState()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
