@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react"
 import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
 
-function Paypal({ value, code }) {
+function Paypal({ value, code, cart }) {
   const paypal = useRef()
   const history = useHistory()
   const { orderData, setLoading } = useGlobalContext()
@@ -28,6 +28,7 @@ function Paypal({ value, code }) {
             url: `https://utesharecode.herokuapp.com/items/sharecode/${code}`,
           })
           if (resp.status === 200) {
+            localStorage.removeItem(cart)
             setLoading(false)
             history.push("/")
           }

@@ -18,6 +18,8 @@ function CartPage() {
     setIsCartUpdate,
     isCartUpdate,
     setSum,
+    voucher,
+    setVoucher,
   } = useGlobalContext()
   let cart = JSON.parse(localStorage.getItem(`cart${userId}`))
   const [load, setLoad] = useState(false)
@@ -130,6 +132,68 @@ function CartPage() {
   }
 
   useEffect(() => {
+    const getVoucherPerStore = async () => {
+      let voucherActive = []
+      for (let item of cart) {
+        try {
+          const res = await axios({
+            method: "get",
+            url: `https://tlcngroup2be.herokuapp.com/voucher/storeid/${item[0]?.storeId}`,
+          })
+          if (res.status === 200) {
+            voucherActive.push(res.data)
+          }
+        } catch (error) {
+          console.log("voucher per store", error)
+        }
+      }
+      const voucherTemp = voucherActive.map((item, index) => {
+        let total = 0
+        cart[index]?.forEach((ele) => {
+          total += ele.amount * ele.price
+        })
+        if (item.length) {
+          const temp = item.map((item) => item.bearerDiscount)
+          temp.push(total)
+          temp.sort((a, b) => a - b)
+          const indexOfTotal = temp.lastIndexOf(total)
+          console.log(temp, indexOfTotal)
+          if (indexOfTotal <= 0) {
+            const discount = item.filter(
+              (item) => item.bearerDiscount === temp[indexOfTotal + 1]
+            )
+            return {
+              discount: 0,
+              range: temp[1] - temp[0],
+              disFeature: discount[0].discount,
+            }
+          }
+
+          const discount = item.filter(
+            (item) => item.bearerDiscount === temp[indexOfTotal - 1]
+          )
+          if (indexOfTotal === temp.length - 1) {
+            const tempSum = sum - discount[0].discount
+            setSum(tempSum)
+            return { discount: discount[0].discount }
+          }
+
+          const disFeature = item.filter(
+            (item) => item.bearerDiscount === temp[indexOfTotal + 1]
+          )
+          const tempSum = sum - discount[0].discount
+          setSum(tempSum)
+          return {
+            discount: discount[0].discount,
+            range: temp[indexOfTotal + 1] - temp[indexOfTotal],
+            disFeature: disFeature[0].discount,
+          }
+        }
+        return { discount: 0, range: 0 }
+      })
+      setVoucher(voucherTemp)
+    }
+    getVoucherPerStore()
     let body = document.body,
       html = document.documentElement
 
@@ -206,6 +270,51 @@ function CartPage() {
                           {item[0]?.storeName}
                         </div>
                       </div>
+
+                      <div className='cart-store-title' key={ind + 2}>
+                        <div className='cart-store__voucher'>
+                          {voucher.length
+                            ? voucher[ind].discount
+                              ? voucher[ind].range
+                                ? `Đã giảm ${new Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }).format(
+                                    voucher[ind].discount
+                                  )}, hãy mua thêm ${new Intl.NumberFormat(
+                                    "vi-VN",
+                                    {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }
+                                  ).format(
+                                    voucher[ind].range
+                                  )} để được giảm giá ${new Intl.NumberFormat(
+                                    "vi-VN",
+                                    {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }
+                                  ).format(voucher[ind].disFeature)}`
+                                : `Đã giảm ${new Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }).format(voucher[ind].discount)}`
+                              : voucher[ind].range
+                              ? `Bạn hãy mua thêm ${
+                                  voucher[ind].range
+                                } để được giảm giá ${new Intl.NumberFormat(
+                                  "vi-VN",
+                                  {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }
+                                ).format(voucher[ind].disFeature)}`
+                              : "Hiện cửa hàng chưa có voucher"
+                            : ""}
+                        </div>
+                      </div>
+
                       {item.map((ele, index) => {
                         return (
                           <div

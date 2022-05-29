@@ -34,6 +34,7 @@ const AppProvider = ({ children }) => {
   const [isCartReady, setCartReady] = useState(false)
   const [orderData, setOrderData] = useState([])
   const [sumCheckout, setSum] = useState(0)
+  const [voucher, setVoucher] = useState([])
 
   const [isAdmin, setIsAdmin] = useState(false)
   const [auth, setAuth] = useState("login")
@@ -269,6 +270,7 @@ const AppProvider = ({ children }) => {
         isCartReady,
         orderData,
         sumCheckout,
+        voucher,
         isAdmin,
         auth,
         cate,
@@ -303,6 +305,7 @@ const AppProvider = ({ children }) => {
         setIsCartUpdate,
         setOrderData,
         setSum,
+        setVoucher,
         setIsAdmin,
         setAuth,
         setCate,

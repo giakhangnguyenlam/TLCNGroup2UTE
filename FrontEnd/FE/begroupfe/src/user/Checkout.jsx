@@ -22,10 +22,9 @@ function Checkout() {
     raise,
     setRaise,
     sumCheckout,
-    setSum,
+    voucher,
   } = useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
-  const [voucher, setVoucher] = useState([])
   const history = useHistory()
   let sum = 0
 
@@ -59,7 +58,7 @@ function Checkout() {
           try {
             const resp = await axios({
               method: "delete",
-              url: `https://utesharecode.herokuapp.com/items/sharecode/${cart[0].shareCode}`,
+              url: `https://utesharecode.herokuapp.com/items/sharecode/${cart[0][0].shareCode}`,
             })
             if (resp.status === 200) {
               setRaise({
@@ -95,54 +94,7 @@ function Checkout() {
     if (orderData.length === 0) {
       history.push("/cart")
     }
-    const getVoucherPerStore = async () => {
-      let voucherActive = []
-      for (let item of cart) {
-        try {
-          const res = await axios({
-            method: "get",
-            url: `https://tlcngroup2be.herokuapp.com/voucher/storeid/${item[0]?.storeId}`,
-          })
-          if (res.status === 200) {
-            voucherActive.push(res.data)
-          }
-        } catch (error) {
-          console.log("voucher per store", error)
-        }
-      }
-      const voucherTemp = voucherActive.map((item, index) => {
-        let total = 0
-        cart[index]?.forEach((ele) => {
-          total += ele.amount * ele.price
-        })
-        if (item.length) {
-          const temp = item.map((item) => item.bearerDiscount)
-          temp.push(total)
-          temp.sort((a, b) => a - b)
-          const index = temp.lastIndexOf(total)
-          console.log(temp, index)
-          if (index <= 0) {
-            const discount = item.filter(
-              (item) => item.bearerDiscount === temp[index + 1]
-            )
-            return {
-              discount: 0,
-              range: temp[1] - temp[0],
-              disFeature: discount[0].discount,
-            }
-          }
-          const discount = item.filter(
-            (item) => item.bearerDiscount === temp[index - 1]
-          )
-          const tempSum = sumCheckout - discount[0].discount
-          setSum(tempSum)
-          return { discount: discount[0].discount }
-        }
-        return { discount: 0, range: 0 }
-      })
-      setVoucher(voucherTemp)
-    }
-    getVoucherPerStore()
+
     document.documentElement.scrollTop = 0
   }, [])
 
@@ -200,32 +152,6 @@ function Checkout() {
                           <BsHouse />
                           <div className='cart-store__name'>
                             {item[0]?.storeName}
-                          </div>
-                        </div>
-
-                        <div className='cart-store-title' key={ind + 2}>
-                          <div className='cart-store__voucher'>
-                            {voucher.length
-                              ? voucher[ind].discount
-                                ? `Bạn được giảm giá ${new Intl.NumberFormat(
-                                    "vi-VN",
-                                    {
-                                      style: "currency",
-                                      currency: "VND",
-                                    }
-                                  ).format(voucher[ind].discount)}`
-                                : voucher[ind].range
-                                ? `Bạn hãy mua thêm ${
-                                    voucher[ind].range
-                                  } để được giảm giá ${new Intl.NumberFormat(
-                                    "vi-VN",
-                                    {
-                                      style: "currency",
-                                      currency: "VND",
-                                    }
-                                  ).format(voucher[ind].disFeature)}`
-                                : "Hiện cửa hàng chưa có voucher"
-                              : ""}
                           </div>
                         </div>
 
@@ -392,6 +318,7 @@ function Checkout() {
                     <Paypal
                       value={((sumCheckout + 30000) / 23000).toFixed(1)}
                       code={cart[0].shareCode}
+                      cart={`cart${userId}`}
                     />
                   ) : (
                     <div
