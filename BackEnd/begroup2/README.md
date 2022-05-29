@@ -2440,3 +2440,17 @@ link: https://tlcngroup2be.herokuapp.com/admin/numberoforder
 ```
 54
 ```
+
+### Turnover
+link: https://tlcngroup2be.herokuapp.com/admin/turnover
+
+> GET
+> 
+> Need JWT
+> 
+#### Request
+
+#### Response
+```
+21451320
+```
