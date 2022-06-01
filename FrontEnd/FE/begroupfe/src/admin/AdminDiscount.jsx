@@ -10,6 +10,7 @@ function AdminDiscount() {
   const jwt = localStorage.getItem("jwt")
   const wFit = window.screen.availWidth * 0.8
   const hFit = window.screen.availHeight * 0.835
+  const hFitInner = hFit - 86
   const { setIsDiscount } = useGlobalContext()
   const { setRaise, idStoreProd } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
@@ -264,11 +265,11 @@ function AdminDiscount() {
           <div className='auth-form__container'>
             <div className='store-wrap'>
               <div className='store__contain'>
+                <h3 className='store-product__heading'>Coupon</h3>
                 <div
                   className='store__contain-wrap--enhance'
-                  style={{ width: "unset", height: "calc(88vh - 10px)" }}
+                  style={{ width: "unset", height: hFitInner }}
                 >
-                  <h3 className='store-product__heading'>Coupon</h3>
                   <div className='store__contain-item'>
                     <div
                       className='store-product__body-item '
@@ -498,12 +499,20 @@ function AdminDiscount() {
                         )
                       })
                     ) : (
-                      <div className='store__contain-item--wait'>
+                      <div
+                        className='store__contain-item--wait'
+                        style={{ height: hFitInner }}
+                      >
                         Không có coupon
                       </div>
                     )
                   ) : (
-                    <div className='store__contain-item--wait'>Loading</div>
+                    <div
+                      className='store__contain-item--wait'
+                      style={{ height: hFitInner }}
+                    >
+                      Loading
+                    </div>
                   )}
                 </div>
               </div>

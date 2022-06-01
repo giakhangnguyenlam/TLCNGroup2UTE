@@ -11,7 +11,7 @@ import {
   AiOutlineEdit,
 } from "react-icons/ai"
 import { HiOutlineTicket } from "react-icons/hi"
-import { RiCoupon3Line } from "react-icons/ri"
+import { RiCoupon3Line, RiDashboardLine } from "react-icons/ri"
 import AdminUser from "./AdminUser"
 import AdminStore from "./AdminStore"
 import AdminProduct from "./AdminProduct"
@@ -19,6 +19,7 @@ import AdminOrders from "./AdminOrder"
 import { useGlobalContext } from "../context"
 import Popup from "../ultis/Popup"
 import { useHistory } from "react-router-dom"
+import AdminDashboard from "./AdminDashboard"
 
 function AdminBody() {
   const jwt = localStorage.getItem("jwt")
@@ -46,7 +47,7 @@ function AdminBody() {
     setIsDetailUpdate,
   } = useGlobalContext()
   const [height, setHeight] = useState(0)
-  const [adminPage, setAdminPage] = useState("user")
+  const [adminPage, setAdminPage] = useState("dashboard")
   const history = useHistory()
 
   const handleChange = (page) => {
@@ -199,28 +200,29 @@ function AdminBody() {
     }
   }
 
-  const handleUpdateStore = () => {
-    setIsUpdateStore(true)
-  }
-
-  const handleOrderDetail = () => {
-    setIsOrderDetail(true)
-  }
-
-  const handleStatic = () => {
-    setIsStatic(true)
-  }
-
-  const handleVoucher = () => {
-    setIsVoucher(true)
-  }
-
-  const handleUpdateProd = () => {
-    setIsDetailUpdate(true)
-  }
-
-  const handleDiscount = () => {
-    setIsDiscount(true)
+  const controlPage = (control) => {
+    switch (control) {
+      case "updateStore":
+        setIsUpdateStore(true)
+        break
+      case "order":
+        setIsOrderDetail(true)
+        break
+      case "statistic":
+        setIsStatic(true)
+        break
+      case "voucher":
+        setIsVoucher(true)
+        break
+      case "updateProd":
+        setIsDetailUpdate(true)
+        break
+      case "discount":
+        setIsDiscount(true)
+        break
+      default:
+        break
+    }
   }
 
   useEffect(() => {
@@ -237,6 +239,24 @@ function AdminBody() {
         <div className='grid__row contain'>
           <div className='grid__colum-2'>
             <nav style={{ marginBottom: "10px" }}>
+              <div
+                className={`store-product__header-ctrl${
+                  adminPage === "dashboard" ? "--active" : ""
+                }`}
+                onClick={() => handleChange("dashboard")}
+              >
+                <p>
+                  <RiDashboardLine className='store-item__icon' />
+                  Tổng hợp
+                </p>
+              </div>
+              <div
+                style={{
+                  marginBottom: "10px",
+                  height: "1px",
+                  backgroundColor: "#999",
+                }}
+              ></div>
               <div
                 className={`store-product__header-ctrl${
                   adminPage === "user" ? "--active" : ""
@@ -292,7 +312,7 @@ function AdminBody() {
                   ></div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleUpdateStore}
+                    onClick={() => controlPage("updateStore")}
                   >
                     <p>
                       <AiOutlineEdit className='store-item__icon' />
@@ -301,7 +321,7 @@ function AdminBody() {
                   </div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleOrderDetail}
+                    onClick={() => controlPage("order")}
                   >
                     <p>
                       <AiOutlineOrderedList className='store-item__icon' />
@@ -310,7 +330,7 @@ function AdminBody() {
                   </div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleStatic}
+                    onClick={() => controlPage("statistic")}
                   >
                     <p>
                       <AiOutlineLineChart className='store-item__icon' />
@@ -319,7 +339,7 @@ function AdminBody() {
                   </div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleVoucher}
+                    onClick={() => controlPage("voucher")}
                   >
                     <p>
                       <HiOutlineTicket className='store-item__icon' />
@@ -348,7 +368,7 @@ function AdminBody() {
                   ></div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleUpdateProd}
+                    onClick={() => controlPage("updateProd")}
                   >
                     <p>
                       <AiOutlineEdit className='store-item__icon' />
@@ -366,7 +386,7 @@ function AdminBody() {
                   </div>
                   <div
                     className='store-product__header-ctrl'
-                    onClick={handleDiscount}
+                    onClick={() => controlPage("discount")}
                   >
                     <p>
                       <RiCoupon3Line className='store-item__icon' />
@@ -388,6 +408,7 @@ function AdminBody() {
           </div>
 
           <div className='grid__colum-10'>
+            {adminPage === "dashboard" && <AdminDashboard />}
             {adminPage === "user" && <AdminUser />}
             {adminPage === "store" && <AdminStore setHeight={setHeight} />}
             {adminPage === "item" && <AdminProduct setHeight={setHeight} />}

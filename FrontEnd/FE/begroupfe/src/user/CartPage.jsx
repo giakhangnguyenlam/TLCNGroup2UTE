@@ -17,6 +17,7 @@ function CartPage() {
     setReloadSell,
     setIsCartUpdate,
     isCartUpdate,
+    sumCheckout,
     setSum,
     voucher,
     setVoucher,
@@ -25,6 +26,7 @@ function CartPage() {
   const [load, setLoad] = useState(false)
   const [height, setHeight] = useState(0)
   const [code, setCode] = useState("")
+  const [voucherPerStore, setVoucherActive] = useState(null)
   const history = useHistory()
   let sum = 0
 
@@ -108,7 +110,7 @@ function CartPage() {
   }
 
   const handleCheckout = async () => {
-    setSum(sum)
+    // setSum(sum)
     const data = {
       userId: Number(userId),
       total: sum,
@@ -131,6 +133,14 @@ function CartPage() {
     history.push("/checkout")
   }
 
+  const convertToMoney = (data) => {
+    const money = new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(data)
+    return money
+  }
+
   useEffect(() => {
     const getVoucherPerStore = async () => {
       let voucherActive = []
@@ -147,6 +157,7 @@ function CartPage() {
           console.log("voucher per store", error)
         }
       }
+      setVoucherActive(voucherActive)
       const voucherTemp = voucherActive.map((item, index) => {
         let total = 0
         cart[index]?.forEach((ele) => {
@@ -276,44 +287,60 @@ function CartPage() {
                           {voucher.length
                             ? voucher[ind].discount
                               ? voucher[ind].range
-                                ? `Đã giảm ${new Intl.NumberFormat("vi-VN", {
-                                    style: "currency",
-                                    currency: "VND",
-                                  }).format(
+                                ? `Đã giảm ${convertToMoney(
                                     voucher[ind].discount
-                                  )}, hãy mua thêm ${new Intl.NumberFormat(
-                                    "vi-VN",
-                                    {
-                                      style: "currency",
-                                      currency: "VND",
-                                    }
-                                  ).format(
+                                  )}, hãy mua thêm ${convertToMoney(
                                     voucher[ind].range
-                                  )} để được giảm giá ${new Intl.NumberFormat(
-                                    "vi-VN",
-                                    {
-                                      style: "currency",
-                                      currency: "VND",
-                                    }
-                                  ).format(voucher[ind].disFeature)}`
-                                : `Đã giảm ${new Intl.NumberFormat("vi-VN", {
-                                    style: "currency",
-                                    currency: "VND",
-                                  }).format(voucher[ind].discount)}`
+                                  )} để được giảm giá ${convertToMoney(
+                                    voucher[ind].disFeature
+                                  )}`
+                                : `Đã giảm ${convertToMoney(
+                                    voucher[ind].discount
+                                  )}`
                               : voucher[ind].range
                               ? `Bạn hãy mua thêm ${
                                   voucher[ind].range
-                                } để được giảm giá ${new Intl.NumberFormat(
-                                  "vi-VN",
-                                  {
-                                    style: "currency",
-                                    currency: "VND",
-                                  }
-                                ).format(voucher[ind].disFeature)}`
+                                } để được giảm giá ${convertToMoney(
+                                  voucher[ind].disFeature
+                                )}`
                               : "Hiện cửa hàng chưa có voucher"
                             : ""}
                         </div>
                       </div>
+
+                      {voucherPerStore ? (
+                        voucherPerStore[ind].length ? (
+                          <div
+                            className='cart-store-title'
+                            key={ind + 3}
+                            style={{ position: "relative" }}
+                          >
+                            <div className='cart-store__voucher'>
+                              voucher {">"}
+                            </div>
+                            <div className='cart-store__threshold'>
+                              {voucherPerStore[ind].map(
+                                (item, indexVoucher) => {
+                                  return (
+                                    <div
+                                      className='cart-store__threshold-item'
+                                      key={indexVoucher}
+                                    >
+                                      Giảm giá {convertToMoney(item.discount)}{" "}
+                                      khi mua hàng trên{" "}
+                                      {convertToMoney(item.bearerDiscount)}
+                                    </div>
+                                  )
+                                }
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        ""
+                      )}
 
                       {item.map((ele, index) => {
                         return (
@@ -413,10 +440,7 @@ function CartPage() {
                               key={"cart__header-total" + index}
                               style={{ width: "13%" }}
                             >
-                              {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              }).format(ele.price * ele.amount)}
+                              {convertToMoney(ele.price * ele.amount)}
                             </div>
                             <div
                               className='cart__header-item'
@@ -484,12 +508,7 @@ function CartPage() {
                 </div>
                 <div className='cart__finalPrice'>
                   Tổng thanh toán:
-                  <p>
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(sum)}
-                  </p>
+                  <p>{convertToMoney(sumCheckout)}</p>
                 </div>
               </div>
             ) : (

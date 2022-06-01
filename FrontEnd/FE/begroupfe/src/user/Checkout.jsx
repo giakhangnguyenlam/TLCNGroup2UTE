@@ -26,13 +26,6 @@ function Checkout() {
   } = useGlobalContext()
   const [checkout, setCheckout] = useState({ type: false, card: false })
   const history = useHistory()
-  let sum = 0
-
-  if (userId && cart) {
-    cart.forEach((element) =>
-      element.forEach((item) => (sum += item.price * item.amount))
-    )
-  }
 
   const handleCheckout = async () => {
     if (checkout.type) {
@@ -251,6 +244,7 @@ function Checkout() {
                         <div
                           className='cart__section-item'
                           style={{ color: "#dc143c", fontSize: "18px" }}
+                          key={index}
                         >
                           {cart[index][0]?.storeName}: -{" "}
                           {new Intl.NumberFormat("vi-VN", {
@@ -354,7 +348,10 @@ function Checkout() {
                   {voucher.length
                     ? voucher.map((item, index) =>
                         Object.keys(item).length && item.discount ? (
-                          <div style={{ color: "#dc143c", fontSize: "18px" }}>
+                          <div
+                            style={{ color: "#dc143c", fontSize: "18px" }}
+                            key={index}
+                          >
                             {cart[index][0]?.storeName}:
                           </div>
                         ) : (
@@ -370,12 +367,15 @@ function Checkout() {
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",
                       currency: "VND",
-                    }).format(sum)}
+                    }).format(sumCheckout)}
                   </div>
                   {voucher.length
-                    ? voucher.map((item) =>
+                    ? voucher.map((item, index) =>
                         Object.keys(item).length && item.discount ? (
-                          <div style={{ color: "#dc143c", fontSize: "18px" }}>
+                          <div
+                            style={{ color: "#dc143c", fontSize: "18px" }}
+                            key={index}
+                          >
                             -{" "}
                             {new Intl.NumberFormat("vi-VN", {
                               style: "currency",

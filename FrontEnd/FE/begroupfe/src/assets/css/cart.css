@@ -356,3 +356,28 @@
   margin-left: 20px;
   text-align: center;
 }
+
+.cart-store__voucher:hover ~ .cart-store__threshold {
+  display: flex;
+}
+
+.cart-store__threshold {
+  position: absolute;
+  background-color: #fff;
+  display: none;
+  flex-direction: column;
+  padding: 6px 10px;
+  z-index: 1;
+  top: -30px;
+  left: 90px;
+  border: 1px solid #d3d3d3;
+  border-radius: 10px;
+  box-shadow: 0 1px 1px 0 rgba(0 0 0 / 5%);
+}
+
+.cart-store__threshold-item {
+  color: #6c6c6c;
+  font-size: 12px;
+  line-height: 14px;
+  margin: 4px 0;
+}

@@ -2,6 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import ReactPaginate from "react-paginate"
 import { useGlobalContext } from "../context"
+import AdminSearch from "./AdminSearch"
 
 function AdminStore({ setHeight }) {
   const jwt = localStorage.getItem("jwt")
@@ -9,6 +10,8 @@ function AdminStore({ setHeight }) {
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [storeList, setStoreList] = useState([])
+  const [storeName, setStoreName] = useState([])
+  const [search, setSearch] = useState("")
   const [isList, setIsList] = useState(false)
 
   useEffect(() => {
@@ -41,6 +44,23 @@ function AdminStore({ setHeight }) {
         }
       } catch (error) {}
     }
+    const fetchAllStoreName = async () => {
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/storenames",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setStoreName(res.data)
+        }
+      } catch (error) {
+        console.log("fetch store name", error)
+      }
+    }
+    fetchAllStoreName()
     fetchData()
     return () => {
       // cancel the subscription
@@ -50,16 +70,28 @@ function AdminStore({ setHeight }) {
 
   useEffect(() => {
     if (storeList) {
-      setPageCount(Math.ceil(storeList.length / 10))
+      setPageCount(
+        Math.ceil(
+          storeList.filter((item) => item.nameStore.includes(search)).length /
+            10
+        )
+      )
     }
-  }, [storeList])
+  }, [storeList.filter((item) => item.nameStore.includes(search))])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 20) % storeList.length
+    const newOffset =
+      (event.selected * 10) %
+      storeList.filter((item) => item.nameStore.includes(search)).length
     setItemOffset(newOffset)
   }
   return (
-    <>
+    <React.Fragment>
+      {storeList.length ? (
+        <AdminSearch setSearch={setSearch} data={storeName} />
+      ) : (
+        ""
+      )}
       <div className='product'>
         <div
           className='grid__row'
@@ -67,49 +99,53 @@ function AdminStore({ setHeight }) {
           // onClick={() => setIdStoreProd(null)}
         >
           {/* Product item */}
-          {storeList.length === 0 ? (
+          {storeList.filter((item) => item.nameStore.includes(search))
+            .length === 0 ? (
             isList ? (
               <div className='waiting'>Không có cửa hàng</div>
             ) : (
               <div className='waiting'>Loading...</div>
             )
           ) : (
-            storeList.slice(itemOffset, itemOffset + 10).map((product) => {
-              const { id, nameStore, image } = product
-              return (
-                <div
-                  className='grid__colum-2-4'
-                  key={id}
-                  onClick={() => setIdStoreUpdate(product)}
-                >
+            storeList
+              .filter((item) => item.nameStore.includes(search))
+              .slice(itemOffset, itemOffset + 10)
+              .map((product) => {
+                const { id, nameStore, image } = product
+                return (
                   <div
-                    className='product-item'
+                    className='grid__colum-2-4'
                     key={id}
-                    style={
-                      idStoreUpdate
-                        ? id === idStoreUpdate.id
-                          ? { border: "2px solid var(--primary-color)" }
-                          : {}
-                        : {}
-                    }
+                    onClick={() => setIdStoreUpdate(product)}
                   >
                     <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${image})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>{nameStore}</h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-cur'></span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>Cửa hàng</span>
+                      className='product-item'
+                      key={id}
+                      style={
+                        idStoreUpdate
+                          ? id === idStoreUpdate.id
+                            ? { border: "2px solid var(--primary-color)" }
+                            : {}
+                          : {}
+                      }
+                    >
+                      <div
+                        className='product-item__img'
+                        style={{
+                          backgroundImage: `url(${image})`,
+                        }}
+                      ></div>
+                      <h4 className='product-item__name'>{nameStore}</h4>
+                      <div className='product-item__price'>
+                        <span className='product-item__price-cur'></span>
+                      </div>
+                      <div className='product-item__origin'>
+                        <span className='product-item__brand'>Cửa hàng</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })
+                )
+              })
           )}
         </div>
       </div>
@@ -132,7 +168,7 @@ function AdminStore({ setHeight }) {
         activeClassName='pagination-item--active'
         renderOnZeroPageCount={null}
       />
-    </>
+    </React.Fragment>
   )
 }
 

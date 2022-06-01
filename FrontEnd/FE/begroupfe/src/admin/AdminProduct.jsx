@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import ReactPaginate from "react-paginate"
 import { useGlobalContext } from "../context"
 import { AiFillStar, AiFillHeart } from "react-icons/ai"
+import AdminSearch from "./AdminSearch"
 
 function AdminProduct({ setHeight }) {
   const jwt = localStorage.getItem("jwt")
@@ -10,6 +11,8 @@ function AdminProduct({ setHeight }) {
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [productList, setProductList] = useState([])
+  const [productName, setProductName] = useState([])
+  const [search, setSearch] = useState("")
   const [isList, setIsList] = useState(false)
 
   useEffect(() => {
@@ -44,6 +47,23 @@ function AdminProduct({ setHeight }) {
         }
       } catch (error) {}
     }
+    const fetchAllProductName = async () => {
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/productnames",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setProductName(res.data)
+        }
+      } catch (error) {
+        console.log("fetch product name", error)
+      }
+    }
+    fetchAllProductName()
     fetchData()
     return () => {
       // cancel the subscription
@@ -53,17 +73,28 @@ function AdminProduct({ setHeight }) {
 
   useEffect(() => {
     if (productList) {
-      setPageCount(Math.ceil(productList.length / 10))
+      setPageCount(
+        Math.ceil(
+          productList.filter((item) => item.name.includes(search)).length / 10
+        )
+      )
     }
-  }, [productList])
+  }, [productList.filter((item) => item.name.includes(search))])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 10) % productList.length
+    const newOffset =
+      (event.selected * 10) %
+      productList.filter((item) => item.name.includes(search)).length
     setItemOffset(newOffset)
   }
 
   return (
-    <>
+    <React.Fragment>
+      {productList.length ? (
+        <AdminSearch setSearch={setSearch} data={productName} />
+      ) : (
+        ""
+      )}
       <div className='product'>
         <div
           className='grid__row'
@@ -71,99 +102,105 @@ function AdminProduct({ setHeight }) {
           // onClick={() => setIdStoreProd(null)}
         >
           {/* Product item */}
-          {productList.length === 0 ? (
+          {productList.filter((item) => item.name.includes(search)).length ===
+          0 ? (
             isList ? (
               <div className='waiting'>Không có sản phẩm</div>
             ) : (
               <div className='waiting'>Loading...</div>
             )
           ) : (
-            productList.slice(itemOffset, itemOffset + 10).map((product) => {
-              let {
-                id,
-                category,
-                name,
-                quantity,
-                price,
-                image,
-                isDiscount,
-                discount,
-              } = product
-              if (category === 1) {
-                category = "Quần áo"
-              }
-              if (category === 2) {
-                category = "Giày"
-              }
-              if (category === 3) {
-                category = "Phụ kiện"
-              }
-              return (
-                <div
-                  className='grid__colum-2-4'
-                  key={id}
-                  onClick={() => setIdStoreProd(product)}
-                >
+            productList
+              .filter((item) => item.name.includes(search))
+              .slice(itemOffset, itemOffset + 10)
+              .map((product) => {
+                let {
+                  id,
+                  category,
+                  name,
+                  quantity,
+                  price,
+                  image,
+                  isDiscount,
+                  discount,
+                } = product
+                if (category === 1) {
+                  category = "Quần áo"
+                }
+                if (category === 2) {
+                  category = "Giày"
+                }
+                if (category === 3) {
+                  category = "Phụ kiện"
+                }
+                return (
                   <div
-                    className='product-item'
+                    className='grid__colum-2-4'
                     key={id}
-                    style={
-                      idStoreProd
-                        ? id === idStoreProd.id
-                          ? { border: "2px solid var(--primary-color)" }
-                          : {}
-                        : {}
-                    }
+                    onClick={() => setIdStoreProd(product)}
                   >
                     <div
-                      className='product-item__img'
-                      style={{
-                        backgroundImage: `url(${image})`,
-                      }}
-                    ></div>
-                    <h4 className='product-item__name'>{name}</h4>
-                    <div className='product-item__price'>
-                      <span className='product-item__price-cur'>
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(price)}
-                      </span>
-                    </div>
-                    <div className='product-item__action'>
-                      <span className='product-item__action-like product-item__action-like--liked'>
-                        <AiFillHeart className='product-item__action-like-icon product-item__heart' />
-                        <AiFillHeart className='product-item__action-liked-icon product-item__heart' />
-                      </span>
-                      <div className='product-item__rating'>
-                        <AiFillStar className='product-item__star--gold product-item__star' />
-                        <AiFillStar className='product-item__star--gold product-item__star' />
-                        <AiFillStar className='product-item__star--gold product-item__star' />
-                        <AiFillStar className='product-item__star--gold product-item__star' />
-                        <AiFillStar className='product-item__star' />
-                      </div>
-                      <span className='product-item__sold'>còn {quantity}</span>
-                    </div>
-                    <div className='product-item__origin'>
-                      <span className='product-item__brand'>{category}</span>
-                      {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
-                    </div>
-                    <div className='product-item__favorite'>
-                      <i className='fas fa-check'></i>
-                      <span>Yêu thích</span>
-                    </div>
-                    {isDiscount && (
-                      <div className='product-item__sale'>
-                        <span className='product-item__sale-percent'>
-                          {discount}%
+                      className='product-item'
+                      key={id}
+                      style={
+                        idStoreProd
+                          ? id === idStoreProd.id
+                            ? { border: "2px solid var(--primary-color)" }
+                            : {}
+                          : {}
+                      }
+                    >
+                      <div
+                        className='product-item__img'
+                        style={{
+                          backgroundImage: `url(${image})`,
+                        }}
+                      ></div>
+                      <h4 className='product-item__name'>{name}</h4>
+                      <div className='product-item__price'>
+                        <span className='product-item__price-cur'>
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(price)}
                         </span>
-                        <span className='product-item__sale-label'>GIẢM</span>
                       </div>
-                    )}
+                      <div className='product-item__action'>
+                        <span className='product-item__action-like product-item__action-like--liked'>
+                          <AiFillHeart className='product-item__action-like-icon product-item__heart' />
+                          <AiFillHeart className='product-item__action-liked-icon product-item__heart' />
+                        </span>
+                        <div className='product-item__rating'>
+                          <AiFillStar className='product-item__star--gold product-item__star' />
+                          <AiFillStar className='product-item__star--gold product-item__star' />
+                          <AiFillStar className='product-item__star--gold product-item__star' />
+                          <AiFillStar className='product-item__star--gold product-item__star' />
+                          <AiFillStar className='product-item__star' />
+                        </div>
+                        <span className='product-item__sold'>
+                          còn {quantity}
+                        </span>
+                      </div>
+                      <div className='product-item__origin'>
+                        <span className='product-item__brand'>{category}</span>
+                        {/* <span className='product-item__origin-name'>Trung Quốc</span> */}
+                      </div>
+                      <div className='product-item__favorite'>
+                        <i className='fas fa-check'></i>
+                        <span>Yêu thích</span>
+                      </div>
+                      {isDiscount && (
+                        <div className='product-item__sale'>
+                          <span className='product-item__sale-percent'>
+                            {discount}%
+                          </span>
+                          <span className='product-item__sale-label'>GIẢM</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )
-            })
+                )
+              })
           )}
         </div>
       </div>
@@ -186,7 +223,7 @@ function AdminProduct({ setHeight }) {
         activeClassName='pagination-item--active'
         renderOnZeroPageCount={null}
       />
-    </>
+    </React.Fragment>
   )
 }
 

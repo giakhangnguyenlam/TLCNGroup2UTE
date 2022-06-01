@@ -2,46 +2,76 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import ReactPaginate from "react-paginate"
 import { useGlobalContext } from "../context"
+import AdminSearch from "./AdminSearch"
 
 function AdminPage() {
   const jwt = localStorage.getItem("jwt")
   const [allUser, setAllUser] = useState()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
+  const [userName, setUserName] = useState([])
+  const [search, setSearch] = useState("")
   const { reloadSell } = useGlobalContext()
 
-  const fetchData = async () => {
-    const url = "https://tlcngroup2be.herokuapp.com/admin/users"
-    try {
-      let res = await axios({
-        method: "get",
-        url,
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      if (res.status === 200) {
-        setAllUser(res.data)
-      }
-    } catch (error) {}
-  }
-
   useEffect(() => {
+    let isApiSubscribed = true
+    const fetchData = async () => {
+      const url = "https://tlcngroup2be.herokuapp.com/admin/users"
+      try {
+        let res = await axios({
+          method: "get",
+          url,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setAllUser(res.data)
+        }
+      } catch (error) {}
+    }
+    const fetchAllUserName = async () => {
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/usernames",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setUserName(res.data)
+        }
+      } catch (error) {
+        console.log("fetch user name", error)
+      }
+    }
+    fetchAllUserName()
     fetchData()
+    return () => {
+      isApiSubscribed = false
+    }
   }, [reloadSell])
 
   useEffect(() => {
     if (allUser) {
-      setPageCount(Math.ceil(allUser.length / 20))
+      setPageCount(
+        Math.ceil(
+          allUser.filter((item) => item.name.includes(search)).length / 20
+        )
+      )
     }
-  }, [allUser])
+  }, [allUser ? allUser.filter((item) => item.name.includes(search)) : ""])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 20) % allUser.length
+    const newOffset =
+      (event.selected * 20) %
+      allUser.filter((item) => item.name.includes(search)).length
     setItemOffset(newOffset)
   }
   return (
-    <>
+    <React.Fragment>
+      {allUser ? <AdminSearch setSearch={setSearch} data={userName} /> : ""}
       <div className='store__contain-item'>
         <div
           className='store-product__body-item '
@@ -74,66 +104,73 @@ function AdminPage() {
         </div>
       </div>
       {allUser ? (
-        allUser.length ? (
-          allUser.slice(itemOffset, itemOffset + 20).map((product, index) => {
-            let { name, dateofbirth, email, address, phone, gender, role } =
-              product
-            if (gender === "male") {
-              gender = "Nam"
-            } else if (gender === "female") {
-              gender = "Nữ"
-            }
-            return (
-              <div className='store__contain-item' key={index}>
-                <div
-                  className='store-product__body-item '
-                  style={{
-                    border: "1px solid #979797",
-                    backgroundColor: "var(--white-color)",
-                  }}
-                >
+        allUser.filter((item) => item.name.includes(search)).length ? (
+          allUser
+            .filter((item) => item.name.includes(search))
+            .slice(itemOffset, itemOffset + 20)
+            .map((product, index) => {
+              let { name, dateofbirth, email, address, phone, gender, role } =
+                product
+              if (gender === "male") {
+                gender = "Nam"
+              } else if (gender === "female") {
+                gender = "Nữ"
+              }
+              return (
+                <div className='store__contain-item' key={index}>
                   <div
-                    className='store-item store-item__number'
-                    style={{ borderRight: "1px solid #979797" }}
+                    className='store-product__body-item '
+                    style={{
+                      border: "1px solid #979797",
+                      backgroundColor: "var(--white-color)",
+                    }}
                   >
-                    {index + 1}
-                  </div>
-                  <div
-                    className='store-item w300x'
-                    style={{ borderRight: "1px solid #979797" }}
-                  >
-                    {name}
-                  </div>
-                  <div
-                    className='store-item__info'
-                    style={{ borderRight: "1px solid #979797" }}
-                  >
-                    <div className='store-item__info-item'>Sđt: {phone}</div>
-                    <div className='store-item__info-item'>Email: {email}</div>
-                    <div className='store-item__info-item'>
-                      Địa chỉ: {address}
+                    <div
+                      className='store-item store-item__number'
+                      style={{ borderRight: "1px solid #979797" }}
+                    >
+                      {index + 1}
                     </div>
-                  </div>
-                  <div className='store-item__info'>
-                    <div className='store-item__info-item'>
-                      Sinh nhật: {dateofbirth}
+                    <div
+                      className='store-item w300x'
+                      style={{ borderRight: "1px solid #979797" }}
+                    >
+                      {name}
                     </div>
-                    <div className='store-item__info-item'>Phái: {gender}</div>
-                    <div className='store-item__info-item'>
-                      Hiện đang là{" "}
-                      {role === "ROLE_USER"
-                        ? "người dùng."
-                        : role === "ROLE_SELLER"
-                        ? "người bán hàng."
-                        : role === "ROLE_SHIPPER"
-                        ? "người giao hàng."
-                        : "người quản trị."}
+                    <div
+                      className='store-item__info'
+                      style={{ borderRight: "1px solid #979797" }}
+                    >
+                      <div className='store-item__info-item'>Sđt: {phone}</div>
+                      <div className='store-item__info-item'>
+                        Email: {email}
+                      </div>
+                      <div className='store-item__info-item'>
+                        Địa chỉ: {address}
+                      </div>
+                    </div>
+                    <div className='store-item__info'>
+                      <div className='store-item__info-item'>
+                        Sinh nhật: {dateofbirth}
+                      </div>
+                      <div className='store-item__info-item'>
+                        Phái: {gender}
+                      </div>
+                      <div className='store-item__info-item'>
+                        Hiện đang là{" "}
+                        {role === "ROLE_USER"
+                          ? "người dùng."
+                          : role === "ROLE_SELLER"
+                          ? "người bán hàng."
+                          : role === "ROLE_SHIPPER"
+                          ? "người giao hàng."
+                          : "người quản trị."}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )
-          })
+              )
+            })
         ) : (
           <div
             className='store__contain-item'
@@ -197,7 +234,7 @@ function AdminPage() {
         activeClassName='pagination-item--active'
         renderOnZeroPageCount={null}
       />
-    </>
+    </React.Fragment>
   )
 }
 

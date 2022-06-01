@@ -85,8 +85,8 @@ function UpdateStore() {
   }
   const fetchData = async () => {
     setLoading(true)
-    const { userId, nameStore, storeDescription } = storeUpdate
-    const data = { userId, nameStore, storeDescription }
+    const { nameStore, storeDescription } = storeUpdate
+    const data = { nameStore, storeDescription }
     try {
       let res = await axios({
         method: "put",
