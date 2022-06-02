@@ -355,6 +355,8 @@
   line-height: 14px;
   margin-left: 20px;
   text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 .cart-store__voucher:hover ~ .cart-store__threshold {

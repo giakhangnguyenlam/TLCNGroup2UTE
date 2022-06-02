@@ -1,9 +1,9 @@
 import React from "react"
 import CountUp from "react-countup"
 
-function DashboardItem({ data, title }) {
+function DashboardItem({ data, title, background }) {
   return (
-    <div className='admin-dashboard__item'>
+    <div className='admin-dashboard__item' style={background}>
       <div className='admin-dashboard__item-title'>{title}</div>
       <div className='admin-dashboard__item-number'>
         {data ? (

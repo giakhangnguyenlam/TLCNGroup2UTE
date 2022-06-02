@@ -2,6 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { BsArrowReturnRight } from "react-icons/bs"
+import { HiOutlineTicket } from "react-icons/hi"
 import { BsHouse } from "react-icons/bs"
 import { useHistory } from "react-router"
 import noCart from "../assets/img/blankCart.png"
@@ -173,6 +174,9 @@ function CartPage() {
             const discount = item.filter(
               (item) => item.bearerDiscount === temp[indexOfTotal + 1]
             )
+            if (sumCheckout === 0) {
+              setSum(sum)
+            }
             return {
               discount: 0,
               range: temp[1] - temp[0],
@@ -184,7 +188,7 @@ function CartPage() {
             (item) => item.bearerDiscount === temp[indexOfTotal - 1]
           )
           if (indexOfTotal === temp.length - 1) {
-            const tempSum = sum - discount[0].discount
+            const tempSum = sum - discount[0].discount <= 0 || 1
             setSum(tempSum)
             return { discount: discount[0].discount }
           }
@@ -192,7 +196,7 @@ function CartPage() {
           const disFeature = item.filter(
             (item) => item.bearerDiscount === temp[indexOfTotal + 1]
           )
-          const tempSum = sum - discount[0].discount
+          const tempSum = sum - discount[0].discount <= 0 || 1
           setSum(tempSum)
           return {
             discount: discount[0].discount,
@@ -229,6 +233,7 @@ function CartPage() {
   }, [isCartReady])
 
   useEffect(() => {}, [reloadSell])
+  useEffect(() => {})
 
   return (
     <div className='container'>
@@ -316,6 +321,7 @@ function CartPage() {
                             style={{ position: "relative" }}
                           >
                             <div className='cart-store__voucher'>
+                              <HiOutlineTicket className='store-item__icon' />{" "}
                               voucher {">"}
                             </div>
                             <div className='cart-store__threshold'>

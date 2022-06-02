@@ -66,12 +66,36 @@ function AdminDashboard() {
         >
           <div className='admin-dashboard__wrap'>
             <div className='admin-dashboard__column'>
-              <DashboardItem data={data.user} title={"Người dùng"} />
-              <DashboardItem data={data.product} title={"Sản phẩm"} />
+              <DashboardItem
+                data={data.user}
+                title={"Người dùng"}
+                background={{
+                  backgroundImage: "linear-gradient(45deg, #451fc3, #2a77d7)",
+                }}
+              />
+              <DashboardItem
+                data={data.product}
+                title={"Sản phẩm"}
+                background={{
+                  backgroundImage: "linear-gradient(45deg, #4e01bc, #2d6cd4)",
+                }}
+              />
             </div>
             <div className='admin-dashboard__column'>
-              <DashboardItem data={data.store} title={"Cửa hàng"} />
-              <DashboardItem data={data.order} title={"Đơn hàng"} />
+              <DashboardItem
+                data={data.store}
+                title={"Cửa hàng"}
+                background={{
+                  backgroundImage: "linear-gradient(45deg, #384acc, #1aaae2)",
+                }}
+              />
+              <DashboardItem
+                data={data.order}
+                title={"Đơn hàng"}
+                background={{
+                  backgroundImage: "linear-gradient(45deg, #3f34c8, #228fdc)",
+                }}
+              />
             </div>
           </div>
         </div>

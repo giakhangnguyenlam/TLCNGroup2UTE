@@ -251,6 +251,15 @@ function AdminBody() {
                 </p>
               </div>
               <div
+                className={`store-product__header-ctrl`}
+                onClick={() => controlPage("statistic")}
+              >
+                <p>
+                  <AiOutlineLineChart className='store-item__icon' />
+                  Doanh thu
+                </p>
+              </div>
+              <div
                 style={{
                   marginBottom: "10px",
                   height: "1px",

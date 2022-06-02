@@ -68,24 +68,28 @@ function Static() {
     let dateUWant = new Date(date.date)
     let dateUHave = new Date(Date.now())
     if (dateUWant <= dateUHave) {
+      const baseUrl = "https://tlcngroup2be.herokuapp.com/"
+      const mainUrl = idStoreUpdate
+        ? `seller/order/${idStoreUpdate.id}/`
+        : "admin/order/"
       if (date.type === "all") {
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/statusfinished`
+        url = `${baseUrl}${mainUrl}statusfinished`
       } else if (date.type === "day") {
         let ndd = String(dateUWant.getDate()).padStart(2, "0")
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/date/${ndd}-${nmm}-${nyyyy}`
+        url = `${baseUrl}${mainUrl}date/${ndd}-${nmm}-${nyyyy}`
       } else if (date.type === "month") {
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/month/${nmm}/year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}month/${nmm}/year/${nyyyy}`
       } else if (date.type === "year") {
         let nyyyy = dateUWant.getFullYear()
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}year/${nyyyy}`
       } else if (date.type === "quarter") {
         let nq = Math.floor((dateUWant.getMonth() + 3) / 3)
         let nyyyy = dateUWant.getFullYear()
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/quarter/${nq}/year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}quarter/${nq}/year/${nyyyy}`
       } else if (date.type === "range") {
         dateUWant = new Date(`${temp.date1}`)
         dateUHave = new Date(`${temp.date2}`)
@@ -95,7 +99,7 @@ function Static() {
         let d2 = String(dateUHave.getDate()).padStart(2, "0")
         let m2 = String(dateUHave.getMonth() + 1).padStart(2, "0")
         let y2 = dateUHave.getFullYear()
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/datestart/${d1}-${m1}-${y1}/dateend/${d2}-${m2}-${y2}`
+        url = `${baseUrl}${mainUrl}datestart/${d1}-${m1}-${y1}/dateend/${d2}-${m2}-${y2}`
       }
       try {
         let res = await axios({
@@ -249,6 +253,7 @@ function Static() {
                       newDate({ ...date, date: `${e.target.value}-01-01` })
                     }}
                   >
+                    <option value='2022'>Năm 2022</option>
                     <option value='2021'>Năm 2021</option>
                   </select>
                 ) : date.type === "quarter" ? (
