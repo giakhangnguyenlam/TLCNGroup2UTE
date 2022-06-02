@@ -174,6 +174,7 @@ function CartPage() {
             const discount = item.filter(
               (item) => item.bearerDiscount === temp[indexOfTotal + 1]
             )
+            console.log(sumCheckout)
             if (sumCheckout === 0) {
               setSum(sum)
             }
@@ -204,6 +205,7 @@ function CartPage() {
             disFeature: disFeature[0].discount,
           }
         }
+        setSum(sum)
         return { discount: 0, range: 0 }
       })
       setVoucher(voucherTemp)
@@ -232,7 +234,7 @@ function CartPage() {
     }
   }, [isCartReady])
 
-  useEffect(() => {}, [reloadSell])
+  // useEffect(() => {}, [reloadSell])
   useEffect(() => {})
 
   return (
