@@ -145,7 +145,7 @@ function SingleProduct() {
               setIsCartUpdate(!isCartUpdate)
               setLoad(false)
             } else {
-              redirect("/cart")
+              window.location.href = window.location.origin + "/cart"
             }
           }
         } catch (error) {

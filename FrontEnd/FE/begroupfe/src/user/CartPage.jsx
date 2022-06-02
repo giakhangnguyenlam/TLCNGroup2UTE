@@ -169,12 +169,10 @@ function CartPage() {
           temp.push(total)
           temp.sort((a, b) => a - b)
           const indexOfTotal = temp.lastIndexOf(total)
-          console.log(temp, indexOfTotal)
           if (indexOfTotal <= 0) {
             const discount = item.filter(
               (item) => item.bearerDiscount === temp[indexOfTotal + 1]
             )
-            console.log(sumCheckout)
             if (sumCheckout === 0) {
               setSum(sum)
             }
@@ -190,7 +188,6 @@ function CartPage() {
           )
           const trueDis = temp[indexOfTotal - 1] - discount[0].discount
           const sumPre = trueDis > 0 ? discount[0].discount : temp[indexOfTotal]
-          console.log(trueDis, sumPre, indexOfTotal)
           if (indexOfTotal === temp.length - 1) {
             const tempSum = sum - sumPre > 0 ? sum - sumPre : 1
             setSum(tempSum)
@@ -209,14 +206,13 @@ function CartPage() {
           }
         }
         if (sumCheckout === 0) {
-          console.log(sum)
           setSum(sum)
         }
         return { discount: 0, range: 0 }
       })
       setVoucher(voucherTemp)
     }
-    if (cart && cart.length !== 0 && isCartReady) {
+    if (cart && cart.length !== 0) {
       getVoucherPerStore()
     }
     let body = document.body,
