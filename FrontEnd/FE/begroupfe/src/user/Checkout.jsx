@@ -311,7 +311,7 @@ function Checkout() {
                   {checkout.card ? (
                     <Paypal
                       value={((sumCheckout + 30000) / 23000).toFixed(1)}
-                      code={cart[0].shareCode}
+                      code={cart[0][0].shareCode}
                       cart={`cart${userId}`}
                     />
                   ) : (

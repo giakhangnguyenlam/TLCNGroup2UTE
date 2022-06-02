@@ -28,9 +28,9 @@ function Paypal({ value, code, cart }) {
             url: `https://utesharecode.herokuapp.com/items/sharecode/${code}`,
           })
           if (resp.status === 200) {
+            history.push("/")
             localStorage.removeItem(cart)
             setLoading(false)
-            history.push("/")
           }
         } catch (error) {
           console.log(error)

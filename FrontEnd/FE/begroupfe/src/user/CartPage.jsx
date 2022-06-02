@@ -188,29 +188,37 @@ function CartPage() {
           const discount = item.filter(
             (item) => item.bearerDiscount === temp[indexOfTotal - 1]
           )
+          const trueDis = temp[indexOfTotal - 1] - discount[0].discount
+          const sumPre = trueDis > 0 ? discount[0].discount : temp[indexOfTotal]
+          console.log(trueDis, sumPre, indexOfTotal)
           if (indexOfTotal === temp.length - 1) {
-            const tempSum = sum - discount[0].discount <= 0 || 1
+            const tempSum = sum - sumPre > 0 ? sum - sumPre : 1
             setSum(tempSum)
-            return { discount: discount[0].discount }
+            return { discount: sumPre }
           }
 
           const disFeature = item.filter(
             (item) => item.bearerDiscount === temp[indexOfTotal + 1]
           )
-          const tempSum = sum - discount[0].discount <= 0 || 1
+          const tempSum = sum - sumPre > 0 ? discount[0].discount : 1
           setSum(tempSum)
           return {
-            discount: discount[0].discount,
+            discount: sumPre,
             range: temp[indexOfTotal + 1] - temp[indexOfTotal],
             disFeature: disFeature[0].discount,
           }
         }
-        setSum(sum)
+        if (sumCheckout === 0) {
+          console.log(sum)
+          setSum(sum)
+        }
         return { discount: 0, range: 0 }
       })
       setVoucher(voucherTemp)
     }
-    getVoucherPerStore()
+    if (cart && cart.length !== 0 && isCartReady) {
+      getVoucherPerStore()
+    }
     let body = document.body,
       html = document.documentElement
 
@@ -235,7 +243,11 @@ function CartPage() {
   }, [isCartReady])
 
   // useEffect(() => {}, [reloadSell])
-  useEffect(() => {})
+  useEffect(() => {
+    if (!userId && !cart) {
+      window.location.href = window.location.origin
+    }
+  })
 
   return (
     <div className='container'>
