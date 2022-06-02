@@ -281,6 +281,10 @@ function Static() {
                     <option value='2021-04'>Quý 2 - 2021</option>
                     <option value='2021-07'>Quý 3 - 2021</option>
                     <option value='2021-10'>Quý 4 - 2021</option>
+                    <option value='2022-01'>Quý 1 - 2022</option>
+                    <option value='2022-04'>Quý 2 - 2022</option>
+                    <option value='2022-07'>Quý 3 - 2022</option>
+                    <option value='2022-10'>Quý 4 - 2022</option>
                   </select>
                 ) : (
                   <>
