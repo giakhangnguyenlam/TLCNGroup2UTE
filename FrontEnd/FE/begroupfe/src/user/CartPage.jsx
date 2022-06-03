@@ -103,7 +103,7 @@ function CartPage() {
       })
       if (res.status === 200) {
         setIsCartUpdate(!isCartUpdate)
-        localStorage.removeItem(`cart${userId}`)
+        // localStorage.removeItem(`cart${userId}`)
         // localStorage.setItem(`cart${userId}`, JSON.stringify(res.data))
         setLoad(false)
       }
@@ -300,25 +300,27 @@ function CartPage() {
                       <div className='cart-store-title' key={ind + 2}>
                         <div className='cart-store__voucher'>
                           {voucher.length
-                            ? voucher[ind].discount
-                              ? voucher[ind].range
-                                ? `Đã giảm ${convertToMoney(
-                                    voucher[ind].discount
-                                  )}, hãy mua thêm ${convertToMoney(
+                            ? voucher[ind].length
+                              ? voucher[ind]?.discount
+                                ? voucher[ind]?.range
+                                  ? `Đã giảm ${convertToMoney(
+                                      voucher[ind].discount
+                                    )}, hãy mua thêm ${convertToMoney(
+                                      voucher[ind].range
+                                    )} để được giảm giá ${convertToMoney(
+                                      voucher[ind].disFeature
+                                    )}`
+                                  : `Đã giảm ${convertToMoney(
+                                      voucher[ind].discount
+                                    )}`
+                                : voucher[ind]?.range
+                                ? `Bạn hãy mua thêm ${
                                     voucher[ind].range
-                                  )} để được giảm giá ${convertToMoney(
+                                  } để được giảm giá ${convertToMoney(
                                     voucher[ind].disFeature
                                   )}`
-                                : `Đã giảm ${convertToMoney(
-                                    voucher[ind].discount
-                                  )}`
-                              : voucher[ind].range
-                              ? `Bạn hãy mua thêm ${
-                                  voucher[ind].range
-                                } để được giảm giá ${convertToMoney(
-                                  voucher[ind].disFeature
-                                )}`
-                              : "Hiện cửa hàng chưa có voucher"
+                                : "Hiện cửa hàng chưa có voucher"
+                              : ""
                             : ""}
                         </div>
                       </div>
