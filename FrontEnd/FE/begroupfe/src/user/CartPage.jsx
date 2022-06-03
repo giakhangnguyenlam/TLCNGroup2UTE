@@ -103,7 +103,7 @@ function CartPage() {
       })
       if (res.status === 200) {
         setIsCartUpdate(!isCartUpdate)
-        // localStorage.removeItem(`cart${userId}`)
+        localStorage.removeItem(`cart${userId}`)
         // localStorage.setItem(`cart${userId}`, JSON.stringify(res.data))
         setLoad(false)
       }
@@ -143,6 +143,14 @@ function CartPage() {
   }
 
   useEffect(() => {
+    let sum = 0
+
+    if (userId && cart) {
+      cart.forEach((element) =>
+        element.forEach((item) => (sum += item.price * item.amount))
+      )
+    }
+    console.log(sum)
     const getVoucherPerStore = async () => {
       let voucherActive = []
       for (let item of cart) {
@@ -190,6 +198,7 @@ function CartPage() {
           const sumPre = trueDis > 0 ? discount[0].discount : temp[indexOfTotal]
           if (indexOfTotal === temp.length - 1) {
             const tempSum = sum - sumPre > 0 ? sum - sumPre : 1
+            sum = tempSum
             setSum(tempSum)
             return { discount: sumPre }
           }
@@ -198,6 +207,7 @@ function CartPage() {
             (item) => item.bearerDiscount === temp[indexOfTotal + 1]
           )
           const tempSum = sum - sumPre > 0 ? discount[0].discount : 1
+          sum = tempSum
           setSum(tempSum)
           return {
             discount: sumPre,
@@ -205,14 +215,15 @@ function CartPage() {
             disFeature: disFeature[0].discount,
           }
         }
-        if (sumCheckout === 0) {
-          setSum(sum)
-        }
+        setSum(sum)
+
         return { discount: 0, range: 0 }
       })
+      console.log(voucherTemp)
       setVoucher(voucherTemp)
     }
     if (cart && cart.length !== 0) {
+      setVoucher([])
       getVoucherPerStore()
     }
     let body = document.body,
@@ -230,7 +241,7 @@ function CartPage() {
     if (userId === null) {
       history.push("/")
     }
-  }, [reloadSell])
+  }, [reloadSell, isCartReady])
 
   useEffect(() => {
     if (cart && cart.length !== 0 && isCartReady) {
@@ -299,34 +310,36 @@ function CartPage() {
 
                       <div className='cart-store-title' key={ind + 2}>
                         <div className='cart-store__voucher'>
-                          {voucher.length
-                            ? voucher[ind].length
-                              ? voucher[ind]?.discount
-                                ? voucher[ind]?.range
-                                  ? `Đã giảm ${convertToMoney(
-                                      voucher[ind].discount
-                                    )}, hãy mua thêm ${convertToMoney(
+                          {voucher
+                            ? voucher?.length !== 0
+                              ? Object.keys(voucher[ind] || []).length
+                                ? voucher[ind]?.discount
+                                  ? voucher[ind]?.range
+                                    ? `Đã giảm ${convertToMoney(
+                                        voucher[ind].discount
+                                      )}, hãy mua thêm ${convertToMoney(
+                                        voucher[ind].range
+                                      )} để được giảm giá ${convertToMoney(
+                                        voucher[ind].disFeature
+                                      )}`
+                                    : `Đã giảm ${convertToMoney(
+                                        voucher[ind].discount
+                                      )}`
+                                  : voucher[ind]?.range
+                                  ? `Bạn hãy mua thêm ${
                                       voucher[ind].range
-                                    )} để được giảm giá ${convertToMoney(
+                                    } để được giảm giá ${convertToMoney(
                                       voucher[ind].disFeature
                                     )}`
-                                  : `Đã giảm ${convertToMoney(
-                                      voucher[ind].discount
-                                    )}`
-                                : voucher[ind]?.range
-                                ? `Bạn hãy mua thêm ${
-                                    voucher[ind].range
-                                  } để được giảm giá ${convertToMoney(
-                                    voucher[ind].disFeature
-                                  )}`
-                                : "Hiện cửa hàng chưa có voucher"
+                                  : "Hiện cửa hàng chưa có voucher"
+                                : ""
                               : ""
                             : ""}
                         </div>
                       </div>
 
                       {voucherPerStore ? (
-                        voucherPerStore[ind].length ? (
+                        voucherPerStore[ind]?.length ? (
                           <div
                             className='cart-store-title'
                             key={ind + 3}

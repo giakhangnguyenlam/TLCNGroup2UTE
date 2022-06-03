@@ -141,8 +141,8 @@ const AppProvider = ({ children }) => {
           Authorization: `Bearer ${jwt}`,
         },
       })
+      const cartName = `cart${userId}`
       if (res.status === 200 && Array.isArray(res.data)) {
-        const cartName = `cart${userId}`
         const tempCart = []
         if (
           localStorage.getItem(cartName) &&
@@ -194,6 +194,7 @@ const AppProvider = ({ children }) => {
             })
           }
         })
+
         const storeDivide = tempCart
           .map((item) => item.storeId)
           .filter((v, i, a) => a.indexOf(v) === i)
@@ -203,6 +204,14 @@ const AppProvider = ({ children }) => {
         )
         localStorage.setItem(cartName, JSON.stringify(finishCart))
         setCartReady(true)
+      } else if (
+        res.status === 200 &&
+        res.data.mess === "Chưa có sản phẩm trong giỏ hàng"
+      ) {
+        const cartCheck = localStorage.getItem(cartName)
+        if (cartCheck) {
+          localStorage.removeItem(cartName)
+        }
       }
       // else {
       //   console.log(res.data, res.status)

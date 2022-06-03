@@ -145,6 +145,8 @@ function SingleProduct() {
               setIsCartUpdate(!isCartUpdate)
               setLoad(false)
             } else {
+              setIsCartUpdate(!isCartUpdate)
+              setLoad(false)
               window.location.href = window.location.origin + "/cart"
             }
           }
