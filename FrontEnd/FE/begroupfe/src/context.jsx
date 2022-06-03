@@ -203,7 +203,7 @@ const AppProvider = ({ children }) => {
           finishCart.push(tempCart.filter((ele) => ele.storeId === item))
         )
         localStorage.setItem(cartName, JSON.stringify(finishCart))
-        setCartReady(true)
+        // setCartReady(true)
       } else if (
         res.status === 200 &&
         res.data.mess === "Chưa có sản phẩm trong giỏ hàng"
@@ -213,6 +213,7 @@ const AppProvider = ({ children }) => {
           localStorage.removeItem(cartName)
         }
       }
+      setCartReady(true)
       // else {
       //   console.log(res.data, res.status)
       //   setCart([])

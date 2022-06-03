@@ -54,20 +54,20 @@ function CartPage() {
           url: `https://utesharecode.herokuapp.com/item/${id}`,
         })
         if (res.status === 200) {
-          // setIsCartUpdate(!isCartUpdate)
-          cart[ind].splice(index, 1)
-          if (cart[ind].length === 0) {
-            cart.splice(ind, 1)
-            if (cart.length === 0) {
-              localStorage.removeItem(`cart${userId}`)
-            } else {
-              localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
-            }
-            setReloadSell(!reloadSell)
-          } else {
-            localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
-            setReloadSell(!reloadSell)
-          }
+          setIsCartUpdate(!isCartUpdate)
+          // cart[ind].splice(index, 1)
+          // if (cart[ind].length === 0) {
+          //   cart.splice(ind, 1)
+          //   if (cart.length === 0) {
+          //     localStorage.removeItem(`cart${userId}`)
+          //   } else {
+          //     localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
+          //   }
+          //   setReloadSell(!reloadSell)
+          // } else {
+          //   localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
+          //   setReloadSell(!reloadSell)
+          // }
           setLoad(false)
         }
       } catch (error) {}
@@ -84,10 +84,10 @@ function CartPage() {
         },
       })
       if (res.status === 200) {
-        // setIsCartUpdate(!isCartUpdate)
+        setIsCartUpdate(!isCartUpdate)
 
-        cart[ind][index].amount = amount
-        localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
+        // cart[ind][index].amount = amount
+        // localStorage.setItem(`cart${userId}`, JSON.stringify(cart))
         setLoad(false)
         setReloadSell(!reloadSell)
       }
@@ -241,13 +241,13 @@ function CartPage() {
     if (userId === null) {
       history.push("/")
     }
-  }, [reloadSell, isCartReady])
-
-  useEffect(() => {
     if (cart && cart.length !== 0 && isCartReady) {
       setCode(cart[0][0].shareCode)
     }
-  }, [isCartReady])
+  }, [reloadSell, isCartReady])
+
+  // useEffect(() => {
+  // }, [isCartReady])
 
   // useEffect(() => {}, [reloadSell])
   useEffect(() => {

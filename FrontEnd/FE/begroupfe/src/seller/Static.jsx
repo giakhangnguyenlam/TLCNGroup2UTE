@@ -23,13 +23,19 @@ function Static() {
   let dd = String(today.getDate()).padStart(2, "0")
   let mm = String(today.getMonth() + 1).padStart(2, "0")
   let yyyy = today.getFullYear()
+  let hh = String(today.getHours()).padStart(2, "0")
+  let min = String(today.getMinutes()).padStart(2, "0")
+  let sec = String(today.getSeconds()).padStart(2, "0")
 
-  today = yyyy + "-" + mm + "-" + dd
+  today = `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec}`
   const [date, newDate] = useState({ date: today, type: "all" })
-  const [temp, setTemp] = useState({ date1: "2021-01-01", date2: "2021-01-02" })
+  const [temp, setTemp] = useState({
+    date1: `${yyyy}-${mm}-${dd}`,
+    date2: `${yyyy}-${mm}-${dd}`,
+  })
 
   const exportEx = () => {
-    let dateUWant = new Date(`${date.date} `)
+    let dateUWant = new Date(date.date)
     let ndd = String(dateUWant.getDate()).padStart(2, "0")
     let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
     let nyyyy = dateUWant.getFullYear()
@@ -224,14 +230,17 @@ function Static() {
                   <input
                     type='date'
                     className='order__date'
-                    value={date.date}
+                    value={date.date.split(" ")[0]}
                     onChange={(e) => {
                       if (date.type === "all") {
                         setOrders(undefined)
-                        newDate({ type: "day", date: e.target.value })
+                        newDate({
+                          type: "day",
+                          date: `${e.target.value} 00:00:00`,
+                        })
                       } else {
                         setOrders(undefined)
-                        newDate({ ...date, date: e.target.value })
+                        newDate({ ...date, date: `${e.target.value} 00:00:00` })
                       }
                     }}
                   />
@@ -261,16 +270,16 @@ function Static() {
                     className='order__date'
                     value={
                       Math.floor((Number(date.date.slice(5, 7)) + 2) / 3) === 1
-                        ? "2021-01"
+                        ? "2022-01"
                         : Math.floor(
                             (Number(date.date.slice(5, 7)) + 2) / 3
                           ) === 2
-                        ? "2021-04"
+                        ? "2022-04"
                         : Math.floor(
                             (Number(date.date.slice(5, 7)) + 2) / 3
                           ) === 3
-                        ? "2021-07"
-                        : "2021-10"
+                        ? "2022-07"
+                        : "2022-10"
                     }
                     onChange={(e) => {
                       setOrders(undefined)
@@ -291,6 +300,7 @@ function Static() {
                     <input
                       type='date'
                       className='order__date'
+                      value={temp.date1}
                       onChange={(e) => {
                         setTemp({ ...temp, date1: e.target.value })
                       }}
@@ -298,6 +308,7 @@ function Static() {
                     <input
                       type='date'
                       className='order__date'
+                      value={temp.date2}
                       onChange={(e) => {
                         setTemp({ ...temp, date2: e.target.value })
                         if (new Date(temp.date1) < new Date(e.target.value)) {
@@ -397,7 +408,7 @@ function Static() {
                   <span>
                     {(date.type === "all" && "Từ lúc mở bán") ||
                       (date.type === "day" &&
-                        `Vào ngày ${date.date.slice(8)}/${date.date.slice(
+                        `Vào ngày ${date.date.slice(8, 10)}/${date.date.slice(
                           5,
                           7
                         )}/${date.date.slice(0, 4)}`) ||
@@ -413,11 +424,12 @@ function Static() {
                           (Number(date.date.slice(5, 7)) + 2) / 3
                         )} năm ${date.date.slice(0, 4)}`) ||
                       (date.type === "range" &&
-                        `Từ ${temp.date1.slice(8)}/${date.date.slice(
+                        `Từ ${temp.date1.slice(8, 10)}/${date.date.slice(
                           5,
                           7
                         )}/${date.date.slice(0, 4)} đến ${temp.date2.slice(
-                          8
+                          8,
+                          10
                         )}/${date.date.slice(5, 7)}/${date.date.slice(0, 4)}`)}
                     , bạn có {orders.length} đơn hàng và tổng giá trị là{" "}
                     {new Intl.NumberFormat("vi-VN", {

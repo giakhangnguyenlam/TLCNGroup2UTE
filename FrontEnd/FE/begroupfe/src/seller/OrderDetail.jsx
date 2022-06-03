@@ -24,8 +24,11 @@ function OrderDetail() {
   let dd = String(today.getDate()).padStart(2, "0")
   let mm = String(today.getMonth() + 1).padStart(2, "0")
   let yyyy = today.getFullYear()
+  let hh = String(today.getHours()).padStart(2, "0")
+  let min = String(today.getMinutes()).padStart(2, "0")
+  let sec = String(today.getSeconds()).padStart(2, "0")
 
-  today = yyyy + "-" + mm + "-" + dd
+  today = `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec}`
   const [date, newDate] = useState(today)
 
   const handleCheck = async (id) => {
@@ -55,6 +58,7 @@ function OrderDetail() {
 
   const fetchData = async () => {
     setScreen(false)
+    setOrders(null)
     let url = ""
     let dateUWant = new Date(date)
     let dateUHave = new Date(Date.now())
@@ -70,8 +74,9 @@ function OrderDetail() {
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
 
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/date/${ndd}-${nmm}-${nyyyy}`
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/datestatus/${ndd}-${nmm}-${nyyyy}`
       }
+      console.log(url)
       try {
         let res = await axios({
           method: "get",
@@ -119,8 +124,8 @@ function OrderDetail() {
                 <input
                   type='date'
                   className='order__date'
-                  value={date}
-                  onChange={(e) => newDate(e.target.value)}
+                  value={date.split(" ")[0]}
+                  onChange={(e) => newDate(`${e.target.value} 00:00:00`)}
                 />
               </div>
               <div className='store-product__header-nav'>
