@@ -45,6 +45,10 @@ function AdminBody() {
     setIsDetailInfo,
     setCateStoreProd,
     setIsDetailUpdate,
+    inactiveTab,
+    setInactiveTab,
+    inactiveProd,
+    setInactiveProd,
   } = useGlobalContext()
   const [height, setHeight] = useState(0)
   const [adminPage, setAdminPage] = useState("dashboard")
@@ -53,7 +57,21 @@ function AdminBody() {
   const handleChange = (page) => {
     setIdStoreUpdate(null)
     setIdStoreProd(null)
-    setAdminPage(page)
+    switch (page) {
+      case "restore":
+        setAdminPage("")
+        setInactiveTab(true)
+        break
+      case "reitem":
+        setAdminPage("")
+        setInactiveProd(true)
+        break
+      default:
+        setInactiveTab(false)
+        setInactiveProd(false)
+        setAdminPage(page)
+        break
+    }
   }
 
   const handleInfo = async () => {
@@ -290,6 +308,17 @@ function AdminBody() {
               </div>
               <div
                 className={`store-product__header-ctrl${
+                  inactiveTab ? "--active" : ""
+                }`}
+                onClick={() => handleChange("restore")}
+              >
+                <p>
+                  <AiOutlineShop className='store-item__icon' />
+                  Khôi phục cửa hàng
+                </p>
+              </div>
+              <div
+                className={`store-product__header-ctrl${
                   adminPage === "item" ? "--active" : ""
                 }`}
                 onClick={() => handleChange("item")}
@@ -297,6 +326,17 @@ function AdminBody() {
                 <p>
                   <AiOutlineShopping className='store-item__icon' />
                   Sản phẩm
+                </p>
+              </div>
+              <div
+                className={`store-product__header-ctrl${
+                  inactiveProd ? "--active" : ""
+                }`}
+                onClick={() => handleChange("reitem")}
+              >
+                <p style={{ fontSize: "1.4rem" }}>
+                  <AiOutlineShopping className='store-item__icon' />
+                  Khôi phục sản phẩm
                 </p>
               </div>
               <div
@@ -310,109 +350,151 @@ function AdminBody() {
                   Tổng đơn hàng
                 </p>
               </div>
-              {idStoreUpdate && (
-                <React.Fragment>
-                  <div
-                    style={{
-                      marginBottom: "10px",
-                      height: "1px",
-                      backgroundColor: "#999",
-                    }}
-                  ></div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("updateStore")}
-                  >
-                    <p>
-                      <AiOutlineEdit className='store-item__icon' />
-                      Sửa thông tin
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("order")}
-                  >
-                    <p>
-                      <AiOutlineOrderedList className='store-item__icon' />
-                      Đơn hàng
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("statistic")}
-                  >
-                    <p>
-                      <AiOutlineLineChart className='store-item__icon' />
-                      Thống kê
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("voucher")}
-                  >
-                    <p>
-                      <HiOutlineTicket className='store-item__icon' />
-                      Voucher
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDelete}
-                  >
-                    <p>
-                      <AiOutlineDelete className='store-item__icon' />
-                      Xóa cửa hàng
-                    </p>
-                  </div>
-                </React.Fragment>
-              )}
-              {idStoreProd && (
-                <React.Fragment>
-                  <div
-                    style={{
-                      marginBottom: "10px",
-                      height: "1px",
-                      backgroundColor: "#999",
-                    }}
-                  ></div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("updateProd")}
-                  >
-                    <p>
-                      <AiOutlineEdit className='store-item__icon' />
-                      Sửa thông tin
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleInfo}
-                  >
-                    <p>
-                      <AiOutlineInfoCircle className='store-item__icon' />
-                      Chi tiết sản phẩm
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={() => controlPage("discount")}
-                  >
-                    <p>
-                      <RiCoupon3Line className='store-item__icon' />
-                      Mã giảm giá
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDelete}
-                  >
-                    <p>
-                      <AiOutlineDelete className='store-item__icon' />
-                      Xóa sản phẩm
-                    </p>
-                  </div>
-                </React.Fragment>
-              )}
+
+              {idStoreUpdate &&
+                (inactiveTab ? (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("updateStore")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Khôi phục
+                      </p>
+                    </div>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("updateStore")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Sửa thông tin
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("order")}
+                    >
+                      <p>
+                        <AiOutlineOrderedList className='store-item__icon' />
+                        Đơn hàng
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("statistic")}
+                    >
+                      <p>
+                        <AiOutlineLineChart className='store-item__icon' />
+                        Thống kê
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("voucher")}
+                    >
+                      <p>
+                        <HiOutlineTicket className='store-item__icon' />
+                        Voucher
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleDelete}
+                    >
+                      <p>
+                        <AiOutlineDelete className='store-item__icon' />
+                        Xóa cửa hàng
+                      </p>
+                    </div>
+                  </React.Fragment>
+                ))}
+
+              {idStoreProd &&
+                (inactiveProd ? (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("updateProd")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Khôi phục
+                      </p>
+                    </div>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("updateProd")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Sửa thông tin
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleInfo}
+                    >
+                      <p>
+                        <AiOutlineInfoCircle className='store-item__icon' />
+                        Chi tiết sản phẩm
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("discount")}
+                    >
+                      <p>
+                        <RiCoupon3Line className='store-item__icon' />
+                        Mã giảm giá
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleDelete}
+                    >
+                      <p>
+                        <AiOutlineDelete className='store-item__icon' />
+                        Xóa sản phẩm
+                      </p>
+                    </div>
+                  </React.Fragment>
+                ))}
             </nav>
           </div>
 
@@ -420,7 +502,9 @@ function AdminBody() {
             {adminPage === "dashboard" && <AdminDashboard />}
             {adminPage === "user" && <AdminUser />}
             {adminPage === "store" && <AdminStore setHeight={setHeight} />}
+            {inactiveTab && <AdminStore setHeight={setHeight} />}
             {adminPage === "item" && <AdminProduct setHeight={setHeight} />}
+            {inactiveProd && <AdminProduct setHeight={setHeight} />}
             {adminPage === "order" && <AdminOrders />}
           </div>
         </div>

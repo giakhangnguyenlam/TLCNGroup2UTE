@@ -7,7 +7,8 @@ import AdminSearch from "./AdminSearch"
 
 function AdminProduct({ setHeight }) {
   const jwt = localStorage.getItem("jwt")
-  const { idStoreProd, setIdStoreProd, reloadDetailStore } = useGlobalContext()
+  const { idStoreProd, setIdStoreProd, reloadDetailStore, inactiveProd } =
+    useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [productList, setProductList] = useState([])
@@ -36,7 +37,9 @@ function AdminProduct({ setHeight }) {
       try {
         let res = await axios({
           method: "get",
-          url: "https://tlcngroup2be.herokuapp.com/admin/products",
+          url: `https://tlcngroup2be.herokuapp.com/admin/${
+            inactiveProd ? "inactive" : ""
+          }products`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -51,7 +54,9 @@ function AdminProduct({ setHeight }) {
       try {
         let res = await axios({
           method: "get",
-          url: "https://tlcngroup2be.herokuapp.com/admin/productnames",
+          url: `https://tlcngroup2be.herokuapp.com/admin/${
+            inactiveProd ? "inactive" : ""
+          }productnames`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -63,13 +68,17 @@ function AdminProduct({ setHeight }) {
         console.log("fetch product name", error)
       }
     }
+    setProductList([])
+    setProductName([])
+    setIsList(false)
     fetchAllProductName()
     fetchData()
     return () => {
       // cancel the subscription
       isApiSubscribed = false
+      setIdStoreProd(null)
     }
-  }, [reloadDetailStore])
+  }, [reloadDetailStore, inactiveProd])
 
   useEffect(() => {
     if (productList) {

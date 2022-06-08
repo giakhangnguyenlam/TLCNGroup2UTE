@@ -31,14 +31,10 @@ function BodySell() {
     setIsVoucher,
     raise,
     setRaise,
+    inactiveTab,
+    setInactiveTab,
   } = useGlobalContext()
 
-  const handleClick = () => {
-    setIsCreateStore(!isCreateStore)
-  }
-  const handleUpdateStore = () => {
-    setIsUpdateStore(!isUpdateStore)
-  }
   const handleDeleteStore = async () => {
     let del = window.confirm("Bạn muốn xóa cửa hàng này?")
     if (del) {
@@ -65,19 +61,33 @@ function BodySell() {
       }
     }
   }
-  const handleDetailStore = () => {
-    // setIdStoreUpdate(store)
-    history.push(`/seller/store/${idStoreUpdate.id}`)
-  }
-  const handleOrderDetail = () => {
-    setIsOrderDetail(true)
-  }
-  const handleStatic = () => {
-    setIsStatic(true)
-  }
 
-  const handleVoucher = () => {
-    setIsVoucher(true)
+  const controlPage = (control) => {
+    switch (control) {
+      case "create":
+        setIsCreateStore(!isCreateStore)
+        break
+      case "restore":
+        setInactiveTab(true)
+        break
+      case "update":
+        setIsUpdateStore(!isUpdateStore)
+        break
+      case "detail":
+        history.push(`/seller/store/${idStoreUpdate.id}`)
+        break
+      case "order":
+        setIsOrderDetail(true)
+        break
+      case "statistic":
+        setIsStatic(true)
+        break
+      case "voucher":
+        setIsVoucher(true)
+        break
+      default:
+        break
+    }
   }
 
   useEffect(() => {
@@ -104,72 +114,128 @@ function BodySell() {
         <div className='grid__row contain'>
           <div className='grid__colum-2'>
             <nav style={{ marginBottom: "10px" }}>
-              <div className='store-product__header-ctrl' onClick={handleClick}>
-                <p>+ Thêm cửa hàng</p>
+              {inactiveTab ? (
+                <div
+                  className='store-product__header-ctrl'
+                  onClick={() => setInactiveTab(false)}
+                >
+                  <p>
+                    <AiOutlineShop className='store-item__icon' />
+                    Về trang chủ
+                  </p>
+                </div>
+              ) : (
+                <div
+                  className='store-product__header-ctrl'
+                  onClick={() => controlPage("create")}
+                >
+                  <p>+ Thêm cửa hàng</p>
+                </div>
+              )}
+              <div
+                className={`store-product__header-ctrl${
+                  inactiveTab ? "--active" : ""
+                }`}
+                onClick={() => controlPage("restore")}
+              >
+                <p>
+                  <AiOutlineEdit className='store-item__icon' />
+                  Khôi phục cửa hàng
+                </p>
               </div>
-              {idStoreUpdate && (
-                <>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleUpdateStore}
-                  >
-                    <p>
-                      <AiOutlineEdit className='store-item__icon' />
-                      Sửa thông tin
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDeleteStore}
-                  >
-                    <p>
-                      <AiOutlineDelete className='store-item__icon' />
-                      Xóa cửa hàng
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleDetailStore}
-                  >
-                    <p>
-                      <AiOutlineShop className='store-item__icon' />
-                      Xem cửa hàng
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleOrderDetail}
-                  >
-                    <p>
-                      <AiOutlineOrderedList className='store-item__icon' />
-                      Đơn hàng
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleStatic}
-                  >
-                    <p>
-                      <AiOutlineLineChart className='store-item__icon' />
-                      Thống kê
-                    </p>
-                  </div>
-                  <div
-                    className='store-product__header-ctrl'
-                    onClick={handleVoucher}
-                  >
-                    <p>
-                      <HiOutlineTicket className='store-item__icon' />
-                      Voucher
-                    </p>
-                  </div>
-                </>
+              {idStoreUpdate ? (
+                inactiveTab ? (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("update")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Khôi phục
+                      </p>
+                    </div>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        height: "1px",
+                        backgroundColor: "#999",
+                      }}
+                    ></div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("update")}
+                    >
+                      <p>
+                        <AiOutlineEdit className='store-item__icon' />
+                        Sửa thông tin
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={handleDeleteStore}
+                    >
+                      <p>
+                        <AiOutlineDelete className='store-item__icon' />
+                        Xóa cửa hàng
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("detail")}
+                    >
+                      <p>
+                        <AiOutlineShop className='store-item__icon' />
+                        Xem cửa hàng
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("order")}
+                    >
+                      <p>
+                        <AiOutlineOrderedList className='store-item__icon' />
+                        Đơn hàng
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("statistic")}
+                    >
+                      <p>
+                        <AiOutlineLineChart className='store-item__icon' />
+                        Thống kê
+                      </p>
+                    </div>
+                    <div
+                      className='store-product__header-ctrl'
+                      onClick={() => controlPage("voucher")}
+                    >
+                      <p>
+                        <HiOutlineTicket className='store-item__icon' />
+                        Voucher
+                      </p>
+                    </div>
+                  </React.Fragment>
+                )
+              ) : (
+                ""
               )}
             </nav>
           </div>
 
           <div className='grid__colum-10'>
-            <Store item={10} />
+            <Store item={10} inactiveTab={inactiveTab} />
           </div>
         </div>
       </div>

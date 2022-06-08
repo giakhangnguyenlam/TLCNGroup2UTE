@@ -6,7 +6,8 @@ import AdminSearch from "./AdminSearch"
 
 function AdminStore({ setHeight }) {
   const jwt = localStorage.getItem("jwt")
-  const { idStoreUpdate, setIdStoreUpdate, reloadSell } = useGlobalContext()
+  const { idStoreUpdate, setIdStoreUpdate, reloadSell, inactiveTab } =
+    useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [storeList, setStoreList] = useState([])
@@ -33,7 +34,9 @@ function AdminStore({ setHeight }) {
       try {
         let res = await axios({
           method: "get",
-          url: "https://tlcngroup2be.herokuapp.com/admin/stores",
+          url: `https://tlcngroup2be.herokuapp.com/admin/${
+            inactiveTab ? "inactive" : ""
+          }stores`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -48,7 +51,9 @@ function AdminStore({ setHeight }) {
       try {
         let res = await axios({
           method: "get",
-          url: "https://tlcngroup2be.herokuapp.com/admin/storenames",
+          url: `https://tlcngroup2be.herokuapp.com/admin/${
+            inactiveTab ? "inactive" : ""
+          }storenames`,
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
@@ -60,13 +65,18 @@ function AdminStore({ setHeight }) {
         console.log("fetch store name", error)
       }
     }
+
+    setStoreList([])
+    setStoreName([])
+    setIsList(false)
     fetchAllStoreName()
     fetchData()
     return () => {
       // cancel the subscription
       isApiSubscribed = false
+      setIdStoreUpdate(null)
     }
-  }, [reloadSell])
+  }, [reloadSell, inactiveTab])
 
   useEffect(() => {
     if (storeList) {

@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate"
 import { useParams } from "react-router-dom/cjs/react-router-dom.min"
 import { useGlobalContext } from "../../context"
 
-function StoreItem({ item }) {
+function StoreItem({ item, inactiveProd }) {
   const { storeId } = useParams()
   const { setIdStoreProd, idStoreProd, reloadDetailStore } = useGlobalContext()
   const jwt = localStorage.getItem("jwt")
@@ -18,7 +18,9 @@ function StoreItem({ item }) {
     try {
       let res = await axios({
         method: "get",
-        url: `https://tlcngroup2be.herokuapp.com/seller/product/store/${storeId}`,
+        url: `https://tlcngroup2be.herokuapp.com/seller/${
+          inactiveProd ? "inactive" : ""
+        }product/store/${storeId}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -30,8 +32,13 @@ function StoreItem({ item }) {
     } catch (error) {}
   }
   useEffect(() => {
+    setIsList(false)
+    setProductList([])
     fetchData()
-  }, [reloadDetailStore])
+    return () => {
+      setIdStoreProd(null)
+    }
+  }, [reloadDetailStore, inactiveProd])
   useEffect(() => {
     document.documentElement.scrollTop = 0
     setPageCount(Math.ceil(productList.length / item))

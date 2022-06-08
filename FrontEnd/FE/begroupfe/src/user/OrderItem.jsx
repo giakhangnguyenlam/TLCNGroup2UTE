@@ -8,7 +8,6 @@ function OrderItem({ orderId }) {
   const { setIsComment } = useGlobalContext()
 
   const [orderInfo, setOrderInfo] = useState()
-  const [detail, setDetail] = useState()
 
   const handleCmt = (prodId) => {
     setIsComment(true)
@@ -17,7 +16,7 @@ function OrderItem({ orderId }) {
 
   const fetchData = async () => {
     try {
-      let res = await axios({
+      const res = await axios({
         method: "get",
         url: `https://tlcngroup2be.herokuapp.com/user/orderdetailhistory/${orderId}`,
         headers: {
@@ -25,29 +24,7 @@ function OrderItem({ orderId }) {
         },
       })
       if (res.status === 200) {
-        let type = []
-        let quantities = []
-        let description = []
-        let list = res.data
-        for await (const item of list) {
-          const productId = item["productId"]
-          quantities.push(item["quantity"])
-          description.push(item["description"])
-          try {
-            let result = await axios({
-              method: "get",
-              url: `https://tlcngroup2be.herokuapp.com/product/${productId}`,
-            })
-            if (result.status === 200) {
-              const { image, name, price, quantity } = await result.data
-              type.push({ productId, image, name, price, quantity })
-            }
-          } catch (error) {
-            console.log(error)
-          }
-        }
-        setDetail({ description, quantities })
-        setOrderInfo(type)
+        setOrderInfo(res.data)
       }
     } catch (error) {
       console.log(error)
@@ -119,11 +96,11 @@ function OrderItem({ orderId }) {
                           <div
                             className='cart__img'
                             style={{
-                              backgroundImage: `url(${item.image})`,
+                              backgroundImage: `url(${item.productImage})`,
                             }}
                           ></div>
                           <div className='cart__item-name'>
-                            <p>{item.name}</p>
+                            <p>{item.productName}</p>
                           </div>
                         </div>
                       </div>
@@ -132,7 +109,7 @@ function OrderItem({ orderId }) {
                         className='cart__header-item'
                         style={{ width: "20%" }}
                       >
-                        {detail.description[index]}
+                        {item.description}
                       </div>
                       <div
                         className='cart__header-item'
@@ -147,7 +124,7 @@ function OrderItem({ orderId }) {
                         className='cart__header-item'
                         style={{ width: "14%" }}
                       >
-                        {detail.quantities[index]}
+                        {item.quantity}
                       </div>
                       <div
                         className='cart__header-item cart__total'
@@ -156,7 +133,7 @@ function OrderItem({ orderId }) {
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
-                        }).format(item.price * detail.quantities[index])}
+                        }).format(item.price * item.quantity)}
                       </div>
                       <div className='cart__header-item'>
                         <p

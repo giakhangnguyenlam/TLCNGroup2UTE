@@ -3,7 +3,7 @@ import { useGlobalContext } from "../context"
 import ReactPaginate from "react-paginate"
 import axios from "axios"
 
-function Store({ item }) {
+function Store({ item, inactiveTab }) {
   const { idStoreUpdate, setIdStoreUpdate, reloadSell } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
@@ -22,7 +22,9 @@ function Store({ item }) {
     try {
       let res = await axios({
         method: "get",
-        url: `https://tlcngroup2be.herokuapp.com/seller/store/userid/${userid}`,
+        url: `https://tlcngroup2be.herokuapp.com/seller/${
+          inactiveTab ? "inactive" : ""
+        }store/userid/${userid}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -35,8 +37,13 @@ function Store({ item }) {
   }
 
   useEffect(() => {
+    setIsList(false)
+    setStoreList([])
     fetchData()
-  }, [reloadSell])
+    return () => {
+      setIdStoreUpdate(null)
+    }
+  }, [reloadSell, inactiveTab])
 
   useEffect(() => {
     document.documentElement.scrollTop = 0

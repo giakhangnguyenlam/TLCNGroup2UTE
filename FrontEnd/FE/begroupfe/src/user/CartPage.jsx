@@ -120,6 +120,7 @@ function CartPage() {
       listDescription: [],
       listProductNames: [],
       listPrices: [],
+      listProductImage: [],
     }
     cart.forEach((ele) =>
       ele.forEach((item) => {
@@ -128,6 +129,7 @@ function CartPage() {
         data.listDescription.push(item.description)
         data.listProductNames.push(item.name)
         data.listPrices.push(item.price)
+        data.listProductImage.push(item.image)
       })
     )
     setOrderData(data)
