@@ -24,6 +24,7 @@ const AppProvider = ({ children }) => {
   }
 
   const jwt = localStorage.getItem("jwt")
+  const role = localStorage.getItem("role")
   const userId = localStorage.getItem("id")
 
   const [searchInfo, setSearchInfo] = useState("")
@@ -262,7 +263,7 @@ const AppProvider = ({ children }) => {
   }, [cate, cateType])
 
   useEffect(() => {
-    if (userId && jwt) {
+    if (userId && jwt && role === "ROLE_USER") {
       fetchCart()
     }
   }, [isCartUpdate])
