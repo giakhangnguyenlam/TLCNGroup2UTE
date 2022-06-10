@@ -1,11 +1,22 @@
-import React from "react"
+import React, { useState, useRef } from "react"
 import Product from "./Product"
 import { cateCloList, cateShoList, cateAccList } from "../ultis/data"
 import { useGlobalContext } from "../context"
+import "../assets/css/body.css"
 
 function Body() {
+  const [sort, setSort] = useState("none")
+  const [filter, setFilter] = useState({ start: 0, end: Infinity })
+  const from = useRef()
+  const to = useRef()
   const { cate, cateType, setCate, setCateType, setCateName } =
     useGlobalContext()
+
+  const handleFilter = () => {
+    const start = Number(from.current.value) || 0
+    const end = Number(to.current.value) || Infinity
+    setFilter({ start, end })
+  }
 
   return (
     <div className='container'>
@@ -139,7 +150,36 @@ function Body() {
           </div>
 
           <div className='grid__colum-10'>
-            <Product item={10} />
+            <div className='filter__wrap'>
+              <div
+                className='filter__item'
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <div className='filter__label'>Từ:</div>
+                <input className='filter__input' type='number' ref={from} />
+                <div className='filter__label'>Đến:</div>
+                <input className='filter__input' type='number' ref={to} />
+                <div
+                  className='filter__item filter__btn'
+                  onClick={handleFilter}
+                >
+                  Lọc
+                </div>
+              </div>
+              <div
+                className='filter__item filter__btn'
+                onClick={() => setSort("desc")}
+              >
+                Giảm Dần
+              </div>
+              <div
+                className='filter__item filter__btn'
+                onClick={() => setSort("inc")}
+              >
+                Tăng dần
+              </div>
+            </div>
+            <Product item={10} sort={sort} filter={filter} />
           </div>
         </div>
       </div>

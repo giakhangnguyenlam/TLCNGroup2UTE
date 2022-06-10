@@ -1,12 +1,17 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import ReactPaginate from "react-paginate"
+import { useGlobalContext } from "../context"
+import AdminSearch from "./AdminSearch"
 
-function AdminOrder() {
+function AdminOrder({ orderId, setOrderId, setHeight }) {
   const jwt = localStorage.getItem("jwt")
+  const [search, setSearch] = useState("")
+  const [allSearch, setAllSearch] = useState()
   const [allOrder, setAllOrder] = useState()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
+  const { reloadSell } = useGlobalContext()
 
   const fetchData = async () => {
     try {
@@ -24,21 +29,70 @@ function AdminOrder() {
   }
 
   useEffect(() => {
+    let isApiSubscribed = true
+    const body = document.body,
+      html = document.documentElement
+    setHeight(
+      Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      )
+    )
+    const fetchAllId = async () => {
+      try {
+        let res = await axios({
+          method: "get",
+          url: "https://tlcngroup2be.herokuapp.com/admin/orderids",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200 && isApiSubscribed) {
+          setAllSearch(res.data)
+        }
+      } catch (error) {
+        console.log("fetch user name", error)
+      }
+    }
+    fetchAllId()
     fetchData()
-  }, [])
+    return () => {
+      isApiSubscribed = false
+    }
+  }, [reloadSell])
 
   useEffect(() => {
     if (allOrder) {
-      setPageCount(Math.ceil(allOrder.length / 15))
+      setPageCount(
+        Math.ceil(
+          allOrder.filter((item) => item.id.toString().includes(search))
+            .length / 15
+        )
+      )
     }
-  }, [allOrder])
+  }, [
+    allOrder
+      ? allOrder.filter((item) => item.id.toString().includes(search))
+      : "",
+  ])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 15) % allOrder.length
+    const newOffset =
+      (event.selected * 15) %
+      allOrder.filter((item) => item.id.toString().includes(search)).length
     setItemOffset(newOffset)
   }
+
   return (
-    <>
+    <React.Fragment>
+      {allOrder ? (
+        <AdminSearch setSearch={setSearch} data={allSearch} typeSearch={"id"} />
+      ) : (
+        ""
+      )}
       <div className='store__contain-item'>
         <div
           className='store-product__body-item '
@@ -80,60 +134,69 @@ function AdminOrder() {
         </div>
       </div>
       {allOrder ? (
-        allOrder.slice(itemOffset, itemOffset + 15).map((product) => {
-          const { id, userId, orderDate, total, orderStatus, paymentStatus } =
-            product
-          return (
-            <div className='store__contain-item' key={id}>
-              <div
-                className='store-product__body-item '
-                style={{
-                  border: "1px solid #979797",
-                  minHeight: "30px",
-                  backgroundColor: "var(--white-color)",
-                }}
-              >
+        allOrder
+          .filter((item) => item.id.toString().includes(search))
+          .slice(itemOffset, itemOffset + 15)
+          .map((product) => {
+            const { id, userId, orderDate, total, orderStatus, paymentStatus } =
+              product
+            return (
+              <div className='store__contain-item' key={id}>
                 <div
-                  className='store-item'
+                  className='store-product__body-item '
                   style={{
-                    borderRight: "1px solid #979797",
-                    width: "120px",
+                    border: `1px solid ${
+                      orderId === id ? "var(--primary-color)" : "#979797"
+                    }`,
+                    minHeight: "30px",
+                    cursor: "pointer",
+                    backgroundColor: `${
+                      orderId === id ? "#c9eaf7" : "var(--white-color)"
+                    }`,
                   }}
+                  onClick={() => orderStatus !== "Đã hủy" && setOrderId(id)}
                 >
-                  {userId}
-                </div>
-                <div
-                  className='store-item w20'
-                  style={{ borderRight: "1px solid #979797" }}
-                >
-                  {orderDate}
-                </div>
-                <div
-                  className='store-item__info-nav--35'
-                  style={{
-                    borderRight: "1px solid #979797",
-                  }}
-                >
-                  {orderStatus}
-                </div>
-                <div
-                  className='store-item__info-nav--35'
-                  style={{
-                    borderRight: "1px solid #979797",
-                  }}
-                >
-                  {paymentStatus}
-                </div>
-                <div className='store-item__info-nav--35'>
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(total)}
+                  <div
+                    className='store-item'
+                    style={{
+                      borderRight: "1px solid #979797",
+                      width: "120px",
+                    }}
+                  >
+                    {userId}
+                  </div>
+                  <div
+                    className='store-item w20'
+                    style={{ borderRight: "1px solid #979797" }}
+                  >
+                    {orderDate}
+                  </div>
+                  <div
+                    className='store-item__info-nav--35'
+                    style={{
+                      borderRight: "1px solid #979797",
+                    }}
+                  >
+                    {orderStatus}
+                  </div>
+                  <div
+                    className='store-item__info-nav--35'
+                    style={{
+                      borderRight: "1px solid #979797",
+                    }}
+                  >
+                    {paymentStatus}
+                  </div>
+                  <div className='store-item__info-nav--35'>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(total)}
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })
+            )
+          })
       ) : (
         <div
           className='store__contain-item'
@@ -175,7 +238,7 @@ function AdminOrder() {
         activeClassName='pagination-item--active'
         renderOnZeroPageCount={null}
       />
-    </>
+    </React.Fragment>
   )
 }
 

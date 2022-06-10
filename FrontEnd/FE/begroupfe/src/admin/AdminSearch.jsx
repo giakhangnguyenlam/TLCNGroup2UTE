@@ -28,7 +28,8 @@ function AdminSearch({ setSearch, data }) {
   useEffect(() => {
     let ar = data
       .filter(
-        (item) => item.toLowerCase().indexOf(valid.value.toLowerCase()) + 1
+        (item) =>
+          item.toString().toLowerCase().indexOf(valid.value.toLowerCase()) + 1
       )
       .slice(0, data.length > 5 ? 5 : data.length)
     setItems(ar)
@@ -43,6 +44,7 @@ function AdminSearch({ setSearch, data }) {
           className='header__search-input'
           placeholder='Nhập tên sản phẩm để tìm kiếm'
           onChange={(e) => checkValid(e)}
+          onKeyDown={(e) => (e.key === "Enter" ? handleSearch("icon") : "")}
         />
         <div className='header__search-history' ref={ref2}>
           <h3 className='header__search-history-heading'>Lịch sử tìm kiếm</h3>

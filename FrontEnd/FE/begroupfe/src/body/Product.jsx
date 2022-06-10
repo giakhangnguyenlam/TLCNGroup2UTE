@@ -4,20 +4,25 @@ import ReactPaginate from "react-paginate"
 import { useHistory } from "react-router"
 import { useGlobalContext } from "../context"
 
-function Product({ item }) {
-  const { searchInfo, body, isReady } = useGlobalContext()
+function Product({ item, sort, filter }) {
+  const { searchInfo, body, setBody, isReady } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const history = useHistory()
 
-  useEffect(() => {
-    document.documentElement.scrollTop = 0
-    setPageCount(
-      Math.ceil(
-        body.filter((item) => item.name.includes(searchInfo)).length / item
+  useEffect(
+    () => {
+      document.documentElement.scrollTop = 0
+      setPageCount(
+        Math.ceil(
+          body.filter((item) => item.name.includes(searchInfo)).length / item
+        )
       )
-    )
-  }, [item, body.filter((item) => item.name.includes(searchInfo))])
+    },
+    [item, body.filter((item) => item.name.includes(searchInfo))],
+    filter,
+    body
+  )
 
   const handlePageClick = (event) => {
     const newOffset =
@@ -25,6 +30,15 @@ function Product({ item }) {
       body.filter((item) => item.name.includes(searchInfo)).length
     setItemOffset(newOffset)
   }
+
+  useEffect(() => {
+    if (sort !== "none") {
+      const newBody = body.sort((a, b) =>
+        sort === "inc" ? b.price - a.price : a.price - b.price
+      )
+      setBody(newBody)
+    }
+  }, [sort])
 
   return (
     <>
@@ -40,6 +54,9 @@ function Product({ item }) {
             )
           ) : (
             body
+              .filter(
+                (item) => filter.start <= item.price && item.price <= filter.end
+              )
               .filter((item) => item.name.includes(searchInfo))
               .slice(itemOffset, itemOffset + item)
               .map((item) => {

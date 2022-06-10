@@ -51,6 +51,7 @@ function AdminBody() {
     setInactiveProd,
   } = useGlobalContext()
   const [height, setHeight] = useState(0)
+  const [orderId, setOrderId] = useState(null)
   const [adminPage, setAdminPage] = useState("dashboard")
   const history = useHistory()
 
@@ -71,6 +72,69 @@ function AdminBody() {
         setInactiveProd(false)
         setAdminPage(page)
         break
+    }
+  }
+
+  const controlPage = (control) => {
+    switch (control) {
+      case "updateStore":
+        setIsUpdateStore(true)
+        break
+      case "order":
+        setIsOrderDetail(true)
+        break
+      case "cancleOrder":
+        cancleOrder()
+        break
+      case "statistic":
+        setIsStatic(true)
+        break
+      case "voucher":
+        setIsVoucher(true)
+        break
+      case "updateProd":
+        setIsDetailUpdate(true)
+        break
+      case "discount":
+        setIsDiscount(true)
+        break
+      default:
+        break
+    }
+  }
+
+  const cancleOrder = async () => {
+    let del = window.confirm(`Bạn muốn hủy đơn hàng ${orderId} chứ?`)
+    if (del) {
+      setLoad(true)
+      try {
+        const res = await axios({
+          method: "DELETE",
+          url: `https://tlcngroup2be.herokuapp.com/admin/order/${orderId}`,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        if (res.status === 200) {
+          setReloadSell(!reloadSell)
+          setLoad(false)
+          setRaise({
+            header: "Hủy đơn hàng",
+            content: "Hủy thành công!",
+            color: "#4bb534",
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        if (error.response.data) {
+          setLoad(false)
+          setRaise({
+            header: "Hủy đơn hàng",
+            content: error.response.data,
+            color: "#f0541e",
+          })
+        }
+      }
     }
   }
 
@@ -218,38 +282,11 @@ function AdminBody() {
     }
   }
 
-  const controlPage = (control) => {
-    switch (control) {
-      case "updateStore":
-        setIsUpdateStore(true)
-        break
-      case "order":
-        setIsOrderDetail(true)
-        break
-      case "statistic":
-        setIsStatic(true)
-        break
-      case "voucher":
-        setIsVoucher(true)
-        break
-      case "updateProd":
-        setIsDetailUpdate(true)
-        break
-      case "discount":
-        setIsDiscount(true)
-        break
-      default:
-        break
-    }
-  }
-
   useEffect(() => {
     if (!localStorage.getItem("username") || !localStorage.getItem("adm")) {
       history.push("/admin/auth")
     }
-  }, [])
-
-  useEffect(() => {}, [reloadSell, reloadDetailStore])
+  }, [reloadSell, reloadDetailStore])
 
   return (
     <div className='container'>
@@ -495,6 +532,27 @@ function AdminBody() {
                     </div>
                   </React.Fragment>
                 ))}
+
+              {orderId && (
+                <React.Fragment>
+                  <div
+                    style={{
+                      marginBottom: "10px",
+                      height: "1px",
+                      backgroundColor: "#999",
+                    }}
+                  ></div>
+                  <div
+                    className='store-product__header-ctrl'
+                    onClick={() => controlPage("cancleOrder")}
+                  >
+                    <p>
+                      <AiOutlineEdit className='store-item__icon' />
+                      Hủy đơn hàng
+                    </p>
+                  </div>
+                </React.Fragment>
+              )}
             </nav>
           </div>
 
@@ -505,7 +563,13 @@ function AdminBody() {
             {inactiveTab && <AdminStore setHeight={setHeight} />}
             {adminPage === "item" && <AdminProduct setHeight={setHeight} />}
             {inactiveProd && <AdminProduct setHeight={setHeight} />}
-            {adminPage === "order" && <AdminOrders />}
+            {adminPage === "order" && (
+              <AdminOrders
+                orderId={orderId}
+                setOrderId={setOrderId}
+                setHeight={setHeight}
+              />
+            )}
           </div>
         </div>
       </div>
