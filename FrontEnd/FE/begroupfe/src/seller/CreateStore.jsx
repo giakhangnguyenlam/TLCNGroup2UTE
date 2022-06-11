@@ -68,11 +68,19 @@ function CreateStore() {
           setRaise({
             header: "Create store",
             content: "Create store success!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
         console.log(error)
+        setLoading(false)
+        setRaise({
+          header: "Tạo cửa hàng",
+          content: error.response.mess
+            ? "Cửa hàng đã tồn tại, mời bạn đặt tên khác!"
+            : "Có lỗi xảy ra, mời bạn thử lại sau!",
+          color: "#cf000fcc",
+        })
       }
     } else {
       setError("Vui lòng cung cấp đầy đủ thông tin")

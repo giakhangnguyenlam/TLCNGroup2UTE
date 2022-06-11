@@ -74,7 +74,7 @@ function Info2() {
         setRaise({
           header: "Cập nhật thông tin",
           content: "Cập nhật danh mục sản phẩm thành công!",
-          color: "#4bb534",
+          color: "#009944cc",
         })
       }
     } catch (error) {

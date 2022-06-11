@@ -112,7 +112,7 @@ function ModalDetailCreate() {
           setRaise({
             header: "Thêm sản phẩm",
             content: "Thêm sản phẩm thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {

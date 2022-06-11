@@ -55,7 +55,7 @@ function UpdateStore() {
           setRaise({
             header: "Cập nhật cửa hàng",
             content: "Cập nhật ảnh hoàn tất!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -108,7 +108,7 @@ function UpdateStore() {
         setRaise({
           header: "Cập nhật cửa hàng",
           content: "Cập nhật thông tin thành công!",
-          color: "#4bb534",
+          color: "#009944cc",
         })
       }
     } catch (error) {

@@ -1,22 +1,27 @@
+import axios from "axios"
 import React, { useEffect, useRef, useState } from "react"
 import { AiOutlineSearch } from "react-icons/ai"
 import { useHistory, useLocation } from "react-router"
 import { useGlobalContext } from "../context"
+import SearchItem from "./SearchItem"
 
 function SearchBar() {
-  const { setSearchInfo, body } = useGlobalContext()
+  const { setSearchInfo, body, hot } = useGlobalContext()
   const [valid, setValid] = useState({ state: false, value: "" })
   const [items, setItems] = useState()
   let ref = useRef()
   let ref2 = useRef()
   const history = useHistory()
   let location = useLocation()
-  let his = JSON.parse(localStorage.getItem("history")) || []
+  const his = JSON.parse(localStorage.getItem("history")) || []
   const handleSearch = (type) => {
     if (type === "icon") {
       setSearchInfo(ref.current.value)
       if (ref.current.value !== "") {
         his.unshift(ref.current.value)
+      }
+      while (his.length > 5) {
+        his.pop()
       }
       let newHis = []
       newHis = [...new Set(his)]
@@ -24,6 +29,13 @@ function SearchBar() {
     } else {
       ref.current.value = type
       setSearchInfo(type)
+    }
+    try {
+      axios.post("https://utesharecode.herokuapp.com/search", {
+        name: ref.current.value,
+      })
+    } catch (error) {
+      console.log("send search data", error)
     }
     ref2.current.style.display = "none"
     setTimeout(() => {
@@ -34,16 +46,17 @@ function SearchBar() {
     }
   }
   const checkValid = async (e) => {
-    if (e.target.value !== "") {
-      setValid({ state: true, value: e.target.value })
-    }
+    // if (e.target.value !== "") {
+    setValid({ state: true, value: e.target.value })
+    // }
   }
 
   useEffect(() => {
-    let ar = body
+    const ar = body
+      .map((item) => item.name)
       .filter(
         (item, index) =>
-          item.name.toLowerCase().indexOf(valid.value.toLowerCase()) + 1
+          item.toLowerCase().indexOf(valid.value.toLowerCase()) + 1
       )
       .slice(0, body.length > 5 ? 5 : body.length)
     setItems(ar)
@@ -57,40 +70,23 @@ function SearchBar() {
           type='text'
           className='header__search-input'
           placeholder='Nhập tên sản phẩm để tìm kiếm'
-          onChange={(e) => checkValid(e)}
+          onChange={checkValid}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch("icon")}
         />
         <div className='header__search-history' ref={ref2}>
           <h3 className='header__search-history-heading'>Lịch sử tìm kiếm</h3>
           <ul className='header__search-history-list'>
-            {valid.state
-              ? items
-                ? items.map((item, index) => {
-                    return (
-                      <li
-                        className='header__search-history-item'
-                        key={index}
-                        onClick={() => handleSearch(item.name)}
-                      >
-                        <div>{item.name}</div>
-                      </li>
-                    )
-                  })
-                : ""
-              : his.length
-              ? his
-                  .slice(0, his.length > 5 ? 5 : his.length)
-                  .map((item, index) => {
-                    return (
-                      <li
-                        className='header__search-history-item'
-                        key={index}
-                        onClick={() => handleSearch(item)}
-                      >
-                        <div>{item}</div>
-                      </li>
-                    )
-                  })
-              : ""}
+            {valid.state ? (
+              items ? (
+                <SearchItem items={items} handleSearch={handleSearch} />
+              ) : his.length ? (
+                <SearchItem items={his} handleSearch={handleSearch} />
+              ) : (
+                ""
+              )
+            ) : (
+              <SearchItem items={hot} handleSearch={handleSearch} />
+            )}
           </ul>
         </div>
       </div>

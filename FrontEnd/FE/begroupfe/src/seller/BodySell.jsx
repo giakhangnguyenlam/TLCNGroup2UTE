@@ -53,7 +53,7 @@ function BodySell() {
           setRaise({
             header: "Xóa cửa hàng",
             content: "Xóa thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {

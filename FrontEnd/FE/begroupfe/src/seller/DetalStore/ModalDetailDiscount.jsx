@@ -44,7 +44,7 @@ function ModalDetailDiscount({ setLoad }) {
         setRaise({
           header: "Lỗi thông tin",
           content: "Bạn cần điền đủ thông tin",
-          color: "#f0541e",
+          color: "#cf000fcc",
         })
         return false
       }
@@ -55,7 +55,7 @@ function ModalDetailDiscount({ setLoad }) {
         setRaise({
           header: "Lỗi thông tin",
           content: "Thời gian không hợp lệ",
-          color: "#f0541e",
+          color: "#cf000fcc",
         })
         return false
       }
@@ -65,7 +65,7 @@ function ModalDetailDiscount({ setLoad }) {
         setRaise({
           header: "Lỗi thông tin",
           content: "Thời gian không hợp lệ",
-          color: "#f0541e",
+          color: "#cf000fcc",
         })
         return false
       }
@@ -74,7 +74,7 @@ function ModalDetailDiscount({ setLoad }) {
       setRaise({
         header: "Lỗi thông tin",
         content: "Thời gian không hợp lệ",
-        color: "#f0541e",
+        color: "#cf000fcc",
       })
       return false
     }
@@ -109,7 +109,7 @@ function ModalDetailDiscount({ setLoad }) {
           setRaise({
             header: "Mã giảm giá",
             content: "Đổi trạng thái thành công",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -137,7 +137,7 @@ function ModalDetailDiscount({ setLoad }) {
           setRaise({
             header: "XMã giảm giá",
             content: "Xóa thành công",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -166,7 +166,7 @@ function ModalDetailDiscount({ setLoad }) {
           setRaise({
             header: "Mã giảm giá",
             content: "Thay đổi thành công",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -209,7 +209,7 @@ function ModalDetailDiscount({ setLoad }) {
           setRaise({
             header: "Mã giảm giá",
             content: "Thêm thành công",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {

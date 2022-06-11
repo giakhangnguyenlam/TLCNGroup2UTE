@@ -26,13 +26,15 @@ function AdminSearch({ setSearch, data }) {
   }
 
   useEffect(() => {
-    let ar = data
-      .filter(
-        (item) =>
-          item.toString().toLowerCase().indexOf(valid.value.toLowerCase()) + 1
-      )
-      .slice(0, data.length > 5 ? 5 : data.length)
-    setItems(ar)
+    if (data) {
+      const ar = data
+        .filter(
+          (item) =>
+            item.toString().toLowerCase().indexOf(valid.value.toLowerCase()) + 1
+        )
+        .slice(0, data.length > 5 ? 5 : data.length)
+      setItems(ar)
+    }
   }, [valid.value])
 
   return (

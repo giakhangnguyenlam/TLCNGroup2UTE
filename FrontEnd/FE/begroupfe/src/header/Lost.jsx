@@ -134,7 +134,7 @@ function Lost() {
             className='auth-form__error'
             style={
               errors["form"] !== "Can't change password"
-                ? { color: "#4bb534" }
+                ? { color: "#009944cc" }
                 : {}
             }
           >

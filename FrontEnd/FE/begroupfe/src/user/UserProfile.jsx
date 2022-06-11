@@ -56,7 +56,7 @@ function UserProfile({ setHeight, setLoad }) {
           setRaise({
             header: "Cập nhật thông tin",
             content: "Cập nhật thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
           setLoad(false)
         }

@@ -54,7 +54,7 @@ function ModalDetailUpdate() {
           setRaise({
             header: "Cập nhật sản phẩm",
             content: "Cập nhật ảnh thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -109,7 +109,7 @@ function ModalDetailUpdate() {
         setRaise({
           header: "Update product",
           content: "Update product information success!",
-          color: "#4bb534",
+          color: "#009944cc",
         })
       }
     } catch (error) {

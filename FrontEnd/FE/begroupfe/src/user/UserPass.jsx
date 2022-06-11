@@ -21,13 +21,13 @@ function UserPass({ setHeight, setLoad }) {
       setRaise({
         header: "Thông báo",
         content: "Vui lòng nhập đầy đủ thông tin",
-        color: "#f0541e",
+        color: "#cf000fcc",
       })
     } else if (password.re !== password.new) {
       setRaise({
         header: "Thông báo",
         content: "Mật khẩu nhập lại không trùng khớp",
-        color: "#f0541e",
+        color: "#cf000fcc",
       })
     } else {
       setLoad(true)
@@ -47,7 +47,7 @@ function UserPass({ setHeight, setLoad }) {
           setRaise({
             header: "Thay đổi thông tin",
             content: "Đổi mật khẩu thành công",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {

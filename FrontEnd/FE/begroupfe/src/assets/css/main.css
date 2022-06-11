@@ -964,6 +964,8 @@ i.product-item__action-liked-icon {
   padding-left: 0;
   list-style: none;
   margin: 5px 0 0;
+  max-height: 190px;
+  overflow-y: scroll;
 }
 
 .header__search-history-item {
@@ -1980,8 +1982,8 @@ i.product-item__action-liked-icon {
   width: 25%;
   color: var(--white-color);
   border-radius: 4px;
-  opacity: 0.9;
   transform: translateX(-50%);
+  backdrop-filter: blur(4px);
   z-index: 10;
 }
 

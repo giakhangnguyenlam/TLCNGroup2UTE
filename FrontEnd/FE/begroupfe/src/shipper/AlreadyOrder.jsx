@@ -43,7 +43,7 @@ function AlreadyOrder() {
         setRaise({
           header: "Nhận giao đơn hàng",
           content: res.data.mess,
-          color: "#4bb534",
+          color: "#009944cc",
         })
       }
     } catch (error) {}

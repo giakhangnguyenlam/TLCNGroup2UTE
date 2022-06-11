@@ -76,26 +76,26 @@ function Static() {
     if (dateUWant <= dateUHave) {
       const baseUrl = "https://tlcngroup2be.herokuapp.com/"
       const mainUrl = idStoreUpdate
-        ? `seller/order/${idStoreUpdate.id}/`
-        : "admin/order/"
+        ? `seller/order/${idStoreUpdate.id}`
+        : "admin/order"
       if (date.type === "all") {
-        url = `${baseUrl}${mainUrl}statusfinished`
+        url = `${baseUrl}${mainUrl}${idStoreUpdate ? "/statusfinished" : ""}`
       } else if (date.type === "day") {
         let ndd = String(dateUWant.getDate()).padStart(2, "0")
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
-        url = `${baseUrl}${mainUrl}date/${ndd}-${nmm}-${nyyyy}`
+        url = `${baseUrl}${mainUrl}/date/${ndd}-${nmm}-${nyyyy}`
       } else if (date.type === "month") {
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
-        url = `${baseUrl}${mainUrl}month/${nmm}/year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}/month/${nmm}/year/${nyyyy}`
       } else if (date.type === "year") {
         let nyyyy = dateUWant.getFullYear()
-        url = `${baseUrl}${mainUrl}year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}/year/${nyyyy}`
       } else if (date.type === "quarter") {
         let nq = Math.floor((dateUWant.getMonth() + 3) / 3)
         let nyyyy = dateUWant.getFullYear()
-        url = `${baseUrl}${mainUrl}quarter/${nq}/year/${nyyyy}`
+        url = `${baseUrl}${mainUrl}/quarter/${nq}/year/${nyyyy}`
       } else if (date.type === "range") {
         dateUWant = new Date(`${temp.date1}`)
         dateUHave = new Date(`${temp.date2}`)
@@ -105,7 +105,7 @@ function Static() {
         let d2 = String(dateUHave.getDate()).padStart(2, "0")
         let m2 = String(dateUHave.getMonth() + 1).padStart(2, "0")
         let y2 = dateUHave.getFullYear()
-        url = `${baseUrl}${mainUrl}datestart/${d1}-${m1}-${y1}/dateend/${d2}-${m2}-${y2}`
+        url = `${baseUrl}${mainUrl}/datestart/${d1}-${m1}-${y1}/dateend/${d2}-${m2}-${y2}`
       }
       try {
         let res = await axios({

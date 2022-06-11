@@ -28,6 +28,7 @@ const AppProvider = ({ children }) => {
   const userId = localStorage.getItem("id")
 
   const [searchInfo, setSearchInfo] = useState("")
+  const [hot, setHot] = useState([])
   const [body, setBody] = useState([])
   const [cart, setCart] = useState([])
   const [isCartUpdate, setIsCartUpdate] = useState(false)
@@ -259,6 +260,23 @@ const AppProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    const fetchHot = async () => {
+      try {
+        const res = await axios({
+          method: "get",
+          url: `https://utesharecode.herokuapp.com/search`,
+        })
+        if (res.status === 200) {
+          setHot(res.data)
+        }
+      } catch (error) {
+        console.log("hot api", error)
+      }
+    }
+    fetchHot()
+  }, [])
+
+  useEffect(() => {
     fetchData()
   }, [cate, cateType])
 
@@ -272,6 +290,7 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         searchInfo,
+        hot,
         body,
         cart,
         isCartUpdate,
@@ -311,6 +330,7 @@ const AppProvider = ({ children }) => {
         raise,
         adminPage,
         setSearchInfo,
+        setHot,
         setBody,
         setCart,
         setCartReady,

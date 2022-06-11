@@ -140,7 +140,7 @@ function SingleProduct() {
               setRaise({
                 header: "Thêm sản phẩm",
                 content: "Thêm vào giỏ hàng hoàn tất!",
-                color: "#4bb534",
+                color: "#009944cc",
               })
               setIsCartUpdate(!isCartUpdate)
               setLoad(false)
@@ -158,13 +158,13 @@ function SingleProduct() {
           setRaise({
             header: "Thông báo",
             content: "Bạn cần phải là người mua hàng để mua sản phẩm!",
-            color: "#f0541e",
+            color: "#cf000fcc",
           })
         } else {
           setRaise({
             header: "Thông báo",
             content: "Bạn cần chọn đủ thông tin để mua sản phẩm!",
-            color: "#f0541e",
+            color: "#cf000fcc",
           })
         }
       }

@@ -48,7 +48,7 @@ function OrderDetail() {
           header: "Kiểm soát đơn hàng",
           content:
             "Xác nhận thành công, Sản phẩm của bạn sẽ được giao cho khách!",
-          color: "#4bb534",
+          color: "#009944cc",
         })
       }
     } catch (error) {

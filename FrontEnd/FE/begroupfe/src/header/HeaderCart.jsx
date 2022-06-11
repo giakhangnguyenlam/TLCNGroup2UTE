@@ -47,7 +47,7 @@ function HeaderCart() {
                 >
                   <AiOutlineCopy className='cart__icon-copy' />
                 </CopyToClipboard>
-                {copied && <div style={{ color: "#4bb534" }}>copied!</div>}
+                {copied && <div style={{ color: "#009944cc" }}>copied!</div>}
               </div>
             </div>
           ) : (

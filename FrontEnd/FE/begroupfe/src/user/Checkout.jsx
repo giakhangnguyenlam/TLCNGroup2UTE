@@ -33,7 +33,7 @@ function Checkout() {
         header: "Thông báo",
         content:
           "Vui lòng nhấn vào Thanh toán bằng paypal và tiến hành thanh toán",
-        color: "#f0541e",
+        color: "#cf000fcc",
       })
     } else {
       setLoading(true)
@@ -57,7 +57,7 @@ function Checkout() {
               setRaise({
                 header: "Đặt hàng",
                 content: "Đặt hàng thành công",
-                color: "#4bb534",
+                color: "#009944cc",
               })
               localStorage.removeItem(`cart${userId}`)
               // setLoading(false)

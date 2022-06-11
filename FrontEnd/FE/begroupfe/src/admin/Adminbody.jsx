@@ -61,10 +61,12 @@ function AdminBody() {
     switch (page) {
       case "restore":
         setAdminPage("")
+        setInactiveProd(false)
         setInactiveTab(true)
         break
       case "reitem":
         setAdminPage("")
+        setInactiveTab(false)
         setInactiveProd(true)
         break
       default:
@@ -87,6 +89,10 @@ function AdminBody() {
         cancleOrder()
         break
       case "statistic":
+        setIsStatic(true)
+        break
+      case "statisticAdm":
+        setIdStoreUpdate(null)
         setIsStatic(true)
         break
       case "voucher":
@@ -121,7 +127,7 @@ function AdminBody() {
           setRaise({
             header: "Hủy đơn hàng",
             content: "Hủy thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {
@@ -131,7 +137,7 @@ function AdminBody() {
           setRaise({
             header: "Hủy đơn hàng",
             content: error.response.data,
-            color: "#f0541e",
+            color: "#cf000fcc",
           })
         }
       }
@@ -275,7 +281,7 @@ function AdminBody() {
           setRaise({
             header,
             content: "Xóa thành công!",
-            color: "#4bb534",
+            color: "#009944cc",
           })
         }
       } catch (error) {}
@@ -307,7 +313,7 @@ function AdminBody() {
               </div>
               <div
                 className={`store-product__header-ctrl`}
-                onClick={() => controlPage("statistic")}
+                onClick={() => controlPage("statisticAdm")}
               >
                 <p>
                   <AiOutlineLineChart className='store-item__icon' />
