@@ -358,7 +358,7 @@ function Checkout() {
                       )
                     }
                   >
-                    Thanh toán bằng VNPAY
+                    <img src={window.location.origin + "/vnpay.svg"} alt='' />
                   </div>
                 </div>
               ) : (
