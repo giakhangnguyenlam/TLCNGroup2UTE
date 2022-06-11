@@ -9,6 +9,7 @@ import Popup from "../ultis/Popup"
 import "../assets/css/cart.css"
 
 function Checkout() {
+  const jwt = localStorage.getItem("jwt")
   const userId = localStorage.getItem("id")
   const name = localStorage.getItem("name")
   const phone = localStorage.getItem("phone")
@@ -37,7 +38,6 @@ function Checkout() {
       })
     } else {
       setLoading(true)
-      const jwt = localStorage.getItem("jwt")
       try {
         let res = await axios({
           method: "post",
@@ -80,6 +80,30 @@ function Checkout() {
         })
         setLoading(false)
       }
+    }
+  }
+
+  const callVnpay = async (
+    amount,
+    orderType,
+    orderDescription,
+    bankCode,
+    language
+  ) => {
+    setLoading(true)
+    try {
+      const res = await axios({
+        method: "post",
+        url: "https://utevnpay.herokuapp.com/order/create_payment_url",
+        data: { amount, orderType, orderDescription, bankCode, language },
+      })
+      if (res.status === 200) {
+        setLoading(false)
+        console.log(res)
+      }
+    } catch (error) {
+      setLoading(false)
+      console.log("in checkOut vnpay", error)
     }
   }
 
@@ -322,6 +346,20 @@ function Checkout() {
                       Thanh toán bằng paypal
                     </div>
                   )}
+                  <div
+                    className='cart__payment-item'
+                    onClick={() =>
+                      callVnpay(
+                        sumCheckout + 30000,
+                        "fashion",
+                        "Thanh toan don hang",
+                        "",
+                        "vn"
+                      )
+                    }
+                  >
+                    Thanh toán bằng VNPAY
+                  </div>
                 </div>
               ) : (
                 <div className='cart__payment-desc'>
