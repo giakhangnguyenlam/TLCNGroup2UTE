@@ -71,7 +71,15 @@ function AdminPage() {
   }
   return (
     <React.Fragment>
-      {allUser ? <AdminSearch setSearch={setSearch} data={userName} /> : ""}
+      {allUser ? (
+        <AdminSearch
+          setSearch={setSearch}
+          data={userName}
+          placeholder={"Nhập username để tìm kiếm"}
+        />
+      ) : (
+        ""
+      )}
       <div className='store__contain-item'>
         <div
           className='store-product__body-item '

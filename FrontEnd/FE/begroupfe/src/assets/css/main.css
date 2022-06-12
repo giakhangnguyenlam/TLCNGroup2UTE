@@ -956,7 +956,7 @@ i.product-item__action-liked-icon {
 .header__search-history-heading {
   margin: 5px 10px 0;
   font-size: 1.4rem;
-  color: #999;
+  color: var(--primary-color);
   font-weight: 400;
 }
 
@@ -965,7 +965,6 @@ i.product-item__action-liked-icon {
   list-style: none;
   margin: 5px 0 0;
   max-height: 190px;
-  overflow-y: scroll;
 }
 
 .header__search-history-item {

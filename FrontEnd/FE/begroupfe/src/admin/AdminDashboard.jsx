@@ -8,48 +8,50 @@ function AdminDashboard() {
   const [data, setData] = useState({})
 
   useEffect(() => {
-    const userLink = axios({
-      method: "GET",
-      url: "https://tlcngroup2be.herokuapp.com/admin/numberofuser",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-    const productLink = axios({
-      method: "GET",
-      url: "https://tlcngroup2be.herokuapp.com/admin/numberofproduct",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-    const storeLink = axios({
-      method: "GET",
-      url: "https://tlcngroup2be.herokuapp.com/admin/numberofstore",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-    const orderLink = axios({
-      method: "GET",
-      url: "https://tlcngroup2be.herokuapp.com/admin/numberoforder",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    })
-    axios
-      .all([userLink, productLink, storeLink, orderLink])
-      .then(
-        axios.spread((...res) => {
-          const user = res[0].data
-          const store = res[1].data
-          const product = res[2].data
-          const order = res[3].data
-          setData({ user, store, product, order })
-        })
-      )
-      .catch((errors) => {
-        // react on errors.
+    if (localStorage.getItem("username") && localStorage.getItem("adm")) {
+      const userLink = axios({
+        method: "GET",
+        url: "https://tlcngroup2be.herokuapp.com/admin/numberofuser",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
       })
+      const productLink = axios({
+        method: "GET",
+        url: "https://tlcngroup2be.herokuapp.com/admin/numberofproduct",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      const storeLink = axios({
+        method: "GET",
+        url: "https://tlcngroup2be.herokuapp.com/admin/numberofstore",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      const orderLink = axios({
+        method: "GET",
+        url: "https://tlcngroup2be.herokuapp.com/admin/numberoforder",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      axios
+        .all([userLink, productLink, storeLink, orderLink])
+        .then(
+          axios.spread((...res) => {
+            const user = res[0].data
+            const store = res[1].data
+            const product = res[2].data
+            const order = res[3].data
+            setData({ user, store, product, order })
+          })
+        )
+        .catch((errors) => {
+          // react on errors.
+        })
+    }
   }, [])
 
   useEffect(() => {})

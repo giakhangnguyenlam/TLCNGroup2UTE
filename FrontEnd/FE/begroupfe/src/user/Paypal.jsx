@@ -6,7 +6,7 @@ import { useGlobalContext } from "../context"
 function Paypal({ value, code, cart }) {
   const paypal = useRef()
   const history = useHistory()
-  const { orderData, setLoading } = useGlobalContext()
+  const { orderData, setLoading, setRaise } = useGlobalContext()
 
   const handleCheckout = async () => {
     setLoading(true)
@@ -33,11 +33,22 @@ function Paypal({ value, code, cart }) {
             setLoading(false)
           }
         } catch (error) {
+          setRaise({
+            header: "Đặt hàng",
+            content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+            color: "#cf000fcc",
+          })
           console.log(error)
           setLoading(false)
         }
       }
     } catch (error) {
+      setLoading(false)
+      setRaise({
+        header: "Đặt hàng",
+        content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+        color: "#cf000fcc",
+      })
       console.log(error)
     }
   }

@@ -10,7 +10,7 @@ function Voucher() {
   const jwt = localStorage.getItem("jwt")
   const wFit = window.screen.availWidth * 0.8
   const hFit = window.screen.availHeight * 0.835
-  const hFitInner = hFit - 190
+  const hFitInner = hFit - 86
   const { setIsVoucher } = useGlobalContext()
   const { setRaise, idStoreUpdate } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
@@ -552,7 +552,7 @@ function Voucher() {
                     ) : (
                       <div
                         className='store__contain-item--wait'
-                        style={{ height: hFitInner }}
+                        style={{ height: hFitInner - 100 }}
                       >
                         Không có voucher
                       </div>
@@ -560,7 +560,7 @@ function Voucher() {
                   ) : (
                     <div
                       className='store__contain-item--wait'
-                      style={{ height: hFitInner }}
+                      style={{ height: hFitInner - 100 }}
                     >
                       Loading
                     </div>

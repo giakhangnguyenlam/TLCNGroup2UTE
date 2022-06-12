@@ -267,7 +267,7 @@ const AppProvider = ({ children }) => {
           url: `https://utesharecode.herokuapp.com/search`,
         })
         if (res.status === 200) {
-          setHot(res.data)
+          setHot(res.data.slice(0, res.data.length > 5 ? 5 : res.data.length))
         }
       } catch (error) {
         console.log("hot api", error)

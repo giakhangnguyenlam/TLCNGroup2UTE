@@ -67,7 +67,7 @@ function Checkout() {
             setRaise({
               header: "Đặt hàng",
               content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
-              color: "#dc143c",
+              color: "#cf000fcc",
             })
             setLoading(false)
           }
@@ -76,7 +76,7 @@ function Checkout() {
         setRaise({
           header: "Đặt hàng",
           content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
-          color: "#dc143c",
+          color: "#cf000fcc",
         })
         setLoading(false)
       }

@@ -41,7 +41,7 @@ function AdminLogin() {
         localStorage.setItem("id", res.data.id)
         localStorage.setItem("username", res.data.name)
         localStorage.setItem("jwt", res.data.jwt)
-        localStorage.setItem("adm", res.data.name + "adm")
+        localStorage.setItem("adm", res.data.id + "adm")
         localStorage.setItem("expire", new Date().getTime() + 43200000)
         history.push("/admin")
       }

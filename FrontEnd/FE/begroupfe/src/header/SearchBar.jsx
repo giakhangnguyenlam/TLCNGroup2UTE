@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { AiOutlineSearch } from "react-icons/ai"
 import { useHistory, useLocation } from "react-router"
 import { useGlobalContext } from "../context"
+import { MdShowChart } from "react-icons/md"
 import SearchItem from "./SearchItem"
 
 function SearchBar() {
@@ -74,19 +75,46 @@ function SearchBar() {
           onKeyDown={(e) => e.key === "Enter" && handleSearch("icon")}
         />
         <div className='header__search-history' ref={ref2}>
-          <h3 className='header__search-history-heading'>Lịch sử tìm kiếm</h3>
+          <h3 className='header__search-history-heading'>
+            {valid.state
+              ? items
+                ? ref.current.value !== ""
+                  ? `Tìm sản phẩm "${ref.current.value}"`
+                  : ""
+                : ""
+              : his.length
+              ? "Lịch sử tìm kiếm"
+              : ""}
+          </h3>
           <ul className='header__search-history-list'>
             {valid.state ? (
               items ? (
                 <SearchItem items={items} handleSearch={handleSearch} />
-              ) : his.length ? (
-                <SearchItem items={his} handleSearch={handleSearch} />
               ) : (
                 ""
               )
+            ) : his.length ? (
+              <SearchItem items={his} handleSearch={handleSearch} />
             ) : (
-              <SearchItem items={hot} handleSearch={handleSearch} />
+              ""
             )}
+          </ul>
+          <h3
+            className='header__search-history-heading'
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <MdShowChart
+              style={{
+                color: "var(--white-color)",
+                backgroundColor: "var(--primary-color)",
+                borderRadius: "50%",
+                marginRight: "6px",
+              }}
+            />
+            Hot search
+          </h3>
+          <ul className='header__search-history-list'>
+            <SearchItem items={hot} handleSearch={handleSearch} />
           </ul>
         </div>
       </div>

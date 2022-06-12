@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { AiOutlineSearch } from "react-icons/ai"
 
-function AdminSearch({ setSearch, data }) {
+function AdminSearch({ setSearch, data, placeholder }) {
   const [valid, setValid] = useState({ state: false, value: "" })
   const [items, setItems] = useState()
   let ref = useRef()
@@ -44,7 +44,7 @@ function AdminSearch({ setSearch, data }) {
           ref={ref}
           type='text'
           className='header__search-input'
-          placeholder='Nhập tên sản phẩm để tìm kiếm'
+          placeholder={placeholder}
           onChange={(e) => checkValid(e)}
           onKeyDown={(e) => (e.key === "Enter" ? handleSearch("icon") : "")}
         />

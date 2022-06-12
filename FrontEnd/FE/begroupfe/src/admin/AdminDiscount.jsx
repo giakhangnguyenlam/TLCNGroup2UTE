@@ -501,7 +501,7 @@ function AdminDiscount() {
                     ) : (
                       <div
                         className='store__contain-item--wait'
-                        style={{ height: hFitInner }}
+                        style={{ height: hFitInner - 100 }}
                       >
                         Không có coupon
                       </div>
@@ -509,7 +509,7 @@ function AdminDiscount() {
                   ) : (
                     <div
                       className='store__contain-item--wait'
-                      style={{ height: hFitInner }}
+                      style={{ height: hFitInner - 100 }}
                     >
                       Loading
                     </div>

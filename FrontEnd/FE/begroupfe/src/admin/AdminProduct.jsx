@@ -7,8 +7,13 @@ import AdminSearch from "./AdminSearch"
 
 function AdminProduct({ setHeight }) {
   const jwt = localStorage.getItem("jwt")
-  const { idStoreProd, setIdStoreProd, reloadDetailStore, inactiveProd } =
-    useGlobalContext()
+  const {
+    idStoreProd,
+    setIdStoreProd,
+    inactiveProd,
+    reloadSell,
+    reloadDetailStore,
+  } = useGlobalContext()
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [productList, setProductList] = useState([])
@@ -78,7 +83,7 @@ function AdminProduct({ setHeight }) {
       isApiSubscribed = false
       setIdStoreProd(null)
     }
-  }, [reloadDetailStore, inactiveProd])
+  }, [reloadSell, inactiveProd, reloadDetailStore])
 
   useEffect(() => {
     if (productList) {
@@ -100,7 +105,11 @@ function AdminProduct({ setHeight }) {
   return (
     <React.Fragment>
       {productList.length ? (
-        <AdminSearch setSearch={setSearch} data={productName} />
+        <AdminSearch
+          setSearch={setSearch}
+          data={productName}
+          placeholder={"Nhập tên sản phẩm để tìm kiếm"}
+        />
       ) : (
         ""
       )}

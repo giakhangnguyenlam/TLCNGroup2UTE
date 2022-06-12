@@ -98,7 +98,11 @@ function AdminStore({ setHeight }) {
   return (
     <React.Fragment>
       {storeList.length ? (
-        <AdminSearch setSearch={setSearch} data={storeName} />
+        <AdminSearch
+          setSearch={setSearch}
+          data={storeName}
+          placeholder={"Nhập tên cửa hàng để tìm kiếm"}
+        />
       ) : (
         ""
       )}

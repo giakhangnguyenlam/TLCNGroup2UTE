@@ -89,7 +89,12 @@ function AdminOrder({ orderId, setOrderId, setHeight }) {
   return (
     <React.Fragment>
       {allOrder ? (
-        <AdminSearch setSearch={setSearch} data={allSearch} typeSearch={"id"} />
+        <AdminSearch
+          setSearch={setSearch}
+          data={allSearch}
+          typeSearch={"id"}
+          placeholder={"Nhập id đơn hàng để tìm kiếm"}
+        />
       ) : (
         ""
       )}
