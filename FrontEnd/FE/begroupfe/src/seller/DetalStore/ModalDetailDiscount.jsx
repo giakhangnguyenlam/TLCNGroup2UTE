@@ -7,7 +7,7 @@ import Switch from "react-switch"
 
 function ModalDetailDiscount({ setLoad }) {
   const jwt = localStorage.getItem("jwt")
-  const { idStoreProd, setRaise } = useGlobalContext()
+  const { setRaise } = useGlobalContext()
   const [discountList, setDiscountList] = useState([])
   const [isCheck, setIsCheck] = useState([])
   const [isFetch, setIsFetch] = useState(false)
@@ -191,12 +191,13 @@ function ModalDetailDiscount({ setLoad }) {
   }
 
   const handleAdd = async () => {
+    const id = window.location.pathname.split("/")[3] || -1
     setLoad(true)
     if (checkData("create")) {
       try {
         let res = await axios({
           method: "post",
-          data: { ...dc, productId: idStoreProd.id },
+          data: { ...dc, productId: id },
           url: `https://tlcngroup2be.herokuapp.com/seller/coupon`,
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -221,10 +222,11 @@ function ModalDetailDiscount({ setLoad }) {
   }
 
   const fetchData = async () => {
+    const id = window.location.pathname.split("/")[3] || -1
     try {
       let res = await axios({
         method: "get",
-        url: `https://tlcngroup2be.herokuapp.com/seller/coupon/productid/${idStoreProd.id}`,
+        url: `https://tlcngroup2be.herokuapp.com/seller/coupon/productid/${id}`,
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

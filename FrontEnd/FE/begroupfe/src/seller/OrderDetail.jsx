@@ -59,7 +59,6 @@ function OrderDetail() {
   const fetchData = async () => {
     setScreen(false)
     setOrders(null)
-    const id = window.location.pathname.split("/")[3] || -1
     let url = ""
     let dateUWant = new Date(date)
     let dateUHave = new Date(Date.now())
@@ -69,13 +68,13 @@ function OrderDetail() {
         dateUWant.getMonth() === dateUHave.getMonth() &&
         dateUWant.getFullYear() === dateUHave.getFullYear()
       ) {
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${id}`
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}`
       } else {
         let ndd = String(dateUWant.getDate()).padStart(2, "0")
         let nmm = String(dateUWant.getMonth() + 1).padStart(2, "0")
         let nyyyy = dateUWant.getFullYear()
 
-        url = `https://tlcngroup2be.herokuapp.com/seller/order/${id}/datestatus/${ndd}-${nmm}-${nyyyy}`
+        url = `https://tlcngroup2be.herokuapp.com/seller/order/${idStoreUpdate.id}/datestatus/${ndd}-${nmm}-${nyyyy}`
       }
       console.log(url)
       try {
