@@ -89,16 +89,24 @@ function AdminProduct({ setHeight }) {
     if (productList) {
       setPageCount(
         Math.ceil(
-          productList.filter((item) => item.name.includes(search)).length / 10
+          productList.filter((item) =>
+            item.name.toLowerCase().includes(search.toLowerCase())
+          ).length / 10
         )
       )
     }
-  }, [productList.filter((item) => item.name.includes(search))])
+  }, [
+    productList.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    ),
+  ])
 
   const handlePageClick = (event) => {
     const newOffset =
       (event.selected * 10) %
-      productList.filter((item) => item.name.includes(search)).length
+      productList.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      ).length
     setItemOffset(newOffset)
   }
 
@@ -120,8 +128,9 @@ function AdminProduct({ setHeight }) {
           // onClick={() => setIdStoreProd(null)}
         >
           {/* Product item */}
-          {productList.filter((item) => item.name.includes(search)).length ===
-          0 ? (
+          {productList.filter((item) =>
+            item.name.toLowerCase().includes(search.toLowerCase())
+          ).length === 0 ? (
             isList ? (
               <div className='waiting'>Không có sản phẩm</div>
             ) : (
@@ -129,7 +138,9 @@ function AdminProduct({ setHeight }) {
             )
           ) : (
             productList
-              .filter((item) => item.name.includes(search))
+              .filter((item) =>
+                item.name.toLowerCase().includes(search.toLowerCase())
+              )
               .slice(itemOffset, itemOffset + 10)
               .map((product) => {
                 let {

@@ -15,11 +15,18 @@ function Product({ item, sort, filter }) {
       document.documentElement.scrollTop = 0
       setPageCount(
         Math.ceil(
-          body.filter((item) => item.name.includes(searchInfo)).length / item
+          body.filter((item) =>
+            item.name.toLowerCase().includes(searchInfo.toLowerCase())
+          ).length / item
         )
       )
     },
-    [item, body.filter((item) => item.name.includes(searchInfo))],
+    [
+      item,
+      body.filter((item) =>
+        item.name.toLowerCase().includes(searchInfo.toLowerCase())
+      ),
+    ],
     filter,
     body
   )
@@ -27,7 +34,9 @@ function Product({ item, sort, filter }) {
   const handlePageClick = (event) => {
     const newOffset =
       (event.selected * item) %
-      body.filter((item) => item.name.includes(searchInfo)).length
+      body.filter((item) =>
+        item.name.toLowerCase().includes(searchInfo.toLowerCase())
+      ).length
     setItemOffset(newOffset)
   }
 
@@ -45,8 +54,9 @@ function Product({ item, sort, filter }) {
       <div className='product'>
         <div className='grid__row' key={789}>
           {/* Product item */}
-          {body.filter((item) => item.name.includes(searchInfo)).length ===
-          0 ? (
+          {body.filter((item) =>
+            item.name.toLowerCase().includes(searchInfo.toLowerCase())
+          ).length === 0 ? (
             isReady ? (
               <div className='waiting'>Không có sản phẩm</div>
             ) : (
@@ -57,7 +67,9 @@ function Product({ item, sort, filter }) {
               .filter(
                 (item) => filter.start <= item.price && item.price <= filter.end
               )
-              .filter((item) => item.name.includes(searchInfo))
+              .filter((item) =>
+                item.name.toLowerCase().includes(searchInfo.toLowerCase())
+              )
               .slice(itemOffset, itemOffset + item)
               .map((item) => {
                 let {

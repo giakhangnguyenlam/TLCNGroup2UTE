@@ -1707,6 +1707,7 @@ i.product-item__action-liked-icon {
   margin: 0 1px;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 10px;
+  line-height: 2rem;
 }
 
 .store-item__state {

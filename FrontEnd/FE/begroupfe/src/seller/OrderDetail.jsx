@@ -11,8 +11,6 @@ function OrderDetail() {
   const {
     setIsOrderDetail,
     idStoreUpdate,
-    reloadSell,
-    setReloadSell,
     loading,
     setLoading,
     raise,
@@ -20,6 +18,7 @@ function OrderDetail() {
   } = useGlobalContext()
   const [screen, setScreen] = useState(false)
   const [orders, setOrders] = useState()
+  const [reload, setReload] = useState(false)
   let today = new Date()
   let dd = String(today.getDate()).padStart(2, "0")
   let mm = String(today.getMonth() + 1).padStart(2, "0")
@@ -43,7 +42,7 @@ function OrderDetail() {
       })
       if (res.status === 200) {
         setLoading(false)
-        setReloadSell(!reloadSell)
+        setReload(!reload)
         setRaise({
           header: "Kiểm soát đơn hàng",
           content:
@@ -103,7 +102,7 @@ function OrderDetail() {
 
   useEffect(() => {
     fetchData()
-  }, [date, reloadSell])
+  }, [date, reload])
 
   return (
     <div className='modal'>
