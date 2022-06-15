@@ -24,11 +24,7 @@ function Info3() {
     setCateAcc({ ...cateAcc, [type]: newArr })
   }
   const rmvArr = (type, ele) => {
-    let newArr = cateAcc[type].forEach((item) => {
-      if (item !== ele) {
-        return item
-      }
-    })
+    let newArr = cateAcc[type].filter((item) => item !== ele)
     setCateAcc({ ...cateAcc, [type]: newArr })
   }
   const doNothing = (e) => e.preventDefault()

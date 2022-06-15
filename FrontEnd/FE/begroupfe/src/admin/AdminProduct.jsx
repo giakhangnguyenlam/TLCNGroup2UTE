@@ -81,7 +81,6 @@ function AdminProduct({ setHeight }) {
     return () => {
       // cancel the subscription
       isApiSubscribed = false
-      setIdStoreProd(null)
     }
   }, [reloadSell, inactiveProd, reloadDetailStore])
 

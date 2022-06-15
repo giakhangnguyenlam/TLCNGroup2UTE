@@ -41,7 +41,7 @@ function Store({ item, inactiveTab }) {
     setStoreList([])
     fetchData()
     return () => {
-      setIdStoreUpdate(null)
+      // setIdStoreUpdate(null)
     }
   }, [reloadSell, inactiveTab])
 

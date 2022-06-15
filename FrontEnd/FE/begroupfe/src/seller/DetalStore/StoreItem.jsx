@@ -36,7 +36,7 @@ function StoreItem({ item, inactiveProd }) {
     setProductList([])
     fetchData()
     return () => {
-      setIdStoreProd(null)
+      // setIdStoreProd(null)
     }
   }, [reloadDetailStore, inactiveProd])
   useEffect(() => {

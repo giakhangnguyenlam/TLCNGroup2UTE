@@ -46,6 +46,7 @@ function DetailStore() {
         setIsDetailCreate(true)
         break
       case "restore":
+        setIdStoreProd(null)
         setInactiveProd(true)
         break
       case "update":
@@ -243,7 +244,7 @@ function DetailStore() {
                   >
                     <p>
                       <AiOutlineShop className='store-item__icon' />
-                      Về trang chủ
+                      Về cửa hàng
                     </p>
                   </div>
                 ) : (

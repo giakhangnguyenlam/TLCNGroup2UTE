@@ -74,7 +74,6 @@ function AdminStore({ setHeight }) {
     return () => {
       // cancel the subscription
       isApiSubscribed = false
-      setIdStoreUpdate(null)
     }
   }, [reloadSell, inactiveTab])
 

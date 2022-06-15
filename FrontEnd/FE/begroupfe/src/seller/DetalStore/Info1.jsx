@@ -19,17 +19,13 @@ function Info1() {
   const [isEdit, setIsEdit] = useState(false)
 
   const addArr = (type, ele) => {
-    let newArr = cateClo[type]
+    const newArr = cateClo[type]
     newArr.push(ele)
     setCateClo({ ...cateClo, [type]: newArr })
   }
 
   const rmvArr = (type, ele) => {
-    let newArr = cateClo[type].forEach((item) => {
-      if (item !== ele) {
-        return item
-      }
-    })
+    const newArr = cateClo[type].filter((item) => item !== ele)
     setCateClo({ ...cateClo, [type]: newArr })
   }
   const doNothing = (e) => e.preventDefault()

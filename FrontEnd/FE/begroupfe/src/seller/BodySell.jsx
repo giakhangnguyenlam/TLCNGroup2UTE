@@ -33,6 +33,7 @@ function BodySell() {
     setRaise,
     inactiveTab,
     setInactiveTab,
+    setIdStoreUpdate,
   } = useGlobalContext()
 
   const handleDeleteStore = async () => {
@@ -49,6 +50,7 @@ function BodySell() {
         })
         if (res.status === 200) {
           setReloadSell(!reloadSell)
+          setIdStoreUpdate(null)
           setLoad(false)
           setRaise({
             header: "Xóa cửa hàng",
@@ -68,6 +70,7 @@ function BodySell() {
         setIsCreateStore(!isCreateStore)
         break
       case "restore":
+        setIdStoreUpdate(null)
         setInactiveTab(true)
         break
       case "update":

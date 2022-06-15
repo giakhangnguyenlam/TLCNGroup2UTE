@@ -10,11 +10,7 @@ function CategoryClothes() {
     setCateClo({ ...cateClo, [type]: newArr })
   }
   const rmvArr = (type, ele) => {
-    let newArr = cateClo[type].forEach((item) => {
-      if (item !== ele) {
-        return item
-      }
-    })
+    let newArr = cateClo[type].filter((item) => item !== ele)
     setCateClo({ ...cateClo, [type]: newArr })
   }
   return (
