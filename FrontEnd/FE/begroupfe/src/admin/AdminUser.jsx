@@ -57,16 +57,16 @@ function AdminPage() {
     if (allUser) {
       setPageCount(
         Math.ceil(
-          allUser.filter((item) => item.name.includes(search)).length / 20
+          allUser.filter((item) => item.username.includes(search)).length / 20
         )
       )
     }
-  }, [allUser ? allUser.filter((item) => item.name.includes(search)) : ""])
+  }, [allUser ? allUser.filter((item) => item.username.includes(search)) : ""])
 
   const handlePageClick = (event) => {
     const newOffset =
       (event.selected * 20) %
-      allUser.filter((item) => item.name.includes(search)).length
+      allUser.filter((item) => item.username.includes(search)).length
     setItemOffset(newOffset)
   }
   return (
@@ -112,9 +112,9 @@ function AdminPage() {
         </div>
       </div>
       {allUser ? (
-        allUser.filter((item) => item.name.includes(search)).length ? (
+        allUser.filter((item) => item.username.includes(search)).length ? (
           allUser
-            .filter((item) => item.name.includes(search))
+            .filter((item) => item.username.includes(search))
             .slice(itemOffset, itemOffset + 20)
             .map((product, index) => {
               let { name, dateofbirth, email, address, phone, gender, role } =
