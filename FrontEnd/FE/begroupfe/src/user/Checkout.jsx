@@ -346,7 +346,7 @@ function Checkout() {
                       Thanh toán bằng paypal
                     </div>
                   )}
-                  <div
+                  {/* <div
                     className='cart__payment-item'
                     onClick={() =>
                       callVnpay(
@@ -359,7 +359,7 @@ function Checkout() {
                     }
                   >
                     <img src={window.location.origin + "/vnpay.svg"} alt='' />
-                  </div>
+                  </div> */}
                 </div>
               ) : (
                 <div className='cart__payment-desc'>

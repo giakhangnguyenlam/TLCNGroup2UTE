@@ -38,3 +38,28 @@
 .order__id span:hover {
   opacity: 0.95;
 }
+
+.order__switch-wrap {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  line-height: 2rem;
+  margin-bottom: 10px;
+  background-color: var(--white-color);
+}
+
+.order__switch-item {
+  flex-grow: 1;
+  text-align: center;
+  padding: 12px 6px;
+  cursor: pointer;
+  transition: 0.25s linear;
+}
+
+.order__switch-item:hover {
+  color: var(--primary-color);
+}
+
+.order__switch-item--active {
+  border-bottom: 1px solid;
+}

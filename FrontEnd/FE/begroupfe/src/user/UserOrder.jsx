@@ -9,6 +9,7 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
   const [orderList, setOrderList] = useState()
+  const [tab, setTab] = useState("all")
 
   const handleRedirect = (id) => {
     setOrderId(id)
@@ -25,7 +26,36 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
         },
       })
       if (res.status === 200) {
-        setOrderList(res.data.reverse())
+        const data = {
+          all: [],
+          ready: [],
+          shipping: [],
+          finish: [],
+          cancle: [],
+        }
+        res.data.reverse().forEach((item) => {
+          switch (item.orderStatus) {
+            case "Đặt hàng thành công":
+              data.all.push(item)
+              break
+            case "Đơn hàng đã chuẩn bị xong":
+              data.ready.push(item)
+              break
+            case "Đang giao hàng":
+              data.shipping.push(item)
+              break
+            case "Giao hàng thành công":
+              data.finish.push(item)
+              break
+            case "Đã hủy":
+              data.cancle.push(item)
+              break
+
+            default:
+              break
+          }
+        })
+        setOrderList(data)
       }
     } catch (error) {}
   }
@@ -47,18 +77,62 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
   }, [])
   useEffect(() => {
     if (orderList) {
-      setPageCount(Math.ceil(orderList.length / 15))
+      if (orderList[tab]) {
+        setPageCount(Math.ceil(orderList[tab].length / 15))
+      }
     }
-  }, [orderList])
+  }, [orderList ? orderList[tab] : orderList])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * 15) % orderList.length
+    const newOffset = (event.selected * 15) % orderList[tab].length
     setItemOffset(newOffset)
   }
 
   return (
     <>
       <div className='product'>
+        <div className='order__switch-wrap'>
+          <div
+            className={`order__switch-item ${
+              tab === "all" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("all")}
+          >
+            Tất cả
+          </div>
+          <div
+            className={`order__switch-item ${
+              tab === "ready" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("ready")}
+          >
+            Chờ lấy hàng
+          </div>
+          <div
+            className={`order__switch-item ${
+              tab === "shipping" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("shipping")}
+          >
+            Đang giao
+          </div>
+          <div
+            className={`order__switch-item ${
+              tab === "finish" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("finish")}
+          >
+            Đã giao
+          </div>
+          <div
+            className={`order__switch-item ${
+              tab === "cancle" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("cancle")}
+          >
+            Đã hủy
+          </div>
+        </div>
         <div className='grid__row'>
           <div
             className='auth-form__container'
@@ -91,56 +165,67 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
               </div>
             </div>
             {orderList ? (
-              orderList.length ? (
-                orderList.slice(itemOffset, itemOffset + 15).map((item) => {
-                  const {
-                    id,
-                    orderDate,
-                    total,
-                    product,
-                    paymentStatus,
-                    orderStatus,
-                  } = item
-                  return (
-                    <div
-                      className='order__body order__body--hover'
-                      key={id}
-                      onClick={() => handleRedirect(id)}
-                    >
+              orderList[tab].length ? (
+                orderList[tab]
+                  .slice(itemOffset, itemOffset + 15)
+                  .map((item) => {
+                    const {
+                      id,
+                      orderDate,
+                      total,
+                      product,
+                      paymentStatus,
+                      orderStatus,
+                    } = item
+                    return (
                       <div
-                        className='order__nav-item order__id'
-                        style={{ width: "10%" }}
+                        className='order__body order__body--hover'
+                        key={id}
+                        onClick={() => handleRedirect(id)}
                       >
-                        <span>{id}</span>
+                        <div
+                          className='order__nav-item order__id'
+                          style={{ width: "10%" }}
+                        >
+                          <span>{id}</span>
+                        </div>
+                        <div
+                          className='order__nav-item'
+                          style={{ width: "14%" }}
+                        >
+                          {orderDate}
+                        </div>
+                        <div
+                          className='order__nav-item'
+                          style={{ width: "27%" }}
+                        >
+                          {product}
+                        </div>
+                        <div className='order__nav-item'>
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(total)}
+                        </div>
+                        <div
+                          className='order__nav-item'
+                          style={{ width: "14%" }}
+                        >
+                          {paymentStatus}
+                        </div>
+                        <div
+                          className='order__nav-item'
+                          style={{
+                            width: "20%",
+                            textAlign: "right",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {orderStatus}
+                        </div>
                       </div>
-                      <div className='order__nav-item' style={{ width: "14%" }}>
-                        {orderDate}
-                      </div>
-                      <div className='order__nav-item' style={{ width: "27%" }}>
-                        {product}
-                      </div>
-                      <div className='order__nav-item'>
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(total)}
-                      </div>
-                      <div className='order__nav-item' style={{ width: "14%" }}>
-                        {paymentStatus}
-                      </div>
-                      <div
-                        className='order__nav-item'
-                        style={{
-                          width: "20%",
-                          textAlign: "right",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {orderStatus}
-                      </div>
-                    </div>
-                  )
-                })
+                    )
+                  })
               ) : (
                 <div
                   className='order__body'
