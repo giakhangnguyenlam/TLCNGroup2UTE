@@ -27,7 +27,7 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
       })
       if (res.status === 200) {
         const data = {
-          all: [],
+          order: [],
           ready: [],
           shipping: [],
           finish: [],
@@ -36,7 +36,7 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
         res.data.reverse().forEach((item) => {
           switch (item.orderStatus) {
             case "Đặt hàng thành công":
-              data.all.push(item)
+              data.order.push(item)
               break
             case "Đơn hàng đã chuẩn bị xong":
               data.ready.push(item)
@@ -55,6 +55,7 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
               break
           }
         })
+        data["all"] = res.data.reverse()
         setOrderList(data)
       }
     } catch (error) {}
@@ -99,6 +100,14 @@ function UserOrder({ setHeight, handleChange, setOrderId }) {
             onClick={() => setTab("all")}
           >
             Tất cả
+          </div>
+          <div
+            className={`order__switch-item ${
+              tab === "order" && "order__switch-item--active"
+            }`}
+            onClick={() => setTab("order")}
+          >
+            Chờ xác nhận
           </div>
           <div
             className={`order__switch-item ${
