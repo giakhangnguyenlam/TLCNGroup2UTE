@@ -54,16 +54,8 @@ function Checkout() {
               url: `https://utesharecode.herokuapp.com/items/sharecode/${cart[0][0].shareCode}`,
             })
             if (resp.status === 200) {
-              try {
-                const listProdId = orderData.listProducts.toString()
-                localStorage.setItem("recProdId", listProdId)
-                axios({
-                  method: "post",
-                  url: `http://127.0.0.1:8000/addData/${userId}/${listProdId}`,
-                })
-              } catch (error) {
-                console.log(error)
-              }
+              const listProdId = orderData.listProducts.toString()
+              localStorage.setItem("recProdId", listProdId)
               setRaise({
                 header: "Đặt hàng",
                 content: "Đặt hàng thành công",

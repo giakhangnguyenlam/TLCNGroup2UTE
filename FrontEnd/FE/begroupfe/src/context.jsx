@@ -235,7 +235,8 @@ const AppProvider = ({ children }) => {
         url: `http://127.0.0.1:8000/${id}`,
       })
       if (res.status === 200) {
-        const rec = await data.filter((item) => res.data.includes(item.id))
+        const result = await data.filter((item) => res.data.includes(item.id))
+        const rec = [...new Set(result)]
         setRecomend(rec)
       }
     } catch (error) {
@@ -270,8 +271,7 @@ const AppProvider = ({ children }) => {
         if (!cate) {
           const prodId = localStorage.getItem("recProdId") || null
           if (prodId) {
-            const lastId = prodId.split(",").pop()
-            fetchRecomend(lastId, arr)
+            fetchRecomend(prodId, arr)
           }
         }
         setBody(arr)

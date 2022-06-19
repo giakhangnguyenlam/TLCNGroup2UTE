@@ -7,6 +7,7 @@ import "../assets/css/CommentForm.css"
 
 function UserComment() {
   const productId = Number(localStorage.getItem("prodId"))
+  const userId = localStorage.getItem("id")
   const jwt = localStorage.getItem("jwt")
   const username = localStorage.getItem("name")
   const { setIsComment, loading, setLoading, setRaise } = useGlobalContext()
@@ -32,6 +33,15 @@ function UserComment() {
         },
       })
       if (res.status === 201) {
+        try {
+          axios({
+            method: "post",
+            url: `http://127.0.0.1:8000/addData/${userId}/${productId}/${comment.star}`,
+          })
+        } catch (error) {
+          console.log(error)
+        }
+
         localStorage.removeItem("prodId")
         setRaise({
           header: "Nhận xét",
@@ -67,13 +77,14 @@ function UserComment() {
                   Chấm điểm:
                 </label>
                 <div className='comment-form__icon'>
-                  {[1, 2, 3, 4, 5].map((item) => {
+                  {[1, 2, 3, 4, 5].map((item, index) => {
                     return (
                       <AiFillStar
                         className={`comment-form__star ${
                           comment.star >= item && "comment-form__star--fill"
                         }`}
                         onClick={() => setComment({ ...comment, star: item })}
+                        key={index}
                       />
                     )
                   })}
