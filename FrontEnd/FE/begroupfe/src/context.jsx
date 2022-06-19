@@ -30,6 +30,7 @@ const AppProvider = ({ children }) => {
   const [searchInfo, setSearchInfo] = useState("")
   const [hot, setHot] = useState([])
   const [body, setBody] = useState([])
+  const [recomend, setRecomend] = useState([])
   const [cart, setCart] = useState([])
   const [isCartUpdate, setIsCartUpdate] = useState(false)
   const [isReady, setReady] = useState(false)
@@ -227,6 +228,21 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  const fetchRecomend = async (id, data) => {
+    try {
+      const res = await axios({
+        method: "post",
+        url: `http://127.0.0.1:8000/${id}`,
+      })
+      if (res.status === 200) {
+        const rec = await data.filter((item) => res.data.includes(item.id))
+        setRecomend(rec)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const fetchData = async () => {
     let url = "https://tlcngroup2be.herokuapp.com/product"
     let categoryy =
@@ -251,6 +267,13 @@ const AppProvider = ({ children }) => {
       })
       if (res.status === 200) {
         let arr = await res.data.filter((item) => item !== null)
+        if (!cate) {
+          const prodId = localStorage.getItem("recProdId") || null
+          if (prodId) {
+            const lastId = prodId.split(",").pop()
+            fetchRecomend(lastId, arr)
+          }
+        }
         setBody(arr)
         setReady(true)
       }
@@ -292,6 +315,7 @@ const AppProvider = ({ children }) => {
         searchInfo,
         hot,
         body,
+        recomend,
         cart,
         isCartUpdate,
         isReady,
@@ -332,6 +356,7 @@ const AppProvider = ({ children }) => {
         setSearchInfo,
         setHot,
         setBody,
+        setRecomend,
         setCart,
         setCartReady,
         setIsCartUpdate,

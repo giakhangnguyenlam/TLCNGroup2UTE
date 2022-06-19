@@ -1,15 +1,17 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Product from "./Product"
+import ProdForU from "./ProdForU"
 import { cateCloList, cateShoList, cateAccList } from "../ultis/data"
 import { useGlobalContext } from "../context"
 import "../assets/css/body.css"
 
 function Body() {
   const [sort, setSort] = useState("none")
+  const [display, setDisplay] = useState(false)
   const [filter, setFilter] = useState({ start: 0, end: Infinity })
   const from = useRef()
   const to = useRef()
-  const { cate, cateType, setCate, setCateType, setCateName } =
+  const { cate, cateType, setCate, setCateType, setCateName, recomend } =
     useGlobalContext()
 
   const handleFilter = () => {
@@ -17,6 +19,8 @@ function Body() {
     const end = Number(to.current.value) || Infinity
     setFilter({ start, end })
   }
+
+  // useEffect(() => {}, [display])
 
   return (
     <div className='container'>
@@ -178,8 +182,23 @@ function Body() {
               >
                 Tăng dần
               </div>
+              {recomend.length ? (
+                <div
+                  className='filter__item filter__btn'
+                  style={{ marginRight: "auto" }}
+                  onClick={() => setDisplay(!display)}
+                >
+                  {display ? "Tất cả sản phẩm" : "Dành cho bạn"}
+                </div>
+              ) : (
+                ""
+              )}
             </div>
-            <Product item={10} sort={sort} filter={filter} />
+            {display ? (
+              <ProdForU item={10} sort={sort} filter={filter} />
+            ) : (
+              <Product item={10} sort={sort} filter={filter} />
+            )}
           </div>
         </div>
       </div>

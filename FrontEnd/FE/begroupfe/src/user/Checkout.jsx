@@ -54,6 +54,16 @@ function Checkout() {
               url: `https://utesharecode.herokuapp.com/items/sharecode/${cart[0][0].shareCode}`,
             })
             if (resp.status === 200) {
+              try {
+                const listProdId = orderData.listProducts.toString()
+                localStorage.setItem("recProdId", listProdId)
+                axios({
+                  method: "post",
+                  url: `http://127.0.0.1:8000/addData/${userId}/${listProdId}`,
+                })
+              } catch (error) {
+                console.log(error)
+              }
               setRaise({
                 header: "Đặt hàng",
                 content: "Đặt hàng thành công",
@@ -75,7 +85,7 @@ function Checkout() {
       } catch (error) {
         setRaise({
           header: "Đặt hàng",
-          content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+          content: "Một hoặc vài sản phẩm bạn muốn mua hiện đã hết hàng!",
           color: "#cf000fcc",
         })
         setLoading(false)
