@@ -90,9 +90,70 @@ function Checkout() {
     orderType,
     orderDescription,
     bankCode,
-    language
+    language,
+    code
   ) => {
     setLoading(true)
+    try {
+      const res = await axios({
+        method: "post",
+        url: "https://tlcngroup2be.herokuapp.com/user/orderwithpaypal",
+        data: orderData,
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      })
+      if (res.status === 201) {
+        try {
+          const resp = await axios({
+            method: "delete",
+            url: `https://utesharecode.herokuapp.com/items/sharecode/${code}`,
+          })
+          if (resp.status === 200) {
+            const listProdId = orderData.listProducts.toString()
+            localStorage.setItem("recProdId", listProdId)
+            try {
+              localStorage.removeItem(cart)
+              const response = await axios({
+                method: "post",
+                url: "https://utevnpay.herokuapp.com/order/create_payment_url",
+                data: {
+                  amount,
+                  orderType,
+                  orderDescription,
+                  bankCode,
+                  language,
+                },
+              })
+              if (response.status === 200) {
+                setLoading(false)
+                window.location.href = response.data
+              }
+            } catch (error) {
+              setLoading(false)
+              console.log("in checkOut vnpay", error)
+            }
+            setLoading(false)
+          }
+        } catch (error) {
+          setRaise({
+            header: "Đặt hàng",
+            content: "Có lỗi xảy ra, mời bạn liên hệ với bộ phận hỗ trợ!",
+            color: "#cf000fcc",
+          })
+          console.log(error)
+          setLoading(false)
+        }
+      }
+    } catch (error) {
+      setLoading(false)
+      setRaise({
+        header: "Đặt hàng",
+        content: "Một hoặc vài sản phẩm bạn muốn mua hiện đã hết hàng!",
+        color: "#cf000fcc",
+      })
+      console.log(error)
+    }
     try {
       const res = await axios({
         method: "post",
@@ -100,8 +161,8 @@ function Checkout() {
         data: { amount, orderType, orderDescription, bankCode, language },
       })
       if (res.status === 200) {
-        setLoading(false)
-        console.log(res)
+        // setLoading(false)
+        window.location.href = res.data
       }
     } catch (error) {
       setLoading(false)
@@ -345,10 +406,15 @@ function Checkout() {
                       className='cart__payment-item'
                       onClick={() => setCheckout({ ...checkout, card: true })}
                     >
-                      Thanh toán bằng paypal
+                      <img
+                        src={window.location.origin + "/paypal.svg"}
+                        height='30'
+                        width='123'
+                        alt=''
+                      />
                     </div>
                   )}
-                  {/* <div
+                  <div
                     className='cart__payment-item'
                     onClick={() =>
                       callVnpay(
@@ -356,12 +422,13 @@ function Checkout() {
                         "fashion",
                         "Thanh toan don hang",
                         "",
-                        "vn"
+                        "vn",
+                        cart[0][0].shareCode
                       )
                     }
                   >
                     <img src={window.location.origin + "/vnpay.svg"} alt='' />
-                  </div> */}
+                  </div>
                 </div>
               ) : (
                 <div className='cart__payment-desc'>
